@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Page — Продуманные решения</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        brand: {
+                            purple: '#8B5CF6',
+                            dark: '#0B0B0F',
+                            light: '#F8FAFC'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Стили для анимации появления (аналог Appushka) */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Глассморфизм */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .light .glass-card {
+            background: rgba(0, 0, 0, 0.02);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        body { transition: background-color 0.3s; }
+        
+        .gradient-bg {
+            background: radial-gradient(circle at top right, rgba(139, 92, 246, 0.12), transparent),
+                        radial-gradient(circle at bottom left, rgba(139, 92, 246, 0.08), transparent);
+        }
+    </style>
+</head>
+<body class="bg-brand-light text-slate-900 dark:bg-brand-dark dark:text-white font-sans selection:bg-purple-500 selection:text-white">
+
+    <div class="gradient-bg min-h-screen">
+        <nav class="fixed w-full z-50 top-0 border-b border-black/5 dark:border-white/5 bg-white/80 dark:bg-brand-dark/80 backdrop-blur-md">
+            <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+                <div class="flex items-center gap-2 font-bold text-xl tracking-tighter">
+                    <div class="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path></svg>
+                    </div>
+                    Cloud Page
+                </div>
+                
+                <div class="flex items-center gap-4">
+                    <button id="theme-toggle" class="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition">
+                        <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"></path></svg>
+                        <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                    </button>
+                    <button class="bg-brand-purple hover:bg-purple-700 text-white px-6 py-2.5 rounded-full text-sm font-semibold transition">
+                        Обсудить проект
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <section class="pt-48 pb-20 px-6 overflow-hidden">
+            <div class="max-w-5xl mx-auto">
+                <div class="reveal" style="transition-delay: 100ms">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-500/10 text-green-500 text-xs font-bold mb-8 uppercase tracking-wider">
+                        <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                        Слоты на Q2 2026 заканчиваются
+                    </div>
+                </div>
+                <h1 class="reveal text-6xl md:text-8xl font-extrabold leading-[1.1] mb-8 tracking-tight" style="transition-delay: 300ms">
+                    Делаем сайты, <br>
+                    <span class="text-brand-purple italic">за которые</span> не стыдно
+                </h1>
+                <p class="reveal text-xl opacity-60 max-w-2xl mb-12 leading-relaxed" style="transition-delay: 500ms">
+                    Мы создаем цифровые продукты, которые решают задачи бизнеса и радуют пользователей.
+                </p>
+                <div class="reveal flex flex-wrap gap-4" style="transition-delay: 700ms">
+                    <button class="bg-brand-purple text-white px-8 py-4 rounded-2xl font-bold hover:scale-105 transition">Хочу проект</button>
+                    <button class="glass-card px-8 py-4 rounded-2xl font-bold">Портфолио</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-24 px-6 bg-black/5 dark:bg-black/20">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-16 reveal">
+                    <h2 class="text-4xl font-bold">Наши услуги</h2>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="reveal glass-card p-8 rounded-[32px]" style="transition-delay: 100ms">
+                        <h3 class="text-2xl font-bold mb-4">Лендинги</h3>
+                        <p class="opacity-60">Быстрый старт для ваших продаж.</p>
+                    </div>
+                    <div class="reveal glass-card p-8 rounded-[32px]" style="transition-delay: 300ms">
+                        <h3 class="text-2xl font-bold mb-4">Магазины</h3>
+                        <p class="opacity-60">Удобные покупки в любом браузере.</p>
+                    </div>
+                    <div class="reveal glass-card p-8 rounded-[32px]" style="transition-delay: 500ms">
+                        <h3 class="text-2xl font-bold mb-4">Сервисы</h3>
+                        <p class="opacity-60">Сложные системы под ваши задачи.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="py-32 px-6">
+            <div class="max-w-4xl mx-auto reveal">
+                <div class="text-center mb-16">
+                    <h2 class="text-5xl font-bold mb-6">Давайте создадим <br>что-то великое</h2>
+                    <p class="text-lg opacity-60 italic">Заполните форму, и мы свяжемся с вами в течение часа.</p>
+                </div>
+
+                <div class="glass-card p-2 rounded-[40px] p-1 md:p-10 relative overflow-hidden">
+                    <form class="grid md:grid-cols-2 gap-6 p-8">
+                        <div class="reveal group" style="transition-delay: 200ms">
+                            <label class="block text-xs font-bold uppercase mb-2 opacity-40 group-focus-within:text-brand-purple transition">Имя</label>
+                            <input type="text" placeholder="Иван Иванов" class="w-full bg-black/5 dark:bg-white/5 border-b border-white/10 py-4 outline-none focus:border-brand-purple transition">
+                        </div>
+                        <div class="reveal group" style="transition-delay: 300ms">
+                            <label class="block text-xs font-bold uppercase mb-2 opacity-40 group-focus-within:text-brand-purple transition">Email</label>
+                            <input type="email" placeholder="hello@world.com" class="w-full bg-black/5 dark:bg-white/5 border-b border-white/10 py-4 outline-none focus:border-brand-purple transition">
+                        </div>
+                        <div class="reveal group md:col-span-2" style="transition-delay: 400ms">
+                            <label class="block text-xs font-bold uppercase mb-2 opacity-40 group-focus-within:text-brand-purple transition">О проекте</label>
+                            <textarea placeholder="Расскажите немного о вашей идее..." class="w-full bg-black/5 dark:bg-white/5 border-b border-white/10 py-4 outline-none focus:border-brand-purple transition h-32 resize-none"></textarea>
+                        </div>
+                        <div class="reveal md:col-span-2 pt-6" style="transition-delay: 500ms">
+                            <button class="w-full bg-brand-purple text-white py-5 rounded-2xl font-bold text-lg hover:shadow-2xl hover:shadow-purple-500/40 transition-all active:scale-[0.98]">
+                                Отправить заявку
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // 1. Логика переключения темы (как в прошлом скрипте)
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+        const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+
+        function updateIcons() {
+            if (document.documentElement.classList.contains('dark')) {
+                themeToggleLightIcon.classList.remove('hidden');
+                themeToggleDarkIcon.classList.add('hidden');
+            } else {
+                themeToggleDarkIcon.classList.remove('hidden');
+                themeToggleLightIcon.classList.add('hidden');
+            }
+        }
+        updateIcons();
+
+        themeToggleBtn.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            updateIcons();
+        });
+
+        // 2. Логика анимации при скролле (Scroll Reveal)
+        const observerOptions = {
+            threshold: 0.15 // Элемент начнет проявляться, когда 15% его площади будет в окне
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    // Опционально: прекращаем наблюдение после активации
+                    // observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        // Находим все элементы с классом .reveal и вешаем на них наблюдение
+        document.querySelectorAll('.reveal').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
