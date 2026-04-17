@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cloud Page — Продуманные решения</title>
+	<link rel="icon" href="favicon.ico" type="image/x-icon">
+	<link rel="icon" href="logo.png" type="image/png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script>
@@ -24,140 +26,354 @@
         }
     </script>
     <style>
-        /* Стили для анимации появления (аналог Appushka) */
+        /* Анимация появления */
         .reveal {
             opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+            transform: translateY(40px);
+            transition: all 0.9s cubic-bezier(0.22, 1, 0.36, 1);
         }
-
         .reveal.active {
             opacity: 1;
             transform: translateY(0);
         }
 
-        /* Глассморфизм */
+        /* Глассморфизм и эффекты */
         .glass-card {
             background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: transform 0.3s ease, border-color 0.3s ease;
         }
         .light .glass-card {
             background: rgba(0, 0, 0, 0.02);
             border: 1px solid rgba(0, 0, 0, 0.05);
         }
+        .glass-card:hover {
+            border-color: #8B5CF6;
+        }
 
-        body { transition: background-color 0.3s; }
-        
+        /* Бегущая строка */
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .marquee {
+            display: flex;
+            overflow: hidden;
+            white-space: nowrap;
+            user-select: none;
+        }
+        .marquee-content {
+            display: flex;
+            animation: scroll 30s linear infinite;
+        }
+
         .gradient-bg {
-            background: radial-gradient(circle at top right, rgba(139, 92, 246, 0.12), transparent),
-                        radial-gradient(circle at bottom left, rgba(139, 92, 246, 0.08), transparent);
+            background: radial-gradient(circle at 20% 30%, rgba(139, 92, 246, 0.15), transparent 40%),
+                        radial-gradient(circle at 80% 70%, rgba(139, 92, 246, 0.1), transparent 40%);
+        }
+        
+        /* Линия процесса */
+        .process-line {
+            position: absolute;
+            left: 20px;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background: linear-gradient(to bottom, transparent, #8B5CF6, transparent);
         }
     </style>
 </head>
-<body class="bg-brand-light text-slate-900 dark:bg-brand-dark dark:text-white font-sans selection:bg-purple-500 selection:text-white">
+<body class="bg-brand-light text-slate-900 dark:bg-brand-dark dark:text-white font-sans selection:bg-purple-500 selection:text-white transition-colors duration-500">
 
-    <div class="gradient-bg min-h-screen">
-        <nav class="fixed w-full z-50 top-0 border-b border-black/5 dark:border-white/5 bg-white/80 dark:bg-brand-dark/80 backdrop-blur-md">
+    <div class="gradient-bg">
+        <nav class="fixed w-full z-50 top-0 border-b border-black/5 dark:border-white/5 bg-white/70 dark:bg-brand-dark/70 backdrop-blur-xl">
             <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-                <div class="flex items-center gap-2 font-bold text-xl tracking-tighter">
-                    <div class="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center">
-                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path></svg>
+                <div class="flex items-center gap-2 font-extrabold text-2xl tracking-tighter">
+                    <div class="w-10 h-10 bg-brand-purple rounded-xl flex items-center justify-center shadow-lg shadow-purple-500/20">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path></svg>
                     </div>
                     Cloud Page
                 </div>
                 
+                <div class="hidden md:flex items-center gap-8 text-sm font-medium opacity-70">
+                    <a href="#services" class="hover:text-brand-purple transition">Услуги</a>
+                    <a href="#portfolio" class="hover:text-brand-purple transition">Портфолио</a>
+                    <a href="#process" class="hover:text-brand-purple transition">Процесс</a>
+                    <a href="#pricing" class="hover:text-brand-purple transition">Тарифы</a>
+                </div>
+
                 <div class="flex items-center gap-4">
-                    <button id="theme-toggle" class="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/5 transition">
+                    <button id="theme-toggle" class="p-2.5 rounded-xl border border-black/10 dark:border-white/10 hover:bg-brand-purple/10 transition">
                         <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"></path></svg>
                         <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
                     </button>
-                    <button class="bg-brand-purple hover:bg-purple-700 text-white px-6 py-2.5 rounded-full text-sm font-semibold transition">
+                    <a href="#contact" class="bg-brand-purple hover:bg-purple-700 text-white px-6 py-3 rounded-xl text-sm font-bold transition-all shadow-lg shadow-purple-500/25 active:scale-95">
                         Обсудить проект
-                    </button>
+                    </a>
                 </div>
             </div>
         </nav>
 
-        <section class="pt-48 pb-20 px-6 overflow-hidden">
-            <div class="max-w-5xl mx-auto">
-                <div class="reveal" style="transition-delay: 100ms">
-                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-green-500/10 text-green-500 text-xs font-bold mb-8 uppercase tracking-wider">
+        <section class="pt-48 pb-20 px-6">
+            <div class="max-w-7xl mx-auto">
+                <div class="reveal mb-8" style="transition-delay: 100ms">
+                    <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-green-500/10 text-green-500 text-xs font-bold uppercase tracking-widest">
                         <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
                         Слоты на Q2 2026 заканчиваются
-                    </div>
+                    </span>
                 </div>
-                <h1 class="reveal text-6xl md:text-8xl font-extrabold leading-[1.1] mb-8 tracking-tight" style="transition-delay: 300ms">
+                <h1 class="reveal text-5xl md:text-8xl font-black leading-tight mb-8 tracking-tighter" style="transition-delay: 200ms">
                     Делаем сайты, <br>
-                    <span class="text-brand-purple italic">за которые</span> не стыдно
+                    <span class="text-brand-purple">за которые</span> не стыдно
                 </h1>
-                <p class="reveal text-xl opacity-60 max-w-2xl mb-12 leading-relaxed" style="transition-delay: 500ms">
-                    Мы создаем цифровые продукты, которые решают задачи бизнеса и радуют пользователей.
+                <p class="reveal text-xl md:text-2xl opacity-60 max-w-2xl mb-12 leading-relaxed" style="transition-delay: 300ms">
+                    Хватит терпеть сайт из 2014 года. Мы создаем продукты, которые заставляют конкурентов нервничать.
                 </p>
-                <div class="reveal flex flex-wrap gap-4" style="transition-delay: 700ms">
-                    <button class="bg-brand-purple text-white px-8 py-4 rounded-2xl font-bold hover:scale-105 transition">Хочу проект</button>
-                    <button class="glass-card px-8 py-4 rounded-2xl font-bold">Портфолио</button>
+                
+                <div class="reveal flex flex-wrap gap-4 mb-20" style="transition-delay: 400ms">
+                    <a href="#contact" class="bg-brand-purple text-white px-10 py-5 rounded-2xl font-extrabold text-lg hover:shadow-2xl hover:shadow-purple-500/40 transition-all active:scale-95">Хочу нормальный сайт →</a>
+                    <a href="#portfolio" class="glass-card px-10 py-5 rounded-2xl font-extrabold text-lg transition-all active:scale-95">Пруфы качества</a>
+                </div>
+
+                <div class="reveal grid grid-cols-2 md:grid-cols-4 gap-12 border-t border-black/5 dark:border-white/5 pt-12" style="transition-delay: 500ms">
+                    <div>
+                        <div class="text-4xl font-black text-brand-purple mb-1">150+</div>
+                        <div class="text-sm opacity-50 font-bold uppercase tracking-widest">Проектов</div>
+                    </div>
+                    <div>
+                        <div class="text-4xl font-black text-brand-purple mb-1">98%</div>
+                        <div class="text-sm opacity-50 font-bold uppercase tracking-widest">Клиентов довольны</div>
+                    </div>
+                    <div>
+                        <div class="text-4xl font-black text-brand-purple mb-1">7</div>
+                        <div class="text-sm opacity-50 font-bold uppercase tracking-widest">Лет опыта</div>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <section class="py-24 px-6 bg-black/5 dark:bg-black/20">
+        <div class="py-10 border-y border-black/5 dark:border-white/5 bg-white/30 dark:bg-black/20 overflow-hidden">
+            <div class="marquee">
+                <div class="marquee-content gap-12 px-6 items-center">
+                    <span class="text-2xl font-black opacity-20 italic">ИНТЕРНЕТ-МАГАЗИНЫ</span>
+                    <span class="text-brand-purple">•</span>
+                    <span class="text-2xl font-black opacity-20 italic">ВЕБ-ПРИЛОЖЕНИЯ</span>
+                    <span class="text-brand-purple">•</span>
+                    <span class="text-2xl font-black opacity-20 italic">UI/UX ДИЗАЙН</span>
+                    <span class="text-brand-purple">•</span>
+                    <span class="text-2xl font-black opacity-20 italic">БРЕНДИНГ</span>
+                    <span class="text-brand-purple">•</span>
+                    <span class="text-2xl font-black opacity-20 italic">ЛЕНДИНГИ</span>
+                    <span class="text-brand-purple">•</span>
+                    <span class="text-2xl font-black opacity-20 italic">ИНТЕРНЕТ-МАГАЗИНЫ</span>
+                    <span class="text-brand-purple">•</span>
+                    <span class="text-2xl font-black opacity-20 italic">ВЕБ-ПРИЛОЖЕНИЯ</span>
+                    <span class="text-brand-purple">•</span>
+                    <span class="text-2xl font-black opacity-20 italic">UI/UX ДИЗАЙН</span>
+                    <span class="text-brand-purple">•</span>
+                    <span class="text-2xl font-black opacity-20 italic">БРЕНДИНГ</span>
+                    <span class="text-brand-purple">•</span>
+                    <span class="text-2xl font-black opacity-20 italic">ЛЕНДИНГИ</span>
+                </div>
+            </div>
+        </div>
+
+        <section id="services" class="py-32 px-6">
             <div class="max-w-7xl mx-auto">
-                <div class="text-center mb-16 reveal">
-                    <h2 class="text-4xl font-bold">Наши услуги</h2>
+                <div class="reveal text-center mb-20">
+                    <span class="text-brand-purple font-bold uppercase tracking-[0.3em] text-xs mb-4 block">Что умеем</span>
+                    <h2 class="text-5xl font-black">Всё, что нужно вашему бизнесу</h2>
+                </div>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <div class="reveal glass-card p-10 rounded-[40px]" style="transition-delay: 100ms">
+                        <div class="w-14 h-14 bg-brand-purple/20 rounded-2xl flex items-center justify-center mb-8 text-brand-purple">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 21h6l-.75-4M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4">Лендинги</h3>
+                        <p class="opacity-50 mb-6">Одна страница, которая работает лучше вашего отдела продаж. Запуск продукта и тест гипотез.</p>
+                        <div class="flex gap-2 flex-wrap">
+                            <span class="px-3 py-1 bg-black/5 dark:bg-white/5 rounded-lg text-[10px] font-bold uppercase tracking-widest">Адаптивность</span>
+                            <span class="px-3 py-1 bg-black/5 dark:bg-white/5 rounded-lg text-[10px] font-bold uppercase tracking-widest">SEO</span>
+                        </div>
+                    </div>
+                    <div class="reveal glass-card p-10 rounded-[40px]" style="transition-delay: 200ms">
+                        <div class="w-14 h-14 bg-brand-purple/20 rounded-2xl flex items-center justify-center mb-8 text-brand-purple">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4">Магазины</h3>
+                        <p class="opacity-50 mb-6">Каталог, корзина, оплата. Всё работает быстро, а не виснет. Люди покупают, а не уходят.</p>
+                        <div class="flex gap-2 flex-wrap">
+                            <span class="px-3 py-1 bg-black/5 dark:bg-white/5 rounded-lg text-[10px] font-bold uppercase tracking-widest">Каталог</span>
+                            <span class="px-3 py-1 bg-black/5 dark:bg-white/5 rounded-lg text-[10px] font-bold uppercase tracking-widest">Оплата</span>
+                        </div>
+                    </div>
+                    <div class="reveal glass-card p-10 rounded-[40px]" style="transition-delay: 300ms">
+                        <div class="w-14 h-14 bg-brand-purple/20 rounded-2xl flex items-center justify-center mb-8 text-brand-purple">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-4">Веб-приложения</h3>
+                        <p class="opacity-50 mb-6">Когда просто сайта мало. SPA, PWA, личные кабинеты — штуки, которые реально работают.</p>
+                        <div class="flex gap-2 flex-wrap">
+                            <span class="px-3 py-1 bg-black/5 dark:bg-white/5 rounded-lg text-[10px] font-bold uppercase tracking-widest">React / Vue</span>
+                            <span class="px-3 py-1 bg-black/5 dark:bg-white/5 rounded-lg text-[10px] font-bold uppercase tracking-widest">Real-time</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="process" class="py-32 px-6 bg-black/5 dark:bg-black/20">
+            <div class="max-w-4xl mx-auto">
+                <div class="reveal text-center mb-24">
+                    <span class="text-brand-purple font-bold uppercase tracking-[0.3em] text-xs mb-4 block">Процесс</span>
+                    <h2 class="text-5xl font-black">Без хаоса, по уму</h2>
                 </div>
 
-                <div class="grid md:grid-cols-3 gap-6">
-                    <div class="reveal glass-card p-8 rounded-[32px]" style="transition-delay: 100ms">
-                        <h3 class="text-2xl font-bold mb-4">Лендинги</h3>
-                        <p class="opacity-60">Быстрый старт для ваших продаж.</p>
+                <div class="relative pl-12">
+                    <div class="process-line"></div>
+                    
+                    <div class="reveal mb-20 relative" style="transition-delay: 100ms">
+                        <div class="absolute -left-[54px] w-10 h-10 bg-brand-dark dark:bg-brand-light text-white dark:text-brand-dark rounded-full flex items-center justify-center font-bold text-sm border-4 border-brand-purple">01</div>
+                        <h3 class="text-3xl font-bold mb-4 tracking-tight">Разбираемся</h3>
+                        <p class="text-lg opacity-50">Влезаем в ваш бизнес с головой. Конкуренты, аудитория, цифры — сначала думаем, потом делаем.</p>
                     </div>
-                    <div class="reveal glass-card p-8 rounded-[32px]" style="transition-delay: 300ms">
-                        <h3 class="text-2xl font-bold mb-4">Магазины</h3>
-                        <p class="opacity-60">Удобные покупки в любом браузере.</p>
+
+                    <div class="reveal mb-20 relative" style="transition-delay: 200ms">
+                        <div class="absolute -left-[54px] w-10 h-10 bg-brand-dark dark:bg-brand-light text-white dark:text-brand-dark rounded-full flex items-center justify-center font-bold text-sm border-4 border-brand-purple">02</div>
+                        <h3 class="text-3xl font-bold mb-4 tracking-tight">Рисуем</h3>
+                        <p class="text-lg opacity-50">Прототипы и макеты в Figma. Показываем, правим, пока вы не скажете «вот это да».</p>
                     </div>
-                    <div class="reveal glass-card p-8 rounded-[32px]" style="transition-delay: 500ms">
-                        <h3 class="text-2xl font-bold mb-4">Сервисы</h3>
-                        <p class="opacity-60">Сложные системы под ваши задачи.</p>
+
+                    <div class="reveal relative" style="transition-delay: 300ms">
+                        <div class="absolute -left-[54px] w-10 h-10 bg-brand-dark dark:bg-brand-light text-white dark:text-brand-dark rounded-full flex items-center justify-center font-bold text-sm border-4 border-brand-purple">03</div>
+                        <h3 class="text-3xl font-bold mb-4 tracking-tight">Кодим</h3>
+                        <p class="text-lg opacity-50">Чистый код, быстрая загрузка. Работает на всём — от iPhone до холодильника с экраном.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="portfolio" class="py-32 px-6">
+            <div class="max-w-7xl mx-auto">
+                <div class="reveal text-center mb-20">
+                    <span class="text-brand-purple font-bold uppercase tracking-[0.3em] text-xs mb-4 block">Портфолио</span>
+                    <h2 class="text-5xl font-black italic">Не болтовня, а результат</h2>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="reveal group relative overflow-hidden rounded-[40px] aspect-video glass-card" style="transition-delay: 100ms">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-10 translate-y-4 group-hover:translate-y-0 transition-transform">
+                            <h4 class="text-2xl font-bold text-white mb-2">ZovVPN Service</h4>
+                            <p class="text-white/60 mb-6">Кроссплатформенное приложение для обхода блокировок</p>
+                            <span class="text-brand-purple font-bold underline cursor-pointer">Смотреть кейс →</span>
+                        </div>
+                        <div class="absolute inset-0 bg-brand-purple/10 -z-10"></div>
+                    </div>
+                    <div class="reveal group relative overflow-hidden rounded-[40px] aspect-video glass-card" style="transition-delay: 200ms">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-10 translate-y-4 group-hover:translate-y-0 transition-transform">
+                            <h4 class="text-2xl font-bold text-white mb-2">Axe Brotherhood</h4>
+                            <p class="text-white/60 mb-6">Интернет-магазин кованых изделий ручной работы</p>
+                            <span class="text-brand-purple font-bold underline cursor-pointer">Смотреть кейс →</span>
+                        </div>
+                        <div class="absolute inset-0 bg-brand-purple/5 -z-10"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="pricing" class="py-32 px-6 bg-black/5 dark:bg-black/20">
+            <div class="max-w-7xl mx-auto">
+                <div class="reveal text-center mb-20">
+                    <span class="text-brand-purple font-bold uppercase tracking-[0.3em] text-xs mb-4 block">Тарифы</span>
+                    <h2 class="text-5xl font-black">Честные цены</h2>
+                </div>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="reveal glass-card p-10 rounded-[40px] flex flex-col" style="transition-delay: 100ms">
+                        <h3 class="text-xl font-bold mb-2">Лендинг</h3>
+                        <div class="text-4xl font-black mb-8">от 80 000 ₽</div>
+                        <ul class="space-y-4 mb-10 flex-grow text-sm opacity-70 font-medium">
+                            <li class="flex items-center gap-2">✓ Уникальный дизайн</li>
+                            <li class="flex items-center gap-2">✓ Адаптив под все устройства</li>
+                            <li class="flex items-center gap-2">✓ Настройка формы заявки</li>
+                            <li class="flex items-center gap-2">✓ Срок: от 2 недель</li>
+                        </ul>
+                        <button class="w-full py-4 rounded-2xl border border-brand-purple/30 font-bold hover:bg-brand-purple hover:text-white transition">Заказать</button>
+                    </div>
+                    <div class="reveal glass-card p-10 rounded-[40px] border-2 border-brand-purple relative scale-105 shadow-2xl shadow-purple-500/10 flex flex-col" style="transition-delay: 200ms">
+                        <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-brand-purple text-white text-[10px] font-black px-4 py-1 rounded-full uppercase tracking-widest">Популярный</div>
+                        <h3 class="text-xl font-bold mb-2">Корпоративный сайт</h3>
+                        <div class="text-4xl font-black mb-8">от 200 000 ₽</div>
+                        <ul class="space-y-4 mb-10 flex-grow text-sm opacity-70 font-medium">
+                            <li class="flex items-center gap-2">✓ До 15 уникальных страниц</li>
+                            <li class="flex items-center gap-2">✓ CMS для управления контентом</li>
+                            <li class="flex items-center gap-2">✓ Интеграция с CRM</li>
+                            <li class="flex items-center gap-2">✓ Срок: от 4 недель</li>
+                        </ul>
+                        <button class="w-full py-4 rounded-2xl bg-brand-purple text-white font-bold hover:bg-purple-700 transition">Заказать</button>
+                    </div>
+                    <div class="reveal glass-card p-10 rounded-[40px] flex flex-col" style="transition-delay: 300ms">
+                        <h3 class="text-xl font-bold mb-2">Магазин</h3>
+                        <div class="text-4xl font-black mb-8">от 350 000 ₽</div>
+                        <ul class="space-y-4 mb-10 flex-grow text-sm opacity-70 font-medium">
+                            <li class="flex items-center gap-2">✓ Каталог и фильтры</li>
+                            <li class="flex items-center gap-2">✓ Личный кабинет покупателя</li>
+                            <li class="flex items-center gap-2">✓ Интеграция с 1С / МойСклад</li>
+                            <li class="flex items-center gap-2">✓ Срок: от 6 недель</li>
+                        </ul>
+                        <button class="w-full py-4 rounded-2xl border border-brand-purple/30 font-bold hover:bg-brand-purple hover:text-white transition">Заказать</button>
                     </div>
                 </div>
             </div>
         </section>
 
         <section id="contact" class="py-32 px-6">
-            <div class="max-w-4xl mx-auto reveal">
-                <div class="text-center mb-16">
-                    <h2 class="text-5xl font-bold mb-6">Давайте создадим <br>что-то великое</h2>
-                    <p class="text-lg opacity-60 italic">Заполните форму, и мы свяжемся с вами в течение часа.</p>
+            <div class="max-w-4xl mx-auto">
+                <div class="reveal text-center mb-16">
+                    <h2 class="text-5xl md:text-6xl font-black mb-6 tracking-tight">Хватит думать. <br>Пора делать.</h2>
+                    <p class="text-lg opacity-50 italic">Заполните форму — перезвоним за 2 часа. <br>Консультация бесплатная, давление нулевое.</p>
                 </div>
 
-                <div class="glass-card p-2 rounded-[40px] p-1 md:p-10 relative overflow-hidden">
-                    <form class="grid md:grid-cols-2 gap-6 p-8">
-                        <div class="reveal group" style="transition-delay: 200ms">
-                            <label class="block text-xs font-bold uppercase mb-2 opacity-40 group-focus-within:text-brand-purple transition">Имя</label>
-                            <input type="text" placeholder="Иван Иванов" class="w-full bg-black/5 dark:bg-white/5 border-b border-white/10 py-4 outline-none focus:border-brand-purple transition">
+                <div class="reveal glass-card rounded-[50px] overflow-hidden" style="transition-delay: 200ms">
+                    <form id="tg-form" class="p-8 md:p-16 grid md:grid-cols-2 gap-8">
+                        <div class="space-y-2">
+                            <label class="block text-[10px] font-black uppercase tracking-widest opacity-40 ml-1">Ваше имя</label>
+                            <input type="text" name="name" required placeholder="Иван" class="w-full bg-black/5 dark:bg-white/5 border-b border-black/10 dark:border-white/10 py-4 px-1 outline-none focus:border-brand-purple transition text-lg">
                         </div>
-                        <div class="reveal group" style="transition-delay: 300ms">
-                            <label class="block text-xs font-bold uppercase mb-2 opacity-40 group-focus-within:text-brand-purple transition">Email</label>
-                            <input type="email" placeholder="hello@world.com" class="w-full bg-black/5 dark:bg-white/5 border-b border-white/10 py-4 outline-none focus:border-brand-purple transition">
+                        <div class="space-y-2">
+                            <label class="block text-[10px] font-black uppercase tracking-widest opacity-40 ml-1">Телефон / TG</label>
+                            <input type="text" name="contact" required placeholder="@username" class="w-full bg-black/5 dark:bg-white/5 border-b border-black/10 dark:border-white/10 py-4 px-1 outline-none focus:border-brand-purple transition text-lg">
                         </div>
-                        <div class="reveal group md:col-span-2" style="transition-delay: 400ms">
-                            <label class="block text-xs font-bold uppercase mb-2 opacity-40 group-focus-within:text-brand-purple transition">О проекте</label>
-                            <textarea placeholder="Расскажите немного о вашей идее..." class="w-full bg-black/5 dark:bg-white/5 border-b border-white/10 py-4 outline-none focus:border-brand-purple transition h-32 resize-none"></textarea>
+                        <div class="md:col-span-2 space-y-2">
+                            <label class="block text-[10px] font-black uppercase tracking-widest opacity-40 ml-1">О проекте в двух словах</label>
+                            <textarea name="message" required placeholder="Нужен магазин для продажи..." class="w-full bg-black/5 dark:bg-white/5 border-b border-black/10 dark:border-white/10 py-4 px-1 outline-none focus:border-brand-purple transition text-lg h-32 resize-none"></textarea>
                         </div>
-                        <div class="reveal md:col-span-2 pt-6" style="transition-delay: 500ms">
-                            <button class="w-full bg-brand-purple text-white py-5 rounded-2xl font-bold text-lg hover:shadow-2xl hover:shadow-purple-500/40 transition-all active:scale-[0.98]">
-                                Отправить заявку
+                        <div class="md:col-span-2 pt-6">
+                            <button type="submit" id="submit-btn" class="w-full bg-brand-purple text-white py-6 rounded-3xl font-black text-xl hover:shadow-2xl hover:shadow-purple-500/40 transition-all active:scale-95 flex items-center justify-center gap-3">
+                                <span>Обсудить задачу</span>
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                             </button>
+                            <p id="form-status" class="text-center mt-4 font-bold text-sm hidden"></p>
                         </div>
                     </form>
                 </div>
             </div>
         </section>
+
+        <footer class="py-12 px-6 border-t border-black/5 dark:border-white/5">
+            <div class="max-w-7xl mx-auto flex flex-col md:row justify-between items-center gap-6 opacity-40 text-xs font-bold uppercase tracking-widest">
+                <div>© 2026 Cloud Page Studio</div>
+                <div class="flex gap-8">
+                    <a href="#">Telegram</a>
+                    <a href="#">Behance</a>
+                    <a href="#">Dribbble</a>
+                </div>
+            </div>
+        </footer>
     </div>
 
     <script>
-        // 1. Логика переключения темы (как в прошлом скрипте)
+        // 1. Тема сайта
         const themeToggleBtn = document.getElementById('theme-toggle');
         const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
         const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
@@ -178,24 +394,65 @@
             updateIcons();
         });
 
-        // 2. Логика анимации при скролле (Scroll Reveal)
-        const observerOptions = {
-            threshold: 0.15 // Элемент начнет проявляться, когда 15% его площади будет в окне
-        };
-
+        // 2. Анимация появления
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('active');
-                    // Опционально: прекращаем наблюдение после активации
-                    // observer.unobserve(entry.target);
                 }
             });
-        }, observerOptions);
+        }, { threshold: 0.1 });
 
-        // Находим все элементы с классом .reveal и вешаем на них наблюдение
-        document.querySelectorAll('.reveal').forEach(el => {
-            observer.observe(el);
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // 3. Отправка в Telegram
+        const tgForm = document.getElementById('tg-form');
+        const submitBtn = document.getElementById('submit-btn');
+        const formStatus = document.getElementById('form-status');
+
+        // Вставьте свои данные здесь
+        const BOT_TOKEN = 'ВАШ_ТОКЕН_БОТА'; 
+        const CHAT_ID = 'ВАШ_ID_ЧАТА';
+
+        tgForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(tgForm);
+            const text = `🚀 *Новая заявка с Cloud Page*\n\n` +
+                         `👤 Имя: ${formData.get('name')}\n` +
+                         `📞 Контакт: ${formData.get('contact')}\n` +
+                         `📝 Проект: ${formData.get('message')}`;
+
+            submitBtn.disabled = true;
+            submitBtn.innerText = 'Отправка...';
+
+            try {
+                const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: CHAT_ID,
+                        text: text,
+                        parse_mode: 'Markdown'
+                    })
+                });
+
+                if (response.ok) {
+                    formStatus.innerText = 'Отправлено! Мы скоро свяжемся с вами.';
+                    formStatus.classList.remove('hidden', 'text-red-500');
+                    formStatus.classList.add('text-green-500');
+                    tgForm.reset();
+                } else {
+                    throw new Error();
+                }
+            } catch (err) {
+                formStatus.innerText = 'Ошибка отправки. Попробуйте еще раз.';
+                formStatus.classList.remove('hidden', 'text-green-500');
+                formStatus.classList.add('text-red-500');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerText = 'Обсудить задачу';
+            }
         });
     </script>
 </body>
