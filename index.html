@@ -411,8 +411,8 @@
         const formStatus = document.getElementById('form-status');
 
         // Вставьте свои данные здесь
-        const BOT_TOKEN = 'ВАШ_ТОКЕН_БОТА'; 
-        const CHAT_ID = 'ВАШ_ID_ЧАТА';
+        const BOT_TOKEN = ${{ secrets.TELEGRAM_BOT_TOKEN }}; 
+        const CHAT_ID = ${{ secrets.CHAT_ID }};
 
         tgForm.addEventListener('submit', async (e) => {
             e.preventDefault();
