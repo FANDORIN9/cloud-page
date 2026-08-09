@@ -81,12 +81,20 @@ html.dark {
   --color-surface: rgba(245, 247, 251, 0.035);
 }
 
-* {
-  box-sizing: border-box;
+/* Отступ при скролле к секции — чтобы контент не прятался под fixed-навигацией */
+section[id] {
+  scroll-margin-top: 96px;
 }
+
 
 html {
   scroll-behavior: smooth;
+}
+
+html.is-loading,
+html.is-loading body {
+  overflow: hidden;
+  height: 100%;
 }
 
 body {
@@ -253,26 +261,7 @@ html:not(.dark) .glass-card {
 .eyebrow::before { content: '['; opacity: 0.5; }
 .eyebrow::after { content: ']'; opacity: 0.5; }
 
-/* ---------- Бегущая строка с плавным затуханием по краям ---------- */
-@keyframes scroll {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-.marquee {
-  display: flex;
-  overflow: hidden;
-  white-space: nowrap;
-  user-select: none;
-  -webkit-mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
-  mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
-}
-.marquee-content {
-  display: flex;
-  animation: scroll 32s linear infinite;
-}
-.marquee:hover .marquee-content {
-  animation-play-state: paused;
-}
+/* ---------- Бегущая строка удалена в пользу интерактивного демо-блока (см. .phone-frame ниже) ---------- */
 
 /* ---------- Линия процесса + градиентные кольца-номера ---------- */
 .process-line {
@@ -426,6 +415,286 @@ html:not(.dark) .glass-card {
   animation: pulse-glow 4s ease-in-out infinite;
 }
 
+/* ==========================================================================
+   PRELOADER — «Cloud Page» в облаках, технологичный стиль
+   ========================================================================== */
+#preloader {
+  transition: opacity 0.7s var(--ease-premium), visibility 0.7s var(--ease-premium);
+}
+#preloader.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Технологичная сетка — тонкие линии, символ "чертежа" интерфейса */
+.preloader-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(56, 189, 248, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56, 189, 248, 0.07) 1px, transparent 1px);
+  background-size: 48px 48px;
+  -webkit-mask-image: radial-gradient(circle at 50% 45%, #000 0%, transparent 75%);
+  mask-image: radial-gradient(circle at 50% 45%, #000 0%, transparent 75%);
+}
+
+/* Скан-линия — техно-акцент, будто идёт "сборка" интерфейса */
+.preloader-scanline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: linear-gradient(to bottom, transparent, rgba(56, 189, 248, 0.12), transparent);
+  animation: scanline 3.2s ease-in-out infinite;
+}
+@keyframes scanline {
+  0% { top: -10%; }
+  100% { top: 110%; }
+}
+
+/* Облака — мягкие размытые эллипсы, плывущие в разных направлениях и скоростях */
+.preloader-clouds { position: absolute; inset: 0; overflow: hidden; }
+.cloud {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(40px);
+  opacity: 0.5;
+}
+.cloud--1 {
+  width: 340px; height: 140px; top: 18%; left: -20%;
+  background: radial-gradient(ellipse, rgba(56, 189, 248, 0.35), transparent 70%);
+  animation: drift-right 18s ease-in-out infinite;
+}
+.cloud--2 {
+  width: 260px; height: 110px; top: 60%; right: -15%;
+  background: radial-gradient(ellipse, rgba(167, 139, 250, 0.3), transparent 70%);
+  animation: drift-left 22s ease-in-out infinite;
+}
+.cloud--3 {
+  width: 200px; height: 90px; top: 75%; left: 10%;
+  background: radial-gradient(ellipse, rgba(94, 234, 212, 0.25), transparent 70%);
+  animation: drift-right 26s ease-in-out infinite reverse;
+}
+.cloud--4 {
+  width: 300px; height: 120px; top: 8%; right: 5%;
+  background: radial-gradient(ellipse, rgba(56, 189, 248, 0.2), transparent 70%);
+  animation: drift-left 20s ease-in-out infinite;
+}
+@keyframes drift-right {
+  0%, 100% { transform: translateX(0) translateY(0); }
+  50% { transform: translateX(60px) translateY(-16px); }
+}
+@keyframes drift-left {
+  0%, 100% { transform: translateX(0) translateY(0); }
+  50% { transform: translateX(-60px) translateY(14px); }
+}
+
+.preloader-logo { animation: pulse-glow 1.6s ease-in-out infinite; }
+
+/* Буквы заголовка проявляются по очереди */
+.preloader-word {
+  opacity: 0;
+  filter: blur(8px);
+  transform: translateY(14px);
+  animation: word-in 0.8s var(--ease-premium) forwards;
+  animation-delay: calc(var(--i) * 150ms + 200ms);
+}
+@keyframes word-in {
+  to { opacity: 1; filter: blur(0); transform: translateY(0); }
+}
+
+/* ==========================================================================
+   ПЕРЕХОД МЕЖДУ СЕКЦИЯМИ — градиентный wipe-оверлей при клике по навигации
+   ========================================================================== */
+#page-transition.is-active {
+  background: var(--gradient-accent);
+  animation: page-wipe 0.7s var(--ease-premium) forwards;
+}
+@keyframes page-wipe {
+  0% { clip-path: circle(0% at var(--tx, 50%) var(--ty, 50%)); opacity: 1; }
+  60% { clip-path: circle(75% at var(--tx, 50%) var(--ty, 50%)); opacity: 0.9; }
+  100% { clip-path: circle(140% at var(--tx, 50%) var(--ty, 50%)); opacity: 0; }
+}
+
+/* ==========================================================================
+   ТОЧЕЧНАЯ НАВИГАЦИЯ — индикатор текущей секции сбоку экрана
+   ========================================================================== */
+.dot-nav-item {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--color-border);
+  border: none;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.4s var(--ease-premium);
+}
+.dot-nav-item::after {
+  content: attr(data-label);
+  position: absolute;
+  right: 22px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  white-space: nowrap;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  padding: 4px 10px;
+  border-radius: 8px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s var(--ease-premium);
+}
+.dot-nav-item:hover::after {
+  opacity: 1;
+}
+.dot-nav-item.is-active {
+  background: var(--gradient-accent);
+  width: 10px;
+  height: 28px;
+  border-radius: 999px;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.5);
+}
+
+/* ==========================================================================
+   ДЕМО-ВКЛАДКИ (переключатель мини-приложений)
+   ========================================================================== */
+.demo-tab {
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  transition: all 0.4s var(--ease-premium);
+}
+.demo-tab.is-active {
+  background: var(--gradient-accent);
+  color: #06070C;
+  border-color: transparent;
+  box-shadow: 0 12px 30px -10px rgba(56, 189, 248, 0.45);
+}
+
+/* ==========================================================================
+   МОКАП СМАРТФОНА — рамка в духе iPhone, экран с переключаемыми панелями
+   ========================================================================== */
+.phone-frame {
+  position: relative;
+  width: 280px;
+  height: 580px;
+  background: linear-gradient(160deg, #1a1d29, #06070C);
+  border-radius: 48px;
+  padding: 14px;
+  box-shadow:
+    0 40px 80px -30px rgba(56, 189, 248, 0.35),
+    0 0 0 2px rgba(255, 255, 255, 0.06) inset,
+    0 0 0 8px #0B0E1A;
+}
+.phone-notch {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 26px;
+  background: #06070C;
+  border-radius: 0 0 18px 18px;
+  z-index: 10;
+}
+.phone-screen {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(160deg, #0d1120, #06070C);
+  border-radius: 36px;
+  overflow: hidden;
+  color: #F5F7FB;
+}
+.phone-status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 22px 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+.phone-screen-panel {
+  position: absolute;
+  inset: 0;
+  padding-top: 40px;
+  opacity: 0;
+  transform: translateX(24px) scale(0.98);
+  transition: opacity 0.5s var(--ease-premium), transform 0.5s var(--ease-premium);
+  pointer-events: none;
+}
+.phone-screen-panel.is-active {
+  opacity: 1;
+  transform: translateX(0) scale(1);
+  pointer-events: auto;
+}
+.phone-mini-card {
+  aspect-ratio: 1;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.phone-badge {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: var(--gradient-accent);
+  color: #06070C;
+  font-size: 0.6rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.phone-product-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  padding: 10px;
+}
+.phone-product-thumb {
+  width: 100%;
+  aspect-ratio: 1.3;
+  border-radius: 10px;
+}
+.phone-bar {
+  flex: 1;
+  border-radius: 6px 6px 2px 2px;
+  background: var(--gradient-accent);
+  opacity: 0.85;
+}
+.phone-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  padding: 8px 10px;
+}
+.phone-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+.phone-pill {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  opacity: 0.6;
+  white-space: nowrap;
+}
+
+@media (max-width: 380px) {
+  .phone-frame { width: 240px; height: 500px; }
+}
+
     </style>
 </head>
 
@@ -437,6 +706,46 @@ html:not(.dark) .glass-card {
       Полная рабочая версия с сервером — в папке project/ (см. README.md).
     -->
     <body class="bg-brand-light text-slate-900 dark:bg-brand-dark dark:text-white font-sans selection:bg-[#38BDF8] selection:text-[#06070C] transition-colors duration-500">
+
+    <!-- ===================== PRELOADER ===================== -->
+    <div id="preloader" class="fixed inset-0 z-[9999] flex items-center justify-center bg-[#06070C] overflow-hidden">
+        <!-- Технологичная сетка на фоне -->
+        <div class="preloader-grid"></div>
+        <!-- Плывущие облака -->
+        <div class="preloader-clouds">
+            <span class="cloud cloud--1"></span>
+            <span class="cloud cloud--2"></span>
+            <span class="cloud cloud--3"></span>
+            <span class="cloud cloud--4"></span>
+        </div>
+        <!-- Скан-линия -->
+        <div class="preloader-scanline"></div>
+
+        <div class="relative flex flex-col items-center px-6">
+            <div class="logo-mark w-16 h-16 rounded-2xl flex items-center justify-center mb-8 preloader-logo">
+                <svg class="w-9 h-9 text-[#06070C]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path></svg>
+            </div>
+            <h1 class="font-display text-4xl sm:text-5xl font-bold tracking-tighter text-white flex gap-2 mb-6 preloader-title">
+                <span class="preloader-word" style="--i:0">Cloud</span>
+                <span class="preloader-word text-gradient" style="--i:1">Page</span>
+            </h1>
+            <div class="w-56 sm:w-72 h-[3px] rounded-full bg-white/10 overflow-hidden mb-3">
+                <div id="preloader-bar" class="h-full rounded-full" style="width:0%; background: var(--gradient-accent);"></div>
+            </div>
+            <div class="flex items-center gap-3 font-mono text-xs tracking-widest text-white/40">
+                <span id="preloader-percent">00%</span>
+                <span class="opacity-30">/</span>
+                <span class="preloader-status">ЗАГРУЗКА АТМОСФЕРЫ</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== ПЕРЕХОД МЕЖДУ СЕКЦИЯМИ (wipe-оверлей) ===================== -->
+    <div id="page-transition" class="fixed inset-0 z-[9998] pointer-events-none"></div>
+
+    <!-- ===================== ТОЧЕЧНАЯ НАВИГАЦИЯ ПО СЕКЦИЯМ ===================== -->
+    <nav id="dot-nav" class="hidden lg:flex fixed right-6 top-1/2 -translate-y-1/2 z-40 flex-col gap-4">
+    </nav>
 
     <div class="gradient-bg">
 
@@ -452,6 +761,7 @@ html:not(.dark) .glass-card {
 
                 <div class="hidden md:flex items-center gap-8 text-sm font-medium opacity-70">
                     <a href="#services" class="hover:text-brand-purple transition">Услуги</a>
+                    <a href="#demo" class="hover:text-brand-purple transition">Демо</a>
                     <a href="#portfolio" class="hover:text-brand-purple transition">Портфолио</a>
                     <a href="#process" class="hover:text-brand-purple transition">Процесс</a>
                     <a href="#pricing" class="hover:text-brand-purple transition">Тарифы</a>
@@ -475,6 +785,7 @@ html:not(.dark) .glass-card {
             <div id="mobile-menu" class="mobile-menu md:hidden border-t border-black/5 dark:border-white/5 bg-white/95 dark:bg-brand-dark/95 backdrop-blur-xl">
                 <div class="flex flex-col px-6 py-4 gap-4 text-sm font-medium">
                     <a href="#services" class="hover:text-brand-purple transition">Услуги</a>
+                    <a href="#demo" class="hover:text-brand-purple transition">Демо</a>
                     <a href="#portfolio" class="hover:text-brand-purple transition">Портфолио</a>
                     <a href="#process" class="hover:text-brand-purple transition">Процесс</a>
                     <a href="#pricing" class="hover:text-brand-purple transition">Тарифы</a>
@@ -484,7 +795,7 @@ html:not(.dark) .glass-card {
         </nav>
 
         <!-- ===================== HERO ===================== -->
-        <section class="relative pt-40 md:pt-48 pb-20 px-6">
+        <section id="hero" data-nav-label="Главная" class="relative pt-40 md:pt-48 pb-20 px-6">
             <div class="hero-glow"></div>
             <div class="max-w-7xl mx-auto relative">
                 <div class="reveal mb-8" style="transition-delay: 100ms">
@@ -523,35 +834,120 @@ html:not(.dark) .glass-card {
             </div>
         </section>
 
-        <!-- ===================== MARQUEE ===================== -->
-        <div class="py-10 border-y border-black/5 dark:border-white/5 bg-white/30 dark:bg-black/20 overflow-hidden">
-            <div class="marquee">
-                <div class="marquee-content gap-12 px-6 items-center">
-                    <span class="text-2xl font-black opacity-20 italic">ИНТЕРНЕТ-МАГАЗИНЫ</span>
-                    <span class="text-brand-purple">•</span>
-                    <span class="text-2xl font-black opacity-20 italic">ВЕБ-ПРИЛОЖЕНИЯ</span>
-                    <span class="text-brand-purple">•</span>
-                    <span class="text-2xl font-black opacity-20 italic">UI/UX ДИЗАЙН</span>
-                    <span class="text-brand-purple">•</span>
-                    <span class="text-2xl font-black opacity-20 italic">БРЕНДИНГ</span>
-                    <span class="text-brand-purple">•</span>
-                    <span class="text-2xl font-black opacity-20 italic">ЛЕНДИНГИ</span>
-                    <span class="text-brand-purple">•</span>
-                    <span class="text-2xl font-black opacity-20 italic">ИНТЕРНЕТ-МАГАЗИНЫ</span>
-                    <span class="text-brand-purple">•</span>
-                    <span class="text-2xl font-black opacity-20 italic">ВЕБ-ПРИЛОЖЕНИЯ</span>
-                    <span class="text-brand-purple">•</span>
-                    <span class="text-2xl font-black opacity-20 italic">UI/UX ДИЗАЙН</span>
-                    <span class="text-brand-purple">•</span>
-                    <span class="text-2xl font-black opacity-20 italic">БРЕНДИНГ</span>
-                    <span class="text-brand-purple">•</span>
-                    <span class="text-2xl font-black opacity-20 italic">ЛЕНДИНГИ</span>
+        <!-- ===================== DEMO: MINI-APPS НА СМАРТФОНЕ ===================== -->
+        <section id="demo" data-nav-label="Демо" class="py-24 md:py-32 px-6 overflow-hidden">
+            <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+                <div>
+                    <div class="reveal">
+                        <span class="eyebrow mb-4 block">Демо</span>
+                        <h2 class="font-display text-3xl sm:text-4xl md:text-5xl font-bold mb-6 tracking-tight">Не просто картинки. <br>Живой продукт.</h2>
+                        <p class="text-base sm:text-lg opacity-50 mb-10 max-w-md leading-relaxed">Каждый сайт — это ещё и мобильный опыт. Переключайте вкладки — интерфейс справа реагирует так же, как будет реагировать у ваших клиентов.</p>
+                    </div>
+
+                    <!-- Переключатель демо-экранов -->
+                    <div id="demo-tabs" class="reveal flex flex-wrap gap-3" style="transition-delay: 100ms">
+                        <button type="button" data-demo="landing" class="demo-tab is-active px-5 py-3 rounded-2xl text-sm font-bold font-mono">01 · Лендинг</button>
+                        <button type="button" data-demo="shop" class="demo-tab px-5 py-3 rounded-2xl text-sm font-bold font-mono">02 · Магазин</button>
+                        <button type="button" data-demo="admin" class="demo-tab px-5 py-3 rounded-2xl text-sm font-bold font-mono">03 · Панель заявок</button>
+                    </div>
+
+                    <div class="reveal grid grid-cols-3 gap-6 mt-12 pt-8 border-t border-black/5 dark:border-white/5" style="transition-delay: 200ms">
+                        <div>
+                            <div class="font-display text-2xl font-bold text-brand-purple mb-1">60fps</div>
+                            <div class="text-[10px] opacity-50 font-bold uppercase tracking-widest">Анимации</div>
+                        </div>
+                        <div>
+                            <div class="font-display text-2xl font-bold text-brand-purple mb-1">&lt;1s</div>
+                            <div class="text-[10px] opacity-50 font-bold uppercase tracking-widest">Загрузка</div>
+                        </div>
+                        <div>
+                            <div class="font-display text-2xl font-bold text-brand-purple mb-1">100%</div>
+                            <div class="text-[10px] opacity-50 font-bold uppercase tracking-widest">Адаптив</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Мокап смартфона -->
+                <div class="reveal flex justify-center" style="transition-delay: 150ms">
+                    <div class="phone-frame">
+                        <div class="phone-notch"></div>
+                        <div class="phone-screen">
+                            <!-- Статус-бар -->
+                            <div class="phone-status-bar">
+                                <span class="font-mono">9:41</span>
+                                <div class="flex items-center gap-1.5">
+                                    <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path d="M2 15h2v-4H2v4zm4 0h2V9H6v6zm4 0h2V5h-2v10zm4 0h2V2h-2v13z"/></svg>
+                                    <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path d="M17 5H3a1 1 0 00-1 1v8a1 1 0 001 1h14a1 1 0 001-1V6a1 1 0 00-1-1zm-1 8H4V7h12v6z"/><rect x="18" y="8" width="1.5" height="4" rx="0.5"/></svg>
+                                </div>
+                            </div>
+
+                            <!-- Экран 1: Лендинг -->
+                            <div class="phone-screen-panel is-active" data-demo-panel="landing">
+                                <div class="p-5 h-full flex flex-col">
+                                    <div class="flex items-center justify-between mb-8">
+                                        <div class="logo-mark w-7 h-7 rounded-lg"></div>
+                                        <div class="w-6 h-6 rounded-md bg-white/10"></div>
+                                    </div>
+                                    <div class="text-[10px] font-mono uppercase tracking-widest text-brand-purple mb-2">Cloud Page</div>
+                                    <div class="font-display text-2xl font-bold leading-tight mb-3">Сайт, который <span class="text-gradient">продаёт</span></div>
+                                    <div class="h-2 w-4/5 rounded-full bg-white/10 mb-2"></div>
+                                    <div class="h-2 w-3/5 rounded-full bg-white/10 mb-6"></div>
+                                    <div class="btn-magnetic rounded-xl py-3 text-center text-xs font-bold mb-8">Оставить заявку</div>
+                                    <div class="grid grid-cols-3 gap-2 mt-auto">
+                                        <div class="phone-mini-card"></div>
+                                        <div class="phone-mini-card"></div>
+                                        <div class="phone-mini-card"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Экран 2: Магазин -->
+                            <div class="phone-screen-panel" data-demo-panel="shop">
+                                <div class="p-5 h-full flex flex-col">
+                                    <div class="flex items-center justify-between mb-6">
+                                        <div class="font-display font-bold text-sm">Каталог</div>
+                                        <div class="relative">
+                                            <svg class="w-5 h-5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m-10 0a2 2 0 100 4 2 2 0 000-4zm10 0a2 2 0 100 4 2 2 0 000-4z"></path></svg>
+                                            <span class="phone-badge">3</span>
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div class="phone-product-card"><div class="phone-product-thumb" style="background: linear-gradient(135deg, rgba(56,189,248,.35), rgba(167,139,250,.25));"></div><div class="h-1.5 w-3/4 rounded-full bg-white/15 mt-3 mb-1.5"></div><div class="text-[10px] font-mono text-brand-purple">4 990 ₽</div></div>
+                                        <div class="phone-product-card"><div class="phone-product-thumb" style="background: linear-gradient(135deg, rgba(94,234,212,.3), rgba(56,189,248,.25));"></div><div class="h-1.5 w-2/3 rounded-full bg-white/15 mt-3 mb-1.5"></div><div class="text-[10px] font-mono text-brand-purple">2 490 ₽</div></div>
+                                        <div class="phone-product-card"><div class="phone-product-thumb" style="background: linear-gradient(135deg, rgba(167,139,250,.3), rgba(94,234,212,.2));"></div><div class="h-1.5 w-3/4 rounded-full bg-white/15 mt-3 mb-1.5"></div><div class="text-[10px] font-mono text-brand-purple">7 200 ₽</div></div>
+                                        <div class="phone-product-card"><div class="phone-product-thumb" style="background: linear-gradient(135deg, rgba(56,189,248,.3), rgba(167,139,250,.2));"></div><div class="h-1.5 w-2/3 rounded-full bg-white/15 mt-3 mb-1.5"></div><div class="text-[10px] font-mono text-brand-purple">3 150 ₽</div></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Экран 3: Панель заявок (реальный функционал из админки) -->
+                            <div class="phone-screen-panel" data-demo-panel="admin">
+                                <div class="p-5 h-full flex flex-col">
+                                    <div class="font-display font-bold text-sm mb-4">Заявки сегодня</div>
+                                    <div class="flex items-end gap-2 h-16 mb-6">
+                                        <div class="phone-bar" style="height:40%"></div>
+                                        <div class="phone-bar" style="height:65%"></div>
+                                        <div class="phone-bar" style="height:45%"></div>
+                                        <div class="phone-bar" style="height:90%"></div>
+                                        <div class="phone-bar" style="height:60%"></div>
+                                        <div class="phone-bar" style="height:100%"></div>
+                                        <div class="phone-bar" style="height:70%"></div>
+                                    </div>
+                                    <div class="space-y-2.5">
+                                        <div class="phone-row"><span class="phone-dot" style="background:#5EEAD4"></span><div class="h-1.5 flex-1 rounded-full bg-white/12"></div><span class="phone-pill">Новая</span></div>
+                                        <div class="phone-row"><span class="phone-dot" style="background:#38BDF8"></span><div class="h-1.5 flex-1 rounded-full bg-white/12"></div><span class="phone-pill">В работе</span></div>
+                                        <div class="phone-row"><span class="phone-dot" style="background:#A78BFA"></span><div class="h-1.5 flex-1 rounded-full bg-white/12"></div><span class="phone-pill">Готово</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+        </section>
 
         <!-- ===================== SERVICES ===================== -->
-        <section id="services" class="py-16 px-6 scroll-mt-5">
+        <section id="services" data-nav-label="Услуги" class="py-16 px-6 scroll-mt-5">
             <div class="max-w-7xl mx-auto">
                 <div class="reveal text-center mb-6">
                     <span class="eyebrow mb-4 block">Что умеем</span>
@@ -633,7 +1029,7 @@ html:not(.dark) .glass-card {
         </section>
 
         <!-- ===================== PROCESS ===================== -->
-        <section id="process" class="py-24 md:py-32 px-6 bg-black/5 dark:bg-black/20">
+        <section id="process" data-nav-label="Процесс" class="py-24 md:py-32 px-6 bg-black/5 dark:bg-black/20">
             <div class="max-w-4xl mx-auto">
                 <div class="reveal text-center mb-16 md:mb-24">
                     <span class="eyebrow mb-4 block">Процесс</span>
@@ -665,7 +1061,7 @@ html:not(.dark) .glass-card {
         </section>
 
         <!-- ===================== PORTFOLIO ===================== -->
-        <section id="portfolio" class="py-24 md:py-32 px-6">
+        <section id="portfolio" data-nav-label="Портфолио" class="py-24 md:py-32 px-6">
             <div class="max-w-7xl mx-auto">
                 <div class="reveal text-center mb-16 md:mb-20">
                     <span class="eyebrow mb-4 block">Портфолио</span>
@@ -694,7 +1090,7 @@ html:not(.dark) .glass-card {
         </section>
 
         <!-- ===================== PRICING ===================== -->
-        <section id="pricing" class="py-24 md:py-32 px-6 bg-black/5 dark:bg-black/20">
+        <section id="pricing" data-nav-label="Тарифы" class="py-24 md:py-32 px-6 bg-black/5 dark:bg-black/20">
             <div class="max-w-7xl mx-auto">
                 <div class="reveal text-center mb-16 md:mb-20">
                     <span class="eyebrow mb-4 block">Тарифы</span>
@@ -740,7 +1136,7 @@ html:not(.dark) .glass-card {
         </section>
 
         <!-- ===================== CONTACT FORM ===================== -->
-        <section id="contact" class="py-24 md:py-32 px-6">
+        <section id="contact" data-nav-label="Контакты" class="py-24 md:py-32 px-6">
             <div class="max-w-4xl mx-auto">
                 <div class="reveal text-center mb-16">
                     <h2 class="font-display text-4xl sm:text-5xl md:text-6xl font-black mb-6 tracking-tight">Хватит думать. <br>Пора делать.</h2>
@@ -1178,6 +1574,139 @@ function initCardTilt() {
   });
 }
 
+/* ---------- Прелоадер: технологичная загрузка с "Cloud Page" в облаках ---------- */
+function initPreloader() {
+  const preloader = document.getElementById('preloader');
+  if (!preloader) return;
+
+  document.documentElement.classList.add('is-loading');
+  const percentEl = document.getElementById('preloader-percent');
+  const barEl = document.getElementById('preloader-bar');
+
+  let progress = 0;
+  const duration = 1800; // мс — ощущается быстро, но достаточно, чтобы показать анимацию
+  const start = performance.now();
+
+  function tick(now) {
+    const elapsed = now - start;
+    // Нелинейная кривая — быстрый старт, замедление к 100%, как настоящая загрузка
+    progress = Math.min(100, Math.round((1 - Math.pow(1 - Math.min(elapsed / duration, 1), 3)) * 100));
+    if (percentEl) percentEl.textContent = `${String(progress).padStart(2, '0')}%`;
+    if (barEl) barEl.style.width = `${progress}%`;
+
+    if (progress < 100) {
+      requestAnimationFrame(tick);
+    } else {
+      finish();
+    }
+  }
+
+  function finish() {
+    setTimeout(() => {
+      preloader.classList.add('is-hidden');
+      document.documentElement.classList.remove('is-loading');
+      setTimeout(() => preloader.remove(), 800);
+    }, 250);
+  }
+
+  requestAnimationFrame(tick);
+}
+
+/* ---------- Точечная навигация по секциям + wipe-переход при клике ---------- */
+function initDotNav() {
+  const nav = document.getElementById('dot-nav');
+  const transitionEl = document.getElementById('page-transition');
+  if (!nav) return;
+
+  const sections = Array.from(document.querySelectorAll('section[id][data-nav-label]'));
+  if (!sections.length) return;
+
+  sections.forEach((section) => {
+    const dot = document.createElement('button');
+    dot.className = 'dot-nav-item';
+    dot.type = 'button';
+    dot.setAttribute('aria-label', `Перейти к разделу «${section.dataset.navLabel}»`);
+    dot.dataset.label = section.dataset.navLabel;
+    dot.dataset.target = section.id;
+    nav.appendChild(dot);
+  });
+
+  const dots = Array.from(nav.querySelectorAll('.dot-nav-item'));
+
+  function setActive(id) {
+    dots.forEach((d) => d.classList.toggle('is-active', d.dataset.target === id));
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) setActive(entry.target.id);
+    });
+  }, { threshold: 0.5 });
+  sections.forEach((s) => observer.observe(s));
+
+  dots.forEach((dot) => {
+    dot.addEventListener('click', (e) => {
+      triggerPageWipe(e.clientX, e.clientY);
+      document.getElementById(dot.dataset.target)?.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
+  /* Красивый wipe-переход поверх страницы — запускается из точки клика */
+  function triggerPageWipe(x, y) {
+    if (!transitionEl) return;
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    transitionEl.style.setProperty('--tx', `${(x / vw) * 100}%`);
+    transitionEl.style.setProperty('--ty', `${(y / vh) * 100}%`);
+    transitionEl.classList.remove('is-active');
+    void transitionEl.offsetWidth; // форсируем reflow, чтобы анимация перезапустилась
+    transitionEl.classList.add('is-active');
+  }
+
+  // Тот же красивый переход — на клики по обычным навигационным ссылкам (шапка, меню)
+  document.querySelectorAll('nav a[href^="#"]').forEach((link) => {
+    link.addEventListener('click', (e) => {
+      const rect = link.getBoundingClientRect();
+      triggerPageWipe(rect.left + rect.width / 2, rect.top + rect.height / 2);
+    });
+  });
+}
+
+/* ---------- Демо мини-приложений на смартфоне: переключение вкладок ---------- */
+function initPhoneDemo() {
+  const tabs = document.querySelectorAll('.demo-tab');
+  const panels = document.querySelectorAll('.phone-screen-panel');
+  if (!tabs.length || !panels.length) return;
+
+  let autoRotateTimer;
+
+  function activate(name) {
+    tabs.forEach((t) => t.classList.toggle('is-active', t.dataset.demo === name));
+    panels.forEach((p) => p.classList.toggle('is-active', p.dataset.demoPanel === name));
+  }
+
+  tabs.forEach((tab) => {
+    tab.addEventListener('click', () => {
+      activate(tab.dataset.demo);
+      resetAutoRotate();
+    });
+  });
+
+  // Лёгкая авто-смена вкладок раз в 5 секунд — демонстрирует переходы без участия пользователя
+  function resetAutoRotate() {
+    clearInterval(autoRotateTimer);
+    autoRotateTimer = setInterval(() => {
+      const names = Array.from(tabs).map((t) => t.dataset.demo);
+      const current = Array.from(tabs).findIndex((t) => t.classList.contains('is-active'));
+      activate(names[(current + 1) % names.length]);
+    }, 5000);
+  }
+  resetAutoRotate();
+
+  // Останавливаем авто-ротацию, если пользователь взаимодействует с демо-блоком
+  document.getElementById('demo-tabs')?.addEventListener('mouseenter', () => clearInterval(autoRotateTimer));
+}
+
 /* ---------- Мобильное меню ---------- */
 function initMobileMenu() {
   const btn = document.getElementById('mobile-menu-toggle');
@@ -1197,11 +1726,14 @@ function initMobileMenu() {
 
 /* ---------- Инициализация всего приложения ---------- */
 document.addEventListener('DOMContentLoaded', () => {
+  initPreloader();
   initTheme();
   initRevealAnimations();
   initScrollProgress();
   initHeroGlow();
   initCardTilt();
+  initDotNav();
+  initPhoneDemo();
   initMobileMenu();
   if (typeof FormHandler !== 'undefined') FormHandler.init();
 });
