@@ -4,99 +4,452 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cloud Page — Продуманные решения</title>
-	<link rel="icon" href="favicon.ico" type="image/x-icon">
-	<link rel="icon" href="logo.png" type="image/png">
+    <meta name="description" content="Cloud Page Studio — создаём лендинги, корпоративные сайты, интернет-магазины и веб-приложения, за которые не стыдно.">
+    <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="assets/images/logo.png" type="image/png">
+
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             darkMode: 'class',
             theme: {
                 extend: {
-                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Space Grotesk', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] },
                     colors: {
                         brand: {
-                            purple: '#87CEEB',
-                            dark:   '#0B0B0F',
-                            light:  '#F8FAFC'
+                            purple: '#38BDF8',
+                            violet: '#A78BFA',
+                            dark:   '#06070C',
+                            light:  '#F5F7FB'
                         }
                     }
                 }
             }
         }
     </script>
+
+    <!-- Собственные стили: CSS-переменные для темизации + стили компонентов -->
     <style>
-        /* Анимация появления */
-        .reveal {
-            opacity: 0;
-            transform: translateY(40px);
-            transition: all 0.9s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
+/* ==========================================================================
+   style.css — дизайн-система «Ionosphere»
+   Тёмное «атмосферное» пространство с sky→violet градиентным акцентом,
+   геометричным дисплейным шрифтом и моно-акцентами в духе дев-студии.
+   Mobile-first: базовые правила — под маленький экран, расширения — через
+   media queries (min-width).
+   ========================================================================== */
 
-        /* Глассморфизм и эффекты */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            transition: transform 0.3s ease, border-color 0.3s ease;
-        }
-        .light .glass-card {
-            background: rgba(0, 0, 0, 0.02);
-            border: 1px solid rgba(0, 0, 0, 0.05);
-        }
-        .glass-card:hover {
-            border-color: #87CEEB;
-        }
+:root {
+  /* ---------- Цветовая система (light-тема) ---------- */
+  --color-accent: #38BDF8;           /* sky-400 — основной акцент, узнаваемый бренд-голубой */
+  --color-accent-2: #A78BFA;         /* violet-400 — вторая точка градиента, добавляет глубину */
+  --color-accent-3: #5EEAD4;         /* teal-300 — редкий блик, только для свечения/акцентов */
+  --color-accent-rgb: 56, 189, 248;
+  --color-bg: #F5F7FB;
+  --color-bg-rgb: 245, 247, 251;
+  --color-text: #0B0E1A;
+  --color-text-muted: rgba(11, 14, 26, 0.6);
+  --color-border: rgba(11, 14, 26, 0.08);
+  --color-surface: rgba(11, 14, 26, 0.02);
+  --gradient-accent: linear-gradient(135deg, var(--color-accent), var(--color-accent-2));
+  --gradient-accent-soft: linear-gradient(135deg, rgba(56,189,248,.16), rgba(167,139,250,.16));
 
-        /* Бегущая строка */
-        @keyframes scroll {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-        .marquee {
-            display: flex;
-            overflow: hidden;
-            white-space: nowrap;
-            user-select: none;
-        }
-        .marquee-content {
-            display: flex;
-            animation: scroll 30s linear infinite;
-        }
+  /* ---------- Типографика ----------
+     Display — геометричный, техничный (Space Grotesk): для заголовков.
+     Body — Inter: для текста, максимально читаемый.
+     Mono — JetBrains Mono: для эйбрау-лейблов, цифр, «кодовых» акцентов —
+     прямая отсылка к тому, что мы студия веб-разработки. */
+  --font-display: 'Space Grotesk', 'Inter', sans-serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 
-        .gradient-bg {
-            background: radial-gradient(circle at 20% 30%, rgba(55, 227, 250, 0.15), transparent 40%),
-                        radial-gradient(circle at 80% 70%, rgba(76, 255, 255, 0.1), transparent 40%);
-        }
-        	
-        /* Линия процесса */
-        .process-line {
-            position: absolute;
-            left: 20px;
-            top: 0;
-            bottom: 0;
-            width: 1px;
-            background: linear-gradient(to bottom, transparent, #87CEEB, transparent);
-        }
+  /* ---------- Радиусы, отступы, тайминги ---------- */
+  --radius-sm: 12px;
+  --radius-md: 24px;
+  --radius-lg: 40px;
+  --space-section: clamp(3rem, 8vw, 8rem);
+  --ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html.dark {
+  --color-bg: #06070C;
+  --color-bg-rgb: 6, 7, 12;
+  --color-text: #F5F7FB;
+  --color-text-muted: rgba(245, 247, 251, 0.62);
+  --color-border: rgba(245, 247, 251, 0.09);
+  --color-surface: rgba(245, 247, 251, 0.035);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.6s var(--ease-premium), color 0.6s var(--ease-premium);
+  position: relative;
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+/* Градиентный текст — используется точечно, только для «сигнатурного» слова в hero */
+.text-gradient {
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Уважаем настройку "уменьшить анимации" на уровне ОС */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Видимый фокус для доступности с клавиатуры */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--color-accent);
+  color: #06070C;
+}
+
+/* ---------- Появление при скролле: blur → fokus, плавнее и «дороже» ---------- */
+.reveal {
+  opacity: 0;
+  filter: blur(6px);
+  transform: translateY(32px) scale(0.985);
+  transition: opacity 1s var(--ease-premium), filter 1s var(--ease-premium), transform 1s var(--ease-premium);
+}
+.reveal.active {
+  opacity: 1;
+  filter: blur(0);
+  transform: translateY(0) scale(1);
+}
+
+/* ---------- Фоновая атмосфера ---------- */
+.gradient-bg {
+  background:
+    radial-gradient(circle at 15% 20%, rgba(56, 189, 248, 0.16), transparent 42%),
+    radial-gradient(circle at 85% 15%, rgba(167, 139, 250, 0.14), transparent 45%),
+    radial-gradient(circle at 50% 90%, rgba(94, 234, 212, 0.08), transparent 50%);
+}
+
+/* ---------- Индикатор прогресса скролла ---------- */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: var(--scroll-progress, 0%);
+  background: var(--gradient-accent);
+  z-index: 100;
+  transition: width 0.1s linear;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
+}
+
+/* ---------- Курсор-«атмосфера»: мягкое свечение, следующее за курсором в hero ---------- */
+.hero-glow {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+.hero-glow::before {
+  content: '';
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  left: var(--mx, 50%);
+  top: var(--my, 30%);
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.20), rgba(167, 139, 250, 0.10) 45%, transparent 70%);
+  border-radius: 50%;
+  transition: left 0.5s var(--ease-premium), top 0.5s var(--ease-premium);
+  filter: blur(10px);
+}
+
+
+/* ==========================================================================
+   components.css — компоненты дизайн-системы «Ionosphere»
+   ========================================================================== */
+
+/* ---------- Glass card с реакцией на курсор (лёгкий 3D-наклон + градиентная кайма) ---------- */
+.glass-card {
+  --tilt-x: 0deg;
+  --tilt-y: 0deg;
+  background: rgba(255, 255, 255, 0.035);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--color-border);
+  transform: perspective(900px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) translateZ(0);
+  transition: transform 0.4s var(--ease-premium), border-color 0.4s var(--ease-premium), box-shadow 0.4s var(--ease-premium);
+  position: relative;
+}
+html:not(.dark) .glass-card {
+  background: rgba(11, 14, 26, 0.025);
+  border: 1px solid rgba(11, 14, 26, 0.06);
+}
+.glass-card:hover {
+  border-color: rgba(56, 189, 248, 0.5);
+  box-shadow: 0 20px 60px -20px rgba(56, 189, 248, 0.25);
+}
+
+/* Тонкая градиентная кайма, проявляется по hover — сигнатурная деталь бренда */
+.glass-card::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: var(--gradient-accent);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s var(--ease-premium);
+  pointer-events: none;
+}
+.glass-card:hover::after {
+  opacity: 0.5;
+}
+
+/* ---------- Эйбрау-лейблы в духе кода: [ ТЕКСТ ] моно-шрифтом ---------- */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+}
+.eyebrow::before { content: '['; opacity: 0.5; }
+.eyebrow::after { content: ']'; opacity: 0.5; }
+
+/* ---------- Бегущая строка с плавным затуханием по краям ---------- */
+@keyframes scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.marquee {
+  display: flex;
+  overflow: hidden;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
+}
+.marquee-content {
+  display: flex;
+  animation: scroll 32s linear infinite;
+}
+.marquee:hover .marquee-content {
+  animation-play-state: paused;
+}
+
+/* ---------- Линия процесса + градиентные кольца-номера ---------- */
+.process-line {
+  position: absolute;
+  left: 20px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, var(--color-accent), var(--color-accent-2), transparent);
+}
+.process-num {
+  background: var(--gradient-accent);
+  box-shadow: 0 0 24px rgba(56, 189, 248, 0.45);
+}
+
+/* ---------- Магнитные кнопки: градиент + свечение + лёгкий подъём ---------- */
+.btn-magnetic {
+  position: relative;
+  background: var(--gradient-accent);
+  color: #06070C;
+  transition: transform 0.35s var(--ease-premium), box-shadow 0.35s var(--ease-premium);
+  will-change: transform;
+}
+.btn-magnetic:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 16px 40px -12px rgba(56, 189, 248, 0.5);
+}
+.btn-magnetic:active {
+  transform: translateY(-1px) scale(0.99);
+}
+
+.btn-outline {
+  border: 1.5px solid var(--color-border);
+  transition: all 0.35s var(--ease-premium);
+}
+.btn-outline:hover {
+  border-color: var(--color-accent);
+  background: var(--gradient-accent-soft);
+  transform: translateY(-3px);
+}
+
+/* ---------- Форма: состояния полей ---------- */
+.form-field {
+  position: relative;
+}
+.form-field input,
+.form-field textarea {
+  width: 100%;
+  transition: border-color 0.3s var(--ease-premium), background 0.3s var(--ease-premium);
+}
+.form-field.has-error input,
+.form-field.has-error textarea {
+  border-color: #ef4444 !important;
+}
+.form-field__error {
+  display: none;
+  color: #ef4444;
+  font-size: 0.75rem;
+  font-weight: 700;
+  margin-top: 0.35rem;
+}
+.form-field.has-error .form-field__error {
+  display: block;
+}
+
+/* ---------- Кнопка отправки: состояние загрузки ---------- */
+#submit-btn[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.spinner {
+  display: none;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(6, 7, 12, 0.3);
+  border-top-color: #06070C;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+#submit-btn.is-loading .spinner {
+  display: inline-block;
+}
+#submit-btn.is-loading .btn-label,
+#submit-btn.is-loading .btn-arrow {
+  display: none;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ---------- Тост-уведомления ---------- */
+.toast-container {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  left: 1.5rem;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  pointer-events: none;
+}
+@media (min-width: 640px) {
+  .toast-container {
+    left: auto;
+    width: 380px;
+  }
+}
+.toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius-sm);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+  font-size: 0.875rem;
+  font-weight: 600;
+  opacity: 0;
+  transform: translateY(16px) scale(0.98);
+  transition: all 0.4s var(--ease-premium);
+}
+.toast.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+.toast--success { border-left: 4px solid #22c55e; }
+.toast--error { border-left: 4px solid #ef4444; }
+.toast--info { border-left: 4px solid var(--color-accent); }
+
+/* ---------- Мобильное меню ---------- */
+.mobile-menu {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s var(--ease-premium);
+}
+.mobile-menu.is-open {
+  max-height: 320px;
+}
+
+/* ---------- Логотип: лёгкое дыхание градиента ---------- */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(56, 189, 248, 0.35); }
+  50% { box-shadow: 0 0 32px rgba(167, 139, 250, 0.5); }
+}
+.logo-mark {
+  background: var(--gradient-accent);
+  animation: pulse-glow 4s ease-in-out infinite;
+}
+
     </style>
 </head>
-<body class="bg-brand-light text-slate-900 dark:bg-brand-dark dark:text-white font-sans selection:bg-[#87CEEB] selection:text-white transition-colors duration-500">
 
+    <!--
+      ЭТО АВТОНОМНАЯ ВЕРСИЯ ТОЛЬКО ДЛЯ ПРОСМОТРА ДИЗАЙНА.
+      Форма обратной связи не подключена к серверу — при отправке она
+      корректно обработает "отсутствие сети" и покажет уведомление
+      "заявка сохранена локально", но реального бэкенда здесь нет.
+      Полная рабочая версия с сервером — в папке project/ (см. README.md).
+    -->
+    <body class="bg-brand-light text-slate-900 dark:bg-brand-dark dark:text-white font-sans selection:bg-[#38BDF8] selection:text-[#06070C] transition-colors duration-500">
 
     <div class="gradient-bg">
+
+        <!-- ===================== HEADER ===================== -->
         <nav class="fixed w-full z-50 top-0 border-b border-black/5 dark:border-white/5 bg-white/70 dark:bg-brand-dark/70 backdrop-blur-xl">
             <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-                <div class="flex items-center gap-2 font-extrabold text-2xl tracking-tighter">
-                    <div class="w-10 h-10 bg-brand-purple rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/20">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path></svg>
+                <div class="flex items-center gap-2 font-display font-bold text-2xl tracking-tighter">
+                    <div class="logo-mark w-10 h-10 rounded-xl flex items-center justify-center">
+                        <svg class="w-6 h-6 text-[#06070C]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path></svg>
                     </div>
                     Cloud Page
                 </div>
-                
+
                 <div class="hidden md:flex items-center gap-8 text-sm font-medium opacity-70">
                     <a href="#services" class="hover:text-brand-purple transition">Услуги</a>
                     <a href="#portfolio" class="hover:text-brand-purple transition">Портфолио</a>
@@ -104,56 +457,73 @@
                     <a href="#pricing" class="hover:text-brand-purple transition">Тарифы</a>
                 </div>
 
-                <div class="flex items-center gap-4">
-                    <button id="theme-toggle" class="p-2.5 rounded-xl border border-black/10 dark:border-white/10 hover:bg-brand-purple/10 transition">
+                <div class="flex items-center gap-3 md:gap-4">
+                    <button id="theme-toggle" aria-label="Переключить тему" class="p-2.5 rounded-xl border border-black/10 dark:border-white/10 hover:bg-brand-purple/10 transition">
                         <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"></path></svg>
                         <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
                     </button>
-                    <a href="#contact" class="bg-[#87CEEB] hover:bg-transparent hover:border-2 hover:border-[#87CEEB] text-white hover:text-[#87CEEB] px-6 py-3 rounded-xl text-sm font-bold transition-all shadow-lg shadow-blue/25 active:scale-95">
+                    <a href="#contact" class="btn-magnetic hidden sm:inline-flex px-6 py-3 rounded-xl text-sm font-bold">
                         Обсудить проект
                     </a>
+                    <!-- Кнопка мобильного меню -->
+                    <button id="mobile-menu-toggle" aria-label="Открыть меню" aria-expanded="false" class="md:hidden p-2.5 rounded-xl border border-black/10 dark:border-white/10">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                    </button>
+                </div>
+            </div>
+            <!-- Мобильное меню -->
+            <div id="mobile-menu" class="mobile-menu md:hidden border-t border-black/5 dark:border-white/5 bg-white/95 dark:bg-brand-dark/95 backdrop-blur-xl">
+                <div class="flex flex-col px-6 py-4 gap-4 text-sm font-medium">
+                    <a href="#services" class="hover:text-brand-purple transition">Услуги</a>
+                    <a href="#portfolio" class="hover:text-brand-purple transition">Портфолио</a>
+                    <a href="#process" class="hover:text-brand-purple transition">Процесс</a>
+                    <a href="#pricing" class="hover:text-brand-purple transition">Тарифы</a>
+                    <a href="#contact" class="btn-magnetic text-center px-6 py-3 rounded-xl font-bold">Обсудить проект</a>
                 </div>
             </div>
         </nav>
 
-        <section class="pt-48 pb-20 px-6">
-            <div class="max-w-7xl mx-auto">
+        <!-- ===================== HERO ===================== -->
+        <section class="relative pt-40 md:pt-48 pb-20 px-6">
+            <div class="hero-glow"></div>
+            <div class="max-w-7xl mx-auto relative">
                 <div class="reveal mb-8" style="transition-delay: 100ms">
-                    <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-green-500/10 text-green-500 text-xs font-bold uppercase tracking-widest">
+                    <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-green-500/10 text-green-500 text-xs font-mono font-medium uppercase tracking-widest">
                         <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
                         Принимаем заявки на новые проекты.
                     </span>
                 </div>
-                <h1 class="reveal text-5xl md:text-8xl font-black leading-tight mb-8 tracking-tighter" style="transition-delay: 200ms">
+                <h1 class="reveal font-display text-4xl sm:text-5xl md:text-8xl font-bold leading-tight mb-8 tracking-tighter" style="transition-delay: 200ms">
                     Делаем сайты, <br>
-                    <span class="text-brand-purple">за которые</span> не стыдно
+                    <span class="text-gradient">за которые</span> не стыдно
                 </h1>
-                <p class="reveal text-xl md:text-2xl opacity-60 max-w-2xl mb-12 leading-relaxed" style="transition-delay: 300ms">
+                <p class="reveal text-lg sm:text-xl md:text-2xl opacity-60 max-w-2xl mb-12 leading-relaxed" style="transition-delay: 300ms">
                     Хватит терпеть сайт из 2014 года. Мы создаем продукты, которые заставляют конкурентов нервничать.
                 </p>
-                
+
                 <div class="reveal flex flex-wrap gap-4 mb-20" style="transition-delay: 400ms">
-                    <a href="#contact" class="bg-brand-purple text-white px-10 py-5 rounded-2xl font-extrabold text-lg hover:shadow-2xl hover:shadow-blue-500/40 transition-all active:scale-95">Хочу нормальный сайт →</a>
-                    <a href="#portfolio" class="glass-card px-10 py-5 rounded-2xl font-extrabold text-lg transition-all active:scale-95">Пруфы качества</a>
+                    <a href="#contact" class="btn-magnetic px-8 sm:px-10 py-4 sm:py-5 rounded-2xl font-extrabold text-base sm:text-lg">Хочу нормальный сайт →</a>
+                    <a href="#portfolio" class="btn-outline glass-card px-8 sm:px-10 py-4 sm:py-5 rounded-2xl font-extrabold text-base sm:text-lg">Пруфы качества</a>
                 </div>
 
-                <div class="reveal grid grid-cols-2 md:grid-cols-4 gap-12 border-t border-black/5 dark:border-white/5 pt-12" style="transition-delay: 500ms">
+                <div class="reveal grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 border-t border-black/5 dark:border-white/5 pt-12" style="transition-delay: 500ms">
                     <div>
-                        <div class="text-4xl font-black text-brand-purple mb-1">150+</div>
-                        <div class="text-sm opacity-50 font-bold uppercase tracking-widest">Проектов</div>
+                        <div class="text-3xl md:text-4xl font-black text-brand-purple mb-1">150+</div>
+                        <div class="text-xs md:text-sm opacity-50 font-bold uppercase tracking-widest">Проектов</div>
                     </div>
                     <div>
-                        <div class="text-4xl font-black text-brand-purple mb-1">98%</div>
-                        <div class="text-sm opacity-50 font-bold uppercase tracking-widest">Клиентов довольны</div>
+                        <div class="text-3xl md:text-4xl font-black text-brand-purple mb-1">98%</div>
+                        <div class="text-xs md:text-sm opacity-50 font-bold uppercase tracking-widest">Клиентов довольны</div>
                     </div>
                     <div>
-                        <div class="text-4xl font-black text-brand-purple mb-1">7</div>
-                        <div class="text-sm opacity-50 font-bold uppercase tracking-widest">Лет опыта</div>
+                        <div class="text-3xl md:text-4xl font-black text-brand-purple mb-1">7</div>
+                        <div class="text-xs md:text-sm opacity-50 font-bold uppercase tracking-widest">Лет опыта</div>
                     </div>
                 </div>
             </div>
         </section>
 
+        <!-- ===================== MARQUEE ===================== -->
         <div class="py-10 border-y border-black/5 dark:border-white/5 bg-white/30 dark:bg-black/20 overflow-hidden">
             <div class="marquee">
                 <div class="marquee-content gap-12 px-6 items-center">
@@ -180,40 +550,41 @@
             </div>
         </div>
 
+        <!-- ===================== SERVICES ===================== -->
         <section id="services" class="py-16 px-6 scroll-mt-5">
             <div class="max-w-7xl mx-auto">
                 <div class="reveal text-center mb-6">
-                    <span class="text-brand-purple font-bold uppercase tracking-[0.3em] text-xs mb-4 block">Что умеем</span>
-                    <h2 class="text-4xl font-black">Всё, что нужно вашему бизнесу</h2>
+                    <span class="eyebrow mb-4 block">Что умеем</span>
+                    <h2 class="font-display text-3xl md:text-4xl font-black">Всё, что нужно вашему бизнесу</h2>
                 </div>
-                <div class="grid md:grid-cols-3 gap-6">
-                    <div class="reveal glass-card p-10 rounded-[40px]" style="transition-delay: 100ms">
+                <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+                    <div class="reveal glass-card p-8 md:p-10 rounded-[40px]" style="transition-delay: 100ms">
                         <div class="w-14 h-14 bg-brand-purple/20 rounded-2xl flex items-center justify-center mb-8 text-brand-purple">
                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.631 8.41m5.96 5.96a14.926 14.926 0 0 1-5.841 2.58m-.119-8.54a6 6 0 0 0-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 0 0-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 0 1-2.448-2.448 14.9 14.9 0 0 1 .06-.312m-2.24 2.39a4.493 4.493 0 0 0-1.757 4.306 4.493 4.493 0 0 0 4.306-1.758M16.5 9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"></path></svg>
                         </div>
-                        <h3 class="text-2xl font-bold mb-4">Лендинги</h3>
+                        <h3 class="font-display text-2xl font-bold mb-4">Лендинги</h3>
                         <p class="opacity-50 mb-6">Одна страница, которая работает лучше вашего отдела продаж. Запуск продукта и тест гипотез.</p>
                         <div class="flex gap-2 flex-wrap">
                             <span class="px-3 py-1 bg-black/5 dark:bg-white/5 rounded-lg text-[10px] font-bold uppercase tracking-widest">Адаптивность</span>
                             <span class="px-3 py-1 bg-black/5 dark:bg-white/5 rounded-lg text-[10px] font-bold uppercase tracking-widest">SEO</span>
                         </div>
                     </div>
-                    <div class="reveal glass-card p-10 rounded-[40px]" style="transition-delay: 200ms">
+                    <div class="reveal glass-card p-8 md:p-10 rounded-[40px]" style="transition-delay: 200ms">
                         <div class="w-14 h-14 bg-brand-purple/20 rounded-2xl flex items-center justify-center mb-8 text-brand-purple">
                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
                         </div>
-                        <h3 class="text-2xl font-bold mb-4">Корпоративные сайты</h3>
+                        <h3 class="font-display text-2xl font-bold mb-4">Корпоративные сайты</h3>
                         <p class="opacity-50 mb-6">Ваша визитка в интернете. Многостраничник, после которого клиент звонит, а не закрывает вкладку.</p>
                         <div class="flex gap-2 flex-wrap">
                             <span class="px-3 py-1 bg-black/5 dark:bg-white/5 rounded-lg text-[10px] font-bold uppercase tracking-widest">Интеграции</span>
                             <span class="px-3 py-1 bg-black/5 dark:bg-white/5 rounded-lg text-[10px] font-bold uppercase tracking-widest">Мультиязычность</span>
                         </div>
                     </div>
-                    <div class="reveal glass-card p-10 rounded-[40px]" style="transition-delay: 200ms">
+                    <div class="reveal glass-card p-8 md:p-10 rounded-[40px]" style="transition-delay: 200ms">
                         <div class="w-14 h-14 bg-brand-purple/20 rounded-2xl flex items-center justify-center mb-8 text-brand-purple">
                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"></path></svg>
                         </div>
-                        <h3 class="text-2xl font-bold mb-4">Интернет-Магазины</h3>
+                        <h3 class="font-display text-2xl font-bold mb-4">Интернет-Магазины</h3>
                         <p class="opacity-50 mb-6">Каталог, корзина, оплата, CRM. Всё работает быстро, а не виснет. Люди покупают, а не уходят.</p>
                         <div class="flex gap-2 flex-wrap">
                             <span class="px-3 py-1 bg-black/5 dark:bg-white/5 rounded-lg text-[10px] font-bold uppercase tracking-widest">Каталог</span>
@@ -221,11 +592,11 @@
                             <span class="px-3 py-1 bg-black/5 dark:bg-white/5 rounded-lg text-[10px] font-bold uppercase tracking-widest">CRM</span>
                         </div>
                     </div>
-                    <div class="reveal glass-card p-10 rounded-[40px]" style="transition-delay: 300ms">
+                    <div class="reveal glass-card p-8 md:p-10 rounded-[40px]" style="transition-delay: 300ms">
                         <div class="w-14 h-14 bg-brand-purple/20 rounded-2xl flex items-center justify-center mb-8 text-brand-purple">
-                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5"></path></svg>
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                         </div>
-                        <h3 class="text-2xl font-bold mb-4">Веб-приложения</h3>
+                        <h3 class="font-display text-2xl font-bold mb-4">Веб-приложения</h3>
                         <p class="opacity-50 mb-6">Когда просто сайта мало. SPA, PWA, личные кабинеты — штуки, которые реально работают.</p>
                         <div class="flex gap-2 flex-wrap">
                             <span class="px-3 py-1 bg-black/5 dark:bg-white/5 rounded-lg text-[10px] font-bold uppercase tracking-widest">React / Vue</span>
@@ -233,24 +604,24 @@
                             <span class="px-3 py-1 bg-black/5 dark:bg-white/5 rounded-lg text-[10px] font-bold uppercase tracking-widest">Real-time</span>
                         </div>
                     </div>
-                    <div class="reveal glass-card p-10 rounded-[40px]" style="transition-delay: 300ms">
+                    <div class="reveal glass-card p-8 md:p-10 rounded-[40px]" style="transition-delay: 300ms">
                         <div class="w-14 h-14 bg-brand-purple/20 rounded-2xl flex items-center justify-center mb-8 text-brand-purple">
                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125"></path></svg>
                         </div>
-                        <h3 class="text-2xl font-bold mb-4">UI/UX Дизайн</h3>
-                        <p class="opacity-50 mb-6">Интерфейс, в котором разберется даше ваша бабушка. Прототипы, макеты, дизайн-системы - без вкусовщины, только данные.</p>
+                        <h3 class="font-display text-2xl font-bold mb-4">UI/UX Дизайн</h3>
+                        <p class="opacity-50 mb-6">Интерфейс, в котором разберётся даже ваша бабушка. Прототипы, макеты, дизайн-системы — без вкусовщины, только данные.</p>
                         <div class="flex gap-2 flex-wrap">
                             <span class="px-3 py-1 bg-black/5 dark:bg-white/5 rounded-lg text-[10px] font-bold uppercase tracking-widest">Figma</span>
                             <span class="px-3 py-1 bg-black/5 dark:bg-white/5 rounded-lg text-[10px] font-bold uppercase tracking-widest">Прототипы</span>
                             <span class="px-3 py-1 bg-black/5 dark:bg-white/5 rounded-lg text-[10px] font-bold uppercase tracking-widest">Тестирование</span>
                         </div>
                     </div>
-                    <div class="reveal glass-card p-10 rounded-[40px]" style="transition-delay: 300ms">
+                    <div class="reveal glass-card p-8 md:p-10 rounded-[40px]" style="transition-delay: 300ms">
                         <div class="w-14 h-14 bg-brand-purple/20 rounded-2xl flex items-center justify-center mb-8 text-brand-purple">
                             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"></path></svg>
                         </div>
-                        <h3 class="text-2xl font-bold mb-4">Поддержка и развитие</h3>
-                        <p class="opacity-50 mb-6">Сделали и не бросили. Мониторинг, обновления, доработки - ваш сайт не превратится в тыкву через полгода.</p>
+                        <h3 class="font-display text-2xl font-bold mb-4">Поддержка и развитие</h3>
+                        <p class="opacity-50 mb-6">Сделали и не бросили. Мониторинг, обновления, доработки — ваш сайт не превратится в тыкву через полгода.</p>
                         <div class="flex gap-2 flex-wrap">
                             <span class="px-3 py-1 bg-black/5 dark:bg-white/5 rounded-lg text-[10px] font-bold uppercase tracking-widest">Мониторинг</span>
                             <span class="px-3 py-1 bg-black/5 dark:bg-white/5 rounded-lg text-[10px] font-bold uppercase tracking-widest">Бекапы</span>
@@ -261,56 +632,58 @@
             </div>
         </section>
 
-        <section id="process" class="py-32 px-6 bg-black/5 dark:bg-black/20">
+        <!-- ===================== PROCESS ===================== -->
+        <section id="process" class="py-24 md:py-32 px-6 bg-black/5 dark:bg-black/20">
             <div class="max-w-4xl mx-auto">
-                <div class="reveal text-center mb-24">
-                    <span class="text-brand-purple font-bold uppercase tracking-[0.3em] text-xs mb-4 block">Процесс</span>
-                    <h2 class="text-5xl font-black">Без хаоса, по уму</h2>
+                <div class="reveal text-center mb-16 md:mb-24">
+                    <span class="eyebrow mb-4 block">Процесс</span>
+                    <h2 class="font-display text-4xl md:text-5xl font-black">Без хаоса, по уму</h2>
                 </div>
 
                 <div class="relative pl-12">
                     <div class="process-line"></div>
-                    
-                    <div class="reveal mb-20 relative" style="transition-delay: 100ms">
-                        <div class="absolute -left-[54px] w-10 h-10 bg-brand-dark dark:bg-brand-light text-white dark:text-brand-dark rounded-full flex items-center justify-center font-bold text-sm border-4 border-brand-purple">01</div>
-                        <h3 class="text-3xl font-bold mb-4 tracking-tight">Разбираемся</h3>
-                        <p class="text-lg opacity-50">Влезаем в ваш бизнес с головой. Конкуренты, аудитория, цифры — сначала думаем, потом делаем.</p>
+
+                    <div class="reveal mb-16 md:mb-20 relative" style="transition-delay: 100ms">
+                        <div class="process-num font-mono absolute -left-[54px] w-10 h-10 text-[#06070C] rounded-full flex items-center justify-center font-bold text-sm">01</div>
+                        <h3 class="font-display text-2xl md:text-3xl font-bold mb-4 tracking-tight">Разбираемся</h3>
+                        <p class="text-base md:text-lg opacity-50">Влезаем в ваш бизнес с головой. Конкуренты, аудитория, цифры — сначала думаем, потом делаем.</p>
                     </div>
 
-                    <div class="reveal mb-20 relative" style="transition-delay: 200ms">
-                        <div class="absolute -left-[54px] w-10 h-10 bg-brand-dark dark:bg-brand-light text-white dark:text-brand-dark rounded-full flex items-center justify-center font-bold text-sm border-4 border-brand-purple">02</div>
-                        <h3 class="text-3xl font-bold mb-4 tracking-tight">Рисуем</h3>
-                        <p class="text-lg opacity-50">Прототипы и макеты в Figma. Показываем, правим, пока вы не скажете «вот это да».</p>
+                    <div class="reveal mb-16 md:mb-20 relative" style="transition-delay: 200ms">
+                        <div class="process-num font-mono absolute -left-[54px] w-10 h-10 text-[#06070C] rounded-full flex items-center justify-center font-bold text-sm">02</div>
+                        <h3 class="font-display text-2xl md:text-3xl font-bold mb-4 tracking-tight">Рисуем</h3>
+                        <p class="text-base md:text-lg opacity-50">Прототипы и макеты в Figma. Показываем, правим, пока вы не скажете «вот это да».</p>
                     </div>
 
                     <div class="reveal relative" style="transition-delay: 300ms">
-                        <div class="absolute -left-[54px] w-10 h-10 bg-brand-dark dark:bg-brand-light text-white dark:text-brand-dark rounded-full flex items-center justify-center font-bold text-sm border-4 border-brand-purple">03</div>
-                        <h3 class="text-3xl font-bold mb-4 tracking-tight">Кодим</h3>
-                        <p class="text-lg opacity-50">Чистый код, быстрая загрузка. Работает на всём — от iPhone до холодильника с экраном.</p>
+                        <div class="process-num font-mono absolute -left-[54px] w-10 h-10 text-[#06070C] rounded-full flex items-center justify-center font-bold text-sm">03</div>
+                        <h3 class="font-display text-2xl md:text-3xl font-bold mb-4 tracking-tight">Кодим</h3>
+                        <p class="text-base md:text-lg opacity-50">Чистый код, быстрая загрузка. Работает на всём — от iPhone до холодильника с экраном.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="portfolio" class="py-32 px-6">
+        <!-- ===================== PORTFOLIO ===================== -->
+        <section id="portfolio" class="py-24 md:py-32 px-6">
             <div class="max-w-7xl mx-auto">
-                <div class="reveal text-center mb-20">
-                    <span class="text-brand-purple font-bold uppercase tracking-[0.3em] text-xs mb-4 block">Портфолио</span>
-                    <h2 class="text-5xl font-black italic">Не болтовня, а результат</h2>
+                <div class="reveal text-center mb-16 md:mb-20">
+                    <span class="eyebrow mb-4 block">Портфолио</span>
+                    <h2 class="font-display text-4xl md:text-5xl font-black italic">Не болтовня, а результат</h2>
                 </div>
-                
+
                 <div class="grid md:grid-cols-2 gap-8">
                     <div class="reveal group relative overflow-hidden rounded-[40px] aspect-video glass-card" style="transition-delay: 100ms">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-10 translate-y-4 group-hover:translate-y-0 transition-transform">
-                            <h4 class="text-2xl font-bold text-white mb-2">Пример 1</h4>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-8 md:p-10 translate-y-4 group-hover:translate-y-0 transition-transform">
+                            <h4 class="font-display text-2xl font-bold text-white mb-2">Пример 1</h4>
                             <p class="text-white/60 mb-6">Описание примера 1</p>
                             <span class="text-brand-purple font-bold underline cursor-pointer">Смотреть кейс →</span>
                         </div>
                         <div class="absolute inset-0 bg-brand-purple/10 -z-10"></div>
                     </div>
                     <div class="reveal group relative overflow-hidden rounded-[40px] aspect-video glass-card" style="transition-delay: 200ms">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-10 translate-y-4 group-hover:translate-y-0 transition-transform">
-                            <h4 class="text-2xl font-bold text-white mb-2">Пример 2</h4>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-8 md:p-10 translate-y-4 group-hover:translate-y-0 transition-transform">
+                            <h4 class="font-display text-2xl font-bold text-white mb-2">Пример 2</h4>
                             <p class="text-white/60 mb-6">Описание примера 1</p>
                             <span class="text-brand-purple font-bold underline cursor-pointer">Смотреть кейс →</span>
                         </div>
@@ -320,77 +693,87 @@
             </div>
         </section>
 
-        <section id="pricing" class="py-32 px-6 bg-black/5 dark:bg-black/20">
+        <!-- ===================== PRICING ===================== -->
+        <section id="pricing" class="py-24 md:py-32 px-6 bg-black/5 dark:bg-black/20">
             <div class="max-w-7xl mx-auto">
-                <div class="reveal text-center mb-20">
-                    <span class="text-brand-purple font-bold uppercase tracking-[0.3em] text-xs mb-4 block">Тарифы</span>
-                    <h2 class="text-5xl font-black">Честные цены</h2>
+                <div class="reveal text-center mb-16 md:mb-20">
+                    <span class="eyebrow mb-4 block">Тарифы</span>
+                    <h2 class="font-display text-4xl md:text-5xl font-black">Честные цены</h2>
                 </div>
                 <div class="grid md:grid-cols-3 gap-8">
-                    <div class="reveal glass-card p-10 rounded-[40px] flex flex-col" style="transition-delay: 100ms">
-                        <h3 class="text-xl font-bold mb-2">Лендинг</h3>
-                        <div class="text-4xl font-black mb-8">от 80 000 ₽</div>
+                    <div class="reveal glass-card p-8 md:p-10 rounded-[40px] flex flex-col" style="transition-delay: 100ms">
+                        <h3 class="font-display text-xl font-bold mb-2">Лендинг</h3>
+                        <div class="text-3xl md:text-4xl font-black mb-8">от 80 000 ₽</div>
                         <ul class="space-y-4 mb-10 flex-grow text-sm opacity-70 font-medium">
                             <li class="flex items-center gap-2">✓ Уникальный дизайн</li>
                             <li class="flex items-center gap-2">✓ Адаптив под все устройства</li>
                             <li class="flex items-center gap-2">✓ Настройка формы заявки</li>
                             <li class="flex items-center gap-2">✓ Срок: от 2 недель</li>
                         </ul>
-                        <button class="w-full py-4 rounded-2xl border border-brand-purple/30 font-bold hover:bg-brand-purple hover:text-white transition">Заказать</button>
+                        <a href="#contact" class="btn-outline text-center w-full py-4 rounded-2xl font-bold">Заказать</a>
                     </div>
-                    <div class="reveal glass-card p-10 rounded-[40px] border-2 border-brand-purple relative scale-105 shadow-2xl shadow-blue-500/10 flex flex-col" style="transition-delay: 200ms">
+                    <div class="reveal glass-card p-8 md:p-10 rounded-[40px] border-2 border-brand-purple relative md:scale-105 shadow-2xl shadow-blue-500/10 flex flex-col" style="transition-delay: 200ms">
                         <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-brand-purple text-white text-[10px] font-black px-4 py-1 rounded-full uppercase tracking-widest">Популярный</div>
-                        <h3 class="text-xl font-bold mb-2">Корпоративный сайт</h3>
-                        <div class="text-4xl font-black mb-8">от 200 000 ₽</div>
+                        <h3 class="font-display text-xl font-bold mb-2">Корпоративный сайт</h3>
+                        <div class="text-3xl md:text-4xl font-black mb-8">от 200 000 ₽</div>
                         <ul class="space-y-4 mb-10 flex-grow text-sm opacity-70 font-medium">
                             <li class="flex items-center gap-2">✓ До 15 уникальных страниц</li>
                             <li class="flex items-center gap-2">✓ CMS для управления контентом</li>
                             <li class="flex items-center gap-2">✓ Интеграция с CRM</li>
                             <li class="flex items-center gap-2">✓ Срок: от 4 недель</li>
                         </ul>
-                        <button class="w-full py-4 rounded-2xl bg-brand-purple text-white font-bold hover:bg-white-700 transition">Заказать</button>
+                        <a href="#contact" class="btn-magnetic text-center w-full py-4 rounded-2xl font-bold">Заказать</a>
                     </div>
-                    <div class="reveal glass-card p-10 rounded-[40px] flex flex-col" style="transition-delay: 300ms">
-                        <h3 class="text-xl font-bold mb-2">Магазин</h3>
-                        <div class="text-4xl font-black mb-8">от 350 000 ₽</div>
+                    <div class="reveal glass-card p-8 md:p-10 rounded-[40px] flex flex-col" style="transition-delay: 300ms">
+                        <h3 class="font-display text-xl font-bold mb-2">Магазин</h3>
+                        <div class="text-3xl md:text-4xl font-black mb-8">от 350 000 ₽</div>
                         <ul class="space-y-4 mb-10 flex-grow text-sm opacity-70 font-medium">
                             <li class="flex items-center gap-2">✓ Каталог и фильтры</li>
                             <li class="flex items-center gap-2">✓ Личный кабинет покупателя</li>
                             <li class="flex items-center gap-2">✓ Интеграция с 1С / МойСклад</li>
                             <li class="flex items-center gap-2">✓ Срок: от 6 недель</li>
                         </ul>
-                        <button class="w-full py-4 rounded-2xl border border-brand-purple/30 font-bold hover:bg-brand-purple hover:text-white transition">Заказать</button>
+                        <a href="#contact" class="btn-outline text-center w-full py-4 rounded-2xl font-bold">Заказать</a>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="contact" class="py-32 px-6">
+        <!-- ===================== CONTACT FORM ===================== -->
+        <section id="contact" class="py-24 md:py-32 px-6">
             <div class="max-w-4xl mx-auto">
                 <div class="reveal text-center mb-16">
-                    <h2 class="text-5xl md:text-6xl font-black mb-6 tracking-tight">Хватит думать. <br>Пора делать.</h2>
-                    <p class="text-lg opacity-50 italic">Заполните форму — перезвоним за 2 часа. <br>Консультация бесплатная, давление нулевое.</p>
+                    <h2 class="font-display text-4xl sm:text-5xl md:text-6xl font-black mb-6 tracking-tight">Хватит думать. <br>Пора делать.</h2>
+                    <p class="text-base sm:text-lg opacity-50 italic">Заполните форму — перезвоним за 2 часа. <br>Консультация бесплатная, давление нулевое.</p>
                 </div>
 
-                <div class="reveal glass-card rounded-[50px] overflow-hidden" style="transition-delay: 200ms">
-                    <form id="tg-form" class="p-8 md:p-16 grid md:grid-cols-2 gap-8">
-                        <div class="space-y-2">
-                            <label class="block text-[10px] font-black uppercase tracking-widest opacity-40 ml-1">Ваше имя</label>
-                            <input type="text" name="name" required placeholder="Иван" class="w-full bg-black/5 dark:bg-white/5 border-b border-black/10 dark:border-white/10 py-4 px-1 outline-none focus:border-brand-purple transition text-lg">
+                <div class="reveal glass-card rounded-[40px] md:rounded-[50px] overflow-hidden" style="transition-delay: 200ms">
+                    <form id="tg-form" class="p-6 sm:p-8 md:p-16 grid md:grid-cols-2 gap-6 md:gap-8" novalidate>
+                        <div class="form-field space-y-2">
+                            <label for="field-name" class="block text-[10px] font-black uppercase tracking-widest opacity-40 ml-1">Ваше имя</label>
+                            <input id="field-name" type="text" name="name" required minlength="2" placeholder="Иван" class="w-full bg-black/5 dark:bg-white/5 border-b border-black/10 dark:border-white/10 py-4 px-1 outline-none focus:border-brand-purple transition text-lg">
                         </div>
-                        <div class="space-y-2">
-                            <label class="block text-[10px] font-black uppercase tracking-widest opacity-40 ml-1">Телефон / TG</label>
-                            <input type="text" name="contact" required placeholder="@username" class="w-full bg-black/5 dark:bg-white/5 border-b border-black/10 dark:border-white/10 py-4 px-1 outline-none focus:border-brand-purple transition text-lg">
+                        <div class="form-field space-y-2">
+                            <label for="field-contact" class="block text-[10px] font-black uppercase tracking-widest opacity-40 ml-1">Телефон / TG</label>
+                            <input id="field-contact" type="text" name="contact" required placeholder="@username" class="w-full bg-black/5 dark:bg-white/5 border-b border-black/10 dark:border-white/10 py-4 px-1 outline-none focus:border-brand-purple transition text-lg">
                         </div>
-                        <div class="md:col-span-2 space-y-2">
-                            <label class="block text-[10px] font-black uppercase tracking-widest opacity-40 ml-1">О проекте в двух словах</label>
-                            <textarea name="message" required placeholder="Нужен магазин для продажи..." class="w-full bg-black/5 dark:bg-white/5 border-b border-black/10 dark:border-white/10 py-4 px-1 outline-none focus:border-brand-purple transition text-lg h-32 resize-none"></textarea>
+                        <div class="form-field md:col-span-2 space-y-2">
+                            <label for="field-message" class="block text-[10px] font-black uppercase tracking-widest opacity-40 ml-1">О проекте в двух словах</label>
+                            <textarea id="field-message" name="message" required minlength="5" placeholder="Нужен магазин для продажи..." class="w-full bg-black/5 dark:bg-white/5 border-b border-black/10 dark:border-white/10 py-4 px-1 outline-none focus:border-brand-purple transition text-lg h-32 resize-none"></textarea>
                         </div>
-                        <div class="md:col-span-2 pt-6">
-                        <button type="submit" id="submit-btn" class="w-full bg-[#87CEEB] hover:bg-transparent hover:border-2 hover:border-[#87CEEB] text-white hover:text-[#87CEEB] py-6 rounded-3xl font-black text-xl transition-all shadow-lg shadow-blue/25 active:scale-95 flex items-center justify-center gap-3">
-                            <span>Обсудить задачу</span>
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                        </button>
+
+                        <!-- Honeypot-поле: невидимо для людей, но заполняется ботами — используется для базовой защиты от спама -->
+                        <div style="position:absolute; left:-9999px; opacity:0;" aria-hidden="true">
+                            <label for="field-website">Оставьте это поле пустым</label>
+                            <input id="field-website" type="text" name="website" tabindex="-1" autocomplete="off">
+                        </div>
+
+                        <div class="md:col-span-2 pt-4 md:pt-6">
+                            <button type="submit" id="submit-btn" class="btn-magnetic w-full py-5 md:py-6 rounded-3xl font-black text-lg md:text-xl flex items-center justify-center gap-3">
+                                <span class="spinner" aria-hidden="true"></span>
+                                <span class="btn-label">Обсудить задачу</span>
+                                <svg class="btn-arrow w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                            </button>
                             <p id="form-status" class="text-center mt-4 font-bold text-sm hidden"></p>
                         </div>
                     </form>
@@ -398,8 +781,9 @@
             </div>
         </section>
 
+        <!-- ===================== FOOTER ===================== -->
         <footer class="py-12 px-6 border-t border-black/5 dark:border-white/5">
-            <div class="max-w-7xl mx-auto flex flex-col md:row justify-between items-center gap-6 opacity-40 text-xs font-bold uppercase tracking-widest">
+            <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6 opacity-40 text-xs font-bold uppercase tracking-widest">
                 <div>© 2026 Cloud Page Studio</div>
                 <div class="flex gap-8">
                     <a href="#">Telegram</a>
@@ -410,38 +794,418 @@
         </footer>
     </div>
 
+    <!-- Клиентские скрипты: подключаются в порядке зависимостей -->
     <script>
-        // 1. Тема сайта
-        const themeToggleBtn = document.getElementById('theme-toggle');
-        const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
-        const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+/**
+ * api-client.js
+ * Тонкая обёртка над fetch для общения с REST API бекенда.
+ * Изолирует остальной код от деталей HTTP (эндпоинты, заголовки, парсинг).
+ */
+const ApiClient = (() => {
+  // Бекенд раздаёт и фронтенд, и API с одного origin — префикс относительный.
+  const BASE_URL = '/api';
+  const TIMEOUT_MS = 15000;
 
-        function updateIcons() {
-            if (document.documentElement.classList.contains('dark')) {
-                themeToggleLightIcon.classList.remove('hidden');
-                themeToggleDarkIcon.classList.add('hidden');
-            } else {
-                themeToggleDarkIcon.classList.remove('hidden');
-                themeToggleLightIcon.classList.add('hidden');
-            }
+  /**
+   * Обёртка над fetch с таймаутом
+   */
+  async function request(path, options = {}) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), TIMEOUT_MS);
+
+    try {
+      const response = await fetch(`${BASE_URL}${path}`, {
+        headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
+        ...options,
+      });
+
+      clearTimeout(timeout);
+
+      let payload = null;
+      try {
+        payload = await response.json();
+      } catch (_) {
+        // тело ответа могло быть пустым — это нормально, например для 204
+      }
+
+      if (!response.ok) {
+        const error = new Error((payload && payload.error) || `Ошибка запроса: ${response.status}`);
+        error.status = response.status;
+        error.payload = payload;
+        throw error;
+      }
+
+      return payload;
+    } catch (err) {
+      clearTimeout(timeout);
+      if (err.name === 'AbortError') {
+        throw new Error('Сервер не отвечает. Проверьте соединение и попробуйте снова.');
+      }
+      throw err;
+    }
+  }
+
+  return {
+    /** Отправить заявку обратной связи */
+    submitFeedback(data) {
+      return request('/feedback', {
+        method: 'POST',
+        body: JSON.stringify(data),
+      });
+    },
+
+    /** Проверка доступности бекенда (используется перед retry из очереди) */
+    async ping() {
+      try {
+        await request('/health');
+        return true;
+      } catch (_) {
+        return false;
+      }
+    },
+  };
+})();
+
+    </script>
+    <script>
+/**
+ * form-handler.js
+ * Вся логика формы обратной связи: клиентская валидация, отправка на бекенд,
+ * состояния загрузки/ошибки/успеха, сохранение в localStorage при потере сети
+ * и повторная отправка, когда соединение восстановится.
+ */
+const FormHandler = (() => {
+  const QUEUE_KEY = 'cloudpage:feedback-queue';
+
+  const rules = {
+    name: (v) => (v.trim().length >= 2 ? null : 'Введите имя (минимум 2 символа)'),
+    contact: (v) => (v.trim().length >= 3 ? null : 'Укажите телефон, telegram или email'),
+    message: (v) => (v.trim().length >= 5 ? null : 'Опишите задачу чуть подробнее'),
+  };
+
+  function validateField(name, value) {
+    const rule = rules[name];
+    return rule ? rule(value) : null;
+  }
+
+  function setFieldError(form, name, message) {
+    const field = form.querySelector(`[name="${name}"]`);
+    if (!field) return;
+    const wrapper = field.closest('.form-field') || field.parentElement;
+    wrapper.classList.toggle('has-error', Boolean(message));
+    let errorEl = wrapper.querySelector('.form-field__error');
+    if (!errorEl) {
+      errorEl = document.createElement('p');
+      errorEl.className = 'form-field__error';
+      wrapper.appendChild(errorEl);
+    }
+    errorEl.textContent = message || '';
+  }
+
+  function validateForm(form) {
+    const data = Object.fromEntries(new FormData(form).entries());
+    let isValid = true;
+
+    Object.keys(rules).forEach((name) => {
+      const error = validateField(name, data[name] || '');
+      setFieldError(form, name, error);
+      if (error) isValid = false;
+    });
+
+    return { isValid, data };
+  }
+
+  /* ---------- Offline-очередь в localStorage ---------- */
+
+  function getQueue() {
+    try {
+      return JSON.parse(localStorage.getItem(QUEUE_KEY)) || [];
+    } catch (_) {
+      return [];
+    }
+  }
+
+  function saveQueue(queue) {
+    localStorage.setItem(QUEUE_KEY, JSON.stringify(queue));
+  }
+
+  function enqueue(data) {
+    const queue = getQueue();
+    queue.push({ ...data, queuedAt: new Date().toISOString() });
+    saveQueue(queue);
+  }
+
+  /** Пытается отправить все заявки из очереди. Успешные — удаляет. */
+  async function flushQueue() {
+    const queue = getQueue();
+    if (!queue.length) return;
+
+    const online = await ApiClient.ping();
+    if (!online) return;
+
+    const remaining = [];
+    for (const item of queue) {
+      try {
+        // eslint-disable-next-line no-await-in-loop
+        await ApiClient.submitFeedback(item);
+        Notifications.show('Отправлена ранее сохранённая заявка', 'success');
+      } catch (_) {
+        remaining.push(item); // не получилось — оставляем в очереди
+      }
+    }
+    saveQueue(remaining);
+  }
+
+  /* ---------- Обработка отправки формы ---------- */
+
+  function setLoading(button, isLoading) {
+    button.classList.toggle('is-loading', isLoading);
+    button.disabled = isLoading;
+  }
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+    const form = event.target;
+    const button = form.querySelector('#submit-btn');
+    const status = form.querySelector('#form-status');
+
+    const { isValid, data } = validateForm(form);
+    if (!isValid) {
+      Notifications.show('Проверьте правильность заполнения полей', 'error');
+      return;
+    }
+
+    setLoading(button, true);
+    if (status) status.classList.add('hidden');
+
+    try {
+      await ApiClient.submitFeedback(data);
+      form.reset();
+      Notifications.show('Заявка отправлена! Мы свяжемся с вами в ближайшее время.', 'success');
+      if (status) {
+        status.textContent = '✓ Спасибо! Заявка принята.';
+        status.classList.remove('hidden');
+        status.style.color = '#22c55e';
+      }
+    } catch (err) {
+      // Если проблема сети — не теряем данные пользователя, сохраняем локально
+      if (!navigator.onLine || err.message.includes('отвечает')) {
+        enqueue(data);
+        Notifications.show('Нет соединения. Заявка сохранена и будет отправлена автоматически.', 'info');
+        form.reset();
+      } else if (err.payload && err.payload.errors) {
+        Object.entries(err.payload.errors).forEach(([field, message]) => setFieldError(form, field, message));
+        Notifications.show('Проверьте форму — есть ошибки', 'error');
+      } else {
+        Notifications.show(err.message || 'Не удалось отправить заявку. Попробуйте позже.', 'error');
+      }
+      if (status) {
+        status.textContent = '✗ Что-то пошло не так. Попробуйте ещё раз.';
+        status.classList.remove('hidden');
+        status.style.color = '#ef4444';
+      }
+    } finally {
+      setLoading(button, false);
+    }
+  }
+
+  function init() {
+    const form = document.getElementById('tg-form');
+    if (!form) return;
+
+    form.addEventListener('submit', handleSubmit);
+
+    // Живая валидация по мере ввода — убираем ошибку, как только поле стало валидным
+    Object.keys(rules).forEach((name) => {
+      const field = form.querySelector(`[name="${name}"]`);
+      if (!field) return;
+      field.addEventListener('blur', () => setFieldError(form, name, validateField(name, field.value)));
+      field.addEventListener('input', () => {
+        if (field.closest('.form-field')?.classList.contains('has-error')) {
+          setFieldError(form, name, validateField(name, field.value));
         }
-        updateIcons();
+      });
+    });
 
-        themeToggleBtn.addEventListener('click', () => {
-            document.documentElement.classList.toggle('dark');
-            updateIcons();
-        });
+    // Пытаемся отправить отложенные заявки при загрузке и при восстановлении сети
+    flushQueue();
+    window.addEventListener('online', flushQueue);
+  }
 
-        // 2. Анимация появления
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
-                }
-            });
-        }, { threshold: 0.1 });
+  return { init, flushQueue };
+})();
 
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    </script>
+    <script>
+/**
+ * app.js
+ * Точка входа клиентской логики: переключение темы, scroll-анимации,
+ * мобильное меню и система тост-уведомлений. Подключается последним
+ * (после api-client.js и form-handler.js).
+ */
+
+/* ---------- Тост-уведомления ---------- */
+const Notifications = (() => {
+  let container;
+
+  function ensureContainer() {
+    if (!container) {
+      container = document.createElement('div');
+      container.className = 'toast-container';
+      container.setAttribute('aria-live', 'polite');
+      document.body.appendChild(container);
+    }
+    return container;
+  }
+
+  function show(message, type = 'info', duration = 5000) {
+    const el = document.createElement('div');
+    el.className = `toast toast--${type}`;
+    el.setAttribute('role', 'status');
+    el.textContent = message;
+
+    ensureContainer().appendChild(el);
+
+    // Небольшая задержка нужна, чтобы CSS-переход сработал (иначе элемент появится мгновенно)
+    requestAnimationFrame(() => el.classList.add('is-visible'));
+
+    setTimeout(() => {
+      el.classList.remove('is-visible');
+      el.addEventListener('transitionend', () => el.remove(), { once: true });
+    }, duration);
+  }
+
+  return { show };
+})();
+
+/* ---------- Тема сайта (светлая/тёмная) ---------- */
+function initTheme() {
+  const toggleBtn = document.getElementById('theme-toggle');
+  const darkIcon = document.getElementById('theme-toggle-dark-icon');
+  const lightIcon = document.getElementById('theme-toggle-light-icon');
+  if (!toggleBtn) return;
+
+  const STORAGE_KEY = 'cloudpage:theme';
+  const saved = localStorage.getItem(STORAGE_KEY);
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+  // Применяем сохранённую тему, либо системную по умолчанию
+  const isDark = saved ? saved === 'dark' : prefersDark;
+  document.documentElement.classList.toggle('dark', isDark);
+
+  function updateIcons() {
+    const dark = document.documentElement.classList.contains('dark');
+    lightIcon.classList.toggle('hidden', !dark);
+    darkIcon.classList.toggle('hidden', dark);
+  }
+  updateIcons();
+
+  toggleBtn.addEventListener('click', () => {
+    document.documentElement.classList.toggle('dark');
+    localStorage.setItem(STORAGE_KEY, document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+    updateIcons();
+  });
+}
+
+/* ---------- Появление элементов при скролле ---------- */
+function initRevealAnimations() {
+  const elements = document.querySelectorAll('.reveal');
+  if (!elements.length) return;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('active');
+        observer.unobserve(entry.target); // анимация должна проиграться один раз
+      }
+    });
+  }, { threshold: 0.1 });
+
+  elements.forEach((el) => observer.observe(el));
+}
+
+/* ---------- Индикатор прогресса скролла ---------- */
+function initScrollProgress() {
+  let bar = document.querySelector('.scroll-progress');
+  if (!bar) {
+    bar = document.createElement('div');
+    bar.className = 'scroll-progress';
+    document.body.prepend(bar);
+  }
+
+  function update() {
+    const scrollTop = window.scrollY;
+    const height = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = height > 0 ? (scrollTop / height) * 100 : 0;
+    document.documentElement.style.setProperty('--scroll-progress', `${progress}%`);
+  }
+
+  window.addEventListener('scroll', update, { passive: true });
+  update();
+}
+
+/* ---------- Курсор-«атмосфера» в hero: мягкое свечение следует за мышью ---------- */
+function initHeroGlow() {
+  const hero = document.querySelector('.hero-glow');
+  if (!hero || window.matchMedia('(pointer: coarse)').matches) return; // на тач-устройствах не нужно
+
+  hero.parentElement.addEventListener('mousemove', (e) => {
+    const rect = hero.parentElement.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    hero.style.setProperty('--mx', `${x}%`);
+    hero.style.setProperty('--my', `${y}%`);
+  });
+}
+
+/* ---------- Лёгкий 3D-наклон карточек вслед за курсором ---------- */
+function initCardTilt() {
+  if (window.matchMedia('(pointer: coarse)').matches) return; // на тач-устройствах не нужно
+
+  document.querySelectorAll('.glass-card').forEach((card) => {
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const px = (e.clientX - rect.left) / rect.width - 0.5;
+      const py = (e.clientY - rect.top) / rect.height - 0.5;
+      card.style.setProperty('--tilt-x', `${(-py * 6).toFixed(2)}deg`);
+      card.style.setProperty('--tilt-y', `${(px * 6).toFixed(2)}deg`);
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.setProperty('--tilt-x', '0deg');
+      card.style.setProperty('--tilt-y', '0deg');
+    });
+  });
+}
+
+/* ---------- Мобильное меню ---------- */
+function initMobileMenu() {
+  const btn = document.getElementById('mobile-menu-toggle');
+  const menu = document.getElementById('mobile-menu');
+  if (!btn || !menu) return;
+
+  btn.addEventListener('click', () => {
+    const isOpen = menu.classList.toggle('is-open');
+    btn.setAttribute('aria-expanded', String(isOpen));
+  });
+
+  // Закрываем меню при переходе по ссылке
+  menu.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', () => menu.classList.remove('is-open'));
+  });
+}
+
+/* ---------- Инициализация всего приложения ---------- */
+document.addEventListener('DOMContentLoaded', () => {
+  initTheme();
+  initRevealAnimations();
+  initScrollProgress();
+  initHeroGlow();
+  initCardTilt();
+  initMobileMenu();
+  if (typeof FormHandler !== 'undefined') FormHandler.init();
+});
+
     </script>
 </body>
 </html>
