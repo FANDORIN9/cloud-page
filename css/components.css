@@ -1202,68 +1202,73 @@ html.dark .case__preview { background: #060606; }
    8. ФОРМА ОБРАТНОЙ СВЯЗИ
    ========================================================================== */
 
-/* Компактная карточка: уже и ниже, чтобы целиком попадать в экран */
+/* Секция формы занимает ровно один экран — скроллить не нужно.
+   Верхний паддинг равен высоте фиксированной шапки, чтобы она не накрывала карточку. */
+.section--screen {
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  padding-block: var(--header-h) 1rem;
+}
+
+/* Компактная карточка */
 .form-card {
+  width: 100%;
   border: 1px solid var(--c-line);
   border-radius: var(--r-lg);
   background: var(--c-surface);
-  padding: clamp(1.25rem, 3vw, 2rem);
+  padding: clamp(1.1rem, 2.4vw, 1.75rem);
   max-width: 560px;
   margin-inline: auto;
   box-shadow: var(--c-shadow-sm);
 }
 
-/* Шапка карточки с логотипом */
-.form-card__head {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding-bottom: 1.1rem;
-  margin-bottom: 1.4rem;
-  border-bottom: 1px solid var(--c-line);
+/* Текстовая шапка вплотную к полям: без логотипа и без лишнего воздуха */
+.form-card__head { margin-bottom: 1.15rem; }
+.form-card__head .eyebrow { margin-bottom: .5rem; }
+.form-card__head h2 {
+  font-size: clamp(1.5rem, 1.2rem + 1.1vw, 2rem);
+  margin-bottom: .35rem;
 }
-.form-card__logo {
-  width: auto;
-  height: 52px;
-  flex: none;
-  object-fit: contain;
-}
-html.dark .form-card__logo { filter: invert(1); }
-
-.form-card__head strong {
-  display: block;
-  font-family: var(--font-display);
-  font-size: 1.05rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
-}
-.form-card__head span {
-  font-size: var(--fs-xs);
-  font-weight: 600;
-  letter-spacing: .08em;
-  text-transform: uppercase;
-  color: var(--c-text-3);
+.form-card__head p {
+  font-size: var(--fs-sm);
+  line-height: 1.45;
 }
 
 .form-grid {
   display: grid;
-  gap: 1.1rem;
+  gap: .85rem;
 }
 
+/* Ужатые поля — форма гарантированно влезает по высоте */
+.form-card .form-field label {
+  margin-bottom: .25rem;
+  font-size: .68rem;
+}
 .form-card .form-field input,
 .form-card .form-field textarea {
-  padding: .55rem 0;
-  font-size: .98rem;
+  padding: .45rem 0;
+  font-size: .95rem;
 }
-.form-card .form-field textarea { min-height: 72px; }
-.form-card .form-field label { margin-bottom: .3rem; }
-.form-card .btn { padding: .95rem 2rem; }
-.form-card .form-note { margin-top: .75rem; }
+.form-card .form-field textarea { min-height: 56px; }
+.form-card .btn { padding: .85rem 2rem; }
+.form-card .form-note {
+  margin-top: .6rem;
+  line-height: 1.4;
+}
+.form-card #form-status { margin-top: .6rem; }
 
 @media (min-width: 640px) {
   .form-grid { grid-template-columns: 1fr 1fr; }
   .form-field--full { grid-column: 1 / -1; }
+}
+
+/* Низкие экраны: убираем описание и сокращаем поле «О проекте» */
+@media (max-height: 700px) {
+  .form-card__head p { display: none; }
+  .form-card .form-field textarea { min-height: 44px; }
+  .form-grid { gap: .7rem; }
 }
 
 .form-field { position: relative; }

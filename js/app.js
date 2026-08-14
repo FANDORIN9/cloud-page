@@ -258,8 +258,10 @@ function initSmoothAnchors() {
       if (!target) return;
 
       e.preventDefault();
-      const offset = document.getElementById('header')?.offsetHeight || 0;
-      const top = target.getBoundingClientRect().top + window.scrollY - offset - 12;
+      // Секция-на-весь-экран сама резервирует место под шапку — её ставим вплотную к верху
+      const isScreen = target.classList.contains('section--screen');
+      const offset = isScreen ? 0 : (document.getElementById('header')?.offsetHeight || 0) + 12;
+      const top = target.getBoundingClientRect().top + window.scrollY - offset;
       window.scrollTo({ top, behavior: 'smooth' });
     });
   });
