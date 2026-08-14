@@ -133,17 +133,15 @@
   letter-spacing: -0.02em;
 }
 
-/* Единственный градиентный элемент шапки — квадрат логотипа */
+/* Знак логотипа — PNG с прозрачным фоном.
+   В тёмной теме инвертируем, чтобы чёрный контур стал белым. */
 .logo__mark {
-  width: 32px; height: 32px;
-  border-radius: var(--r-sm);
-  background: var(--grad);
-  display: grid;
-  place-items: center;
-  color: #fff;
+  width: auto;
+  height: 30px;
   flex: none;
+  object-fit: contain;
 }
-.logo__mark svg { width: 19px; height: 19px; }
+html.dark .logo__mark { filter: invert(1); }
 
 .nav {
   display: none;
@@ -268,13 +266,34 @@
 @keyframes pulse { 50% { opacity: .35; } }
 
 .hero h1 { margin-bottom: 1.75rem; }
-.hero .lead { margin-bottom: 2.75rem; }
+.hero .lead { margin-bottom: 0; }
+
+/* Текст — строго слева, кнопки — строго справа */
+.hero__grid {
+  display: grid;
+  gap: 2.5rem;
+  align-items: end;
+  margin-bottom: clamp(3.5rem, 7vw, 6rem);
+}
+
+.hero__text { text-align: left; }
 
 .hero__cta {
   display: flex;
   flex-wrap: wrap;
   gap: .85rem;
-  margin-bottom: clamp(3.5rem, 7vw, 6rem);
+  justify-content: flex-start;
+}
+
+@media (min-width: 900px) {
+  .hero__grid { grid-template-columns: minmax(0, 1fr) auto; }
+  .hero__cta {
+    flex-direction: column;
+    align-items: stretch;
+    justify-self: end;      /* прижимаем колонку к правому краю блока */
+    text-align: right;
+    min-width: 232px;
+  }
 }
 
 .stats {
@@ -579,7 +598,6 @@ html.dark .phone { border-color: #2E2E2E; }
 .phone__panel {
   position: absolute;
   inset: 0;
-  padding: 46px 18px 18px;
   display: flex;
   flex-direction: column;
   opacity: 0;
@@ -593,119 +611,367 @@ html.dark .phone { border-color: #2E2E2E; }
   pointer-events: auto;
 }
 
-.ph-row { display: flex; align-items: center; justify-content: space-between; }
-.ph-bar { height: 7px; border-radius: 999px; background: rgba(255, 255, 255, .12); }
-.ph-label {
-  font-size: 8px;
-  font-weight: 700;
-  letter-spacing: .18em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, .45);
+/* Прокручиваемая область контента: имитирует настоящий экран приложения */
+.ph-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  padding: 42px 14px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  -webkit-mask-image: linear-gradient(#000 88%, transparent 100%);
+  mask-image: linear-gradient(#000 88%, transparent 100%);
+}
+.ph-scroll--tabbar { padding-bottom: 4px; }
+
+.ph-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+
+.ph-h {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
 }
 
-/* Иконка приложения — точечный градиентный акцент внутри телефона */
-.ph-app {
-  width: 26px; height: 26px;
-  border-radius: 8px;
-  background: var(--grad);
-  flex: none;
+.ph-label {
+  font-size: 7.5px;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, .42);
 }
-.ph-square {
-  width: 24px; height: 24px;
-  border-radius: 7px;
-  background: rgba(255, 255, 255, .1);
+
+.ph-text {
+  font-size: 9.5px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, .55);
+}
+
+.ph-section-label {
+  font-size: 7.5px;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, .35);
+  margin-top: 2px;
+}
+
+/* ---------- Лендинг ---------- */
+.ph-navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 9px;
+  border-bottom: 1px solid rgba(255, 255, 255, .08);
+}
+.ph-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+.ph-brand img { width: 16px; height: auto; filter: invert(1); }
+
+.ph-burger { display: flex; flex-direction: column; gap: 3px; }
+.ph-burger i { width: 13px; height: 1.5px; border-radius: 2px; background: rgba(255, 255, 255, .55); }
+
+.ph-hero {
+  position: relative;
+  border-radius: 13px;
+  padding: 13px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, .09);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+/* Мягкое градиентное «фото» на подложке героя */
+.ph-hero__bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(120% 90% at 80% 0%, rgba(167, 139, 250, .38), transparent 60%),
+    radial-gradient(110% 80% at 10% 100%, rgba(56, 189, 248, .32), transparent 62%),
+    #0C0C0C;
+}
+.ph-hero > *:not(.ph-hero__bg) { position: relative; }
+
+.ph-chip {
+  align-self: flex-start;
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, .22);
+  font-size: 7.5px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, .8);
 }
 
 .ph-title {
   font-family: var(--font-display);
-  font-size: 21px;
+  font-size: 19px;
   font-weight: 800;
-  letter-spacing: -0.03em;
-  line-height: 1.15;
+  letter-spacing: -0.035em;
+  line-height: 1.12;
 }
 
 .ph-btn {
-  padding: 11px;
+  padding: 10px;
+  border-radius: 9px;
+  background: #fff;
+  color: #000;
+  text-align: center;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .01em;
+}
+
+.ph-note {
+  font-size: 8px;
+  color: rgba(255, 255, 255, .5);
+  text-align: center;
+}
+
+.ph-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  text-align: center;
+}
+.ph-strip div {
+  padding: 8px 4px;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, .05);
+  border: 1px solid rgba(255, 255, 255, .06);
+}
+.ph-strip b {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.ph-strip span { font-size: 7px; color: rgba(255, 255, 255, .45); }
+
+.ph-feature {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 10px;
   border-radius: 10px;
+  background: rgba(255, 255, 255, .04);
+  border: 1px solid rgba(255, 255, 255, .06);
+}
+.ph-feature__ico {
+  width: 22px; height: 22px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 7px;
   background: var(--grad);
   color: #fff;
-  text-align: center;
-  font-size: 11px;
-  font-weight: 700;
+  font-family: var(--font-display);
+  font-size: 8px;
+  font-weight: 800;
 }
+.ph-feature div { flex: 1; min-width: 0; line-height: 1.3; }
+.ph-feature b { display: block; font-size: 10px; font-weight: 700; }
+.ph-feature span { font-size: 8px; color: rgba(255, 255, 255, .45); }
+.ph-arrow { color: rgba(255, 255, 255, .3); font-size: 14px; line-height: 1; }
 
-.ph-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; }
-.ph-card {
-  aspect-ratio: 1;
-  border-radius: 9px;
-  background: rgba(255, 255, 255, .06);
-  border: 1px solid rgba(255, 255, 255, .07);
-}
+/* ---------- Магазин ---------- */
+.ph-cart { position: relative; display: block; }
+.ph-cart svg { width: 17px; height: 17px; opacity: .8; }
 
-/* Магазин */
-.ph-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
-.ph-product {
-  padding: 8px;
-  border-radius: 11px;
-  background: rgba(255, 255, 255, .05);
-  border: 1px solid rgba(255, 255, 255, .07);
-}
-.ph-thumb {
-  aspect-ratio: 4 / 3;
-  border-radius: 7px;
-  background: rgba(255, 255, 255, .1);
-  margin-bottom: 8px;
-}
-.ph-price { font-size: 10px; font-weight: 700; margin-top: 6px; }
 .ph-badge {
   position: absolute;
   top: -5px; right: -6px;
-  min-width: 14px; height: 14px;
+  min-width: 13px; height: 13px;
   padding-inline: 3px;
   border-radius: 999px;
   background: var(--grad);
   color: #fff;
-  font-size: 8px;
-  font-weight: 700;
+  font-size: 7.5px;
+  font-weight: 800;
   display: grid;
   place-items: center;
 }
 
-/* Панель заявок */
+.ph-search {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, .06);
+  font-size: 9px;
+  color: rgba(255, 255, 255, .42);
+}
+.ph-search svg { width: 12px; height: 12px; flex: none; }
+
+.ph-chips { display: flex; gap: 5px; overflow: hidden; }
+.ph-chips .ph-chip { flex: none; letter-spacing: .06em; }
+.ph-chips .ph-chip.is-on {
+  background: #fff;
+  border-color: #fff;
+  color: #000;
+}
+
+.ph-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.ph-product {
+  padding: 7px;
+  border-radius: 11px;
+  background: rgba(255, 255, 255, .05);
+  border: 1px solid rgba(255, 255, 255, .07);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.ph-product b { font-size: 9.5px; font-weight: 700; }
+
+.ph-thumb {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  border-radius: 7px;
+  margin-bottom: 4px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, .16), rgba(255, 255, 255, .04)),
+    repeating-linear-gradient(135deg, rgba(255, 255, 255, .05) 0 4px, transparent 4px 8px);
+}
+.ph-tag {
+  position: absolute;
+  top: 4px; left: 4px;
+  padding: 2px 5px;
+  border-radius: 999px;
+  background: #fff;
+  color: #000;
+  font-size: 7px;
+  font-weight: 800;
+}
+.ph-rate { font-size: 8px; color: rgba(255, 255, 255, .45); }
+.ph-price { font-size: 10px; font-weight: 800; }
+.ph-plus {
+  width: 17px; height: 17px;
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  background: var(--grad);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.ph-tabbar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  padding: 9px 14px 11px;
+  border-top: 1px solid rgba(255, 255, 255, .08);
+  background: rgba(10, 10, 10, .9);
+}
+.ph-tabbar span { display: grid; place-items: center; color: rgba(255, 255, 255, .3); }
+.ph-tabbar span.is-on { color: #fff; }
+.ph-tabbar svg { width: 16px; height: 16px; }
+
+/* ---------- Панель заявок ---------- */
+.ph-avatar {
+  width: 26px; height: 26px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--grad);
+  color: #fff;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: .04em;
+}
+.ph-avatar--sm {
+  width: 22px; height: 22px;
+  background: rgba(255, 255, 255, .1);
+  color: rgba(255, 255, 255, .7);
+  font-size: 7.5px;
+}
+
+.ph-kpi { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+.ph-kpi div {
+  padding: 9px 10px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, .05);
+  border: 1px solid rgba(255, 255, 255, .06);
+}
+.ph-kpi b {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  margin-top: 2px;
+}
+.ph-kpi em {
+  font-style: normal;
+  font-size: 7.5px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, .45);
+}
+.ph-kpi em.is-up { color: #4ADE80; }
+
 .ph-chart {
   display: flex;
   align-items: flex-end;
   gap: 5px;
-  height: 62px;
-  margin-bottom: 18px;
+  height: 56px;
+  margin-top: 2px;
 }
 .ph-col {
   flex: 1;
   border-radius: 3px 3px 0 0;
   background: var(--grad);
-  opacity: .8;
+  opacity: .85;
 }
-.ph-list { display: flex; flex-direction: column; gap: 9px; }
+
+.ph-axis {
+  display: flex;
+  gap: 5px;
+  margin-top: -4px;
+}
+.ph-axis span {
+  flex: 1;
+  text-align: center;
+  font-size: 7px;
+  color: rgba(255, 255, 255, .3);
+}
+
+.ph-list { display: flex; flex-direction: column; gap: 6px; }
 .ph-item {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 9px 10px;
-  border-radius: 9px;
+  padding: 8px 9px;
+  border-radius: 10px;
   background: rgba(255, 255, 255, .05);
+  border: 1px solid rgba(255, 255, 255, .05);
 }
-.ph-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--grad); flex: none; }
+.ph-item div { flex: 1; min-width: 0; line-height: 1.35; }
+.ph-item b { display: block; font-size: 9.5px; font-weight: 700; }
+.ph-item span:not(.ph-pill):not(.ph-avatar) { font-size: 7.5px; color: rgba(255, 255, 255, .42); }
+
 .ph-pill {
-  font-size: 8px;
+  font-size: 7.5px;
   font-weight: 700;
   letter-spacing: .06em;
-  text-transform: uppercase;
   padding: 3px 7px;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, .16);
   color: rgba(255, 255, 255, .6);
   flex: none;
 }
+.ph-pill.is-new { background: #fff; border-color: #fff; color: #000; }
 
 /* ==========================================================================
    6. ЭТАПЫ РЕАЛИЗАЦИИ — вертикальная дорожка со скролл-триггером
@@ -936,22 +1202,66 @@ html.dark .case__preview { background: #060606; }
    8. ФОРМА ОБРАТНОЙ СВЯЗИ
    ========================================================================== */
 
+/* Компактная карточка: уже и ниже, чтобы целиком попадать в экран */
 .form-card {
   border: 1px solid var(--c-line);
   border-radius: var(--r-lg);
   background: var(--c-surface);
-  padding: clamp(1.5rem, 4vw, 3.5rem);
-  max-width: 780px;
+  padding: clamp(1.25rem, 3vw, 2rem);
+  max-width: 560px;
   margin-inline: auto;
   box-shadow: var(--c-shadow-sm);
 }
 
-.form-grid {
-  display: grid;
-  gap: 1.5rem;
+/* Шапка карточки с логотипом */
+.form-card__head {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-bottom: 1.1rem;
+  margin-bottom: 1.4rem;
+  border-bottom: 1px solid var(--c-line);
+}
+.form-card__logo {
+  width: auto;
+  height: 52px;
+  flex: none;
+  object-fit: contain;
+}
+html.dark .form-card__logo { filter: invert(1); }
+
+.form-card__head strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+.form-card__head span {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--c-text-3);
 }
 
-@media (min-width: 700px) {
+.form-grid {
+  display: grid;
+  gap: 1.1rem;
+}
+
+.form-card .form-field input,
+.form-card .form-field textarea {
+  padding: .55rem 0;
+  font-size: .98rem;
+}
+.form-card .form-field textarea { min-height: 72px; }
+.form-card .form-field label { margin-bottom: .3rem; }
+.form-card .btn { padding: .95rem 2rem; }
+.form-card .form-note { margin-top: .75rem; }
+
+@media (min-width: 640px) {
   .form-grid { grid-template-columns: 1fr 1fr; }
   .form-field--full { grid-column: 1 / -1; }
 }
