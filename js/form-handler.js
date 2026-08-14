@@ -7,10 +7,20 @@
 const FormHandler = (() => {
   const QUEUE_KEY = 'cloudpage:feedback-queue';
 
+  // Обязательны только имя и телефон. Почта и описание — по желанию,
+  // но если заполнены, проверяем формат.
   const rules = {
     name: (v) => (v.trim().length >= 2 ? null : 'Введите имя (минимум 2 символа)'),
-    contact: (v) => (v.trim().length >= 3 ? null : 'Укажите телефон, telegram или email'),
-    message: (v) => (v.trim().length >= 5 ? null : 'Опишите задачу чуть подробнее'),
+    contact: (v) => {
+      const digits = v.replace(/\D/g, '');
+      if (!v.trim()) return 'Укажите телефон для связи';
+      return digits.length >= 10 ? null : 'Проверьте номер телефона';
+    },
+    email: (v) => {
+      if (!v.trim()) return null;                       // поле необязательное
+      return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()) ? null : 'Проверьте адрес почты';
+    },
+    message: (v) => (!v.trim() || v.trim().length >= 5 ? null : 'Опишите задачу чуть подробнее'),
   };
 
   function validateField(name, value) {

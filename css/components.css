@@ -1,491 +1,1154 @@
 /* ==========================================================================
-   components.css — компоненты дизайн-системы «Ionosphere»
+   components.css — компоненты интерфейса Cloud Page
+   Подключается после style.css и опирается на его токены (--c-*, --grad, …).
+   Порядок блоков совпадает с порядком секций на странице.
    ========================================================================== */
 
-/* ---------- Glass card с реакцией на курсор (лёгкий 3D-наклон + градиентная кайма) ---------- */
-.glass-card {
-  --tilt-x: 0deg;
-  --tilt-y: 0deg;
-  background: rgba(255, 255, 255, 0.035);
-  backdrop-filter: blur(16px);
-  border: 1px solid var(--color-border);
-  transform: perspective(900px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) translateZ(0);
-  transition: transform 0.4s var(--ease-premium), border-color 0.4s var(--ease-premium), box-shadow 0.4s var(--ease-premium);
-  position: relative;
-}
-html:not(.dark) .glass-card {
-  background: rgba(11, 14, 26, 0.025);
-  border: 1px solid rgba(11, 14, 26, 0.06);
-}
-.glass-card:hover {
-  border-color: rgba(56, 189, 248, 0.5);
-  box-shadow: 0 20px 60px -20px rgba(56, 189, 248, 0.25);
-}
+/* ==========================================================================
+   1. КНОПКИ
+   ========================================================================== */
 
-/* Тонкая градиентная кайма, проявляется по hover — сигнатурная деталь бренда */
-.glass-card::after {
-  content: '';
-  position: absolute;
-  inset: -1px;
-  border-radius: inherit;
-  padding: 1px;
-  background: var(--gradient-accent);
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  opacity: 0;
-  transition: opacity 0.4s var(--ease-premium);
-  pointer-events: none;
-}
-.glass-card:hover::after {
-  opacity: 0.5;
-}
-
-/* ---------- Эйбрау-лейблы в духе кода: [ ТЕКСТ ] моно-шрифтом ---------- */
-.eyebrow {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  font-weight: 500;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--color-accent);
+.btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.4em;
-}
-.eyebrow::before { content: '['; opacity: 0.5; }
-.eyebrow::after { content: ']'; opacity: 0.5; }
-
-/* ---------- Бегущая строка удалена в пользу интерактивного демо-блока (см. .phone-frame ниже) ---------- */
-
-/* ---------- Линия процесса + градиентные кольца-номера ---------- */
-.process-line {
-  position: absolute;
-  left: 20px;
-  top: 0;
-  bottom: 0;
-  width: 1px;
-  background: linear-gradient(to bottom, transparent, var(--color-accent), var(--color-accent-2), transparent);
-}
-.process-num {
-  background: var(--gradient-accent);
-  box-shadow: 0 0 24px rgba(56, 189, 248, 0.45);
-}
-
-/* ---------- Магнитные кнопки: градиент + свечение + лёгкий подъём ---------- */
-.btn-magnetic {
-  position: relative;
-  background: var(--gradient-accent);
-  color: #06070C;
-  transition: transform 0.35s var(--ease-premium), box-shadow 0.35s var(--ease-premium);
-  will-change: transform;
-}
-.btn-magnetic:hover {
-  transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 16px 40px -12px rgba(56, 189, 248, 0.5);
-}
-.btn-magnetic:active {
-  transform: translateY(-1px) scale(0.99);
-}
-
-.btn-outline {
-  border: 1.5px solid var(--color-border);
-  transition: all 0.35s var(--ease-premium);
-}
-.btn-outline:hover {
-  border-color: var(--color-accent);
-  background: var(--gradient-accent-soft);
-  transform: translateY(-3px);
-}
-
-/* ---------- Форма: состояния полей ---------- */
-.form-field {
-  position: relative;
-}
-.form-field input,
-.form-field textarea {
-  width: 100%;
-  transition: border-color 0.3s var(--ease-premium), background 0.3s var(--ease-premium);
-}
-.form-field.has-error input,
-.form-field.has-error textarea {
-  border-color: #ef4444 !important;
-}
-.form-field__error {
-  display: none;
-  color: #ef4444;
-  font-size: 0.75rem;
+  justify-content: center;
+  gap: .6rem;
+  padding: 1rem 2rem;
+  font-family: var(--font-display);
+  font-size: var(--fs-sm);
   font-weight: 700;
-  margin-top: 0.35rem;
-}
-.form-field.has-error .form-field__error {
-  display: block;
-}
-
-/* ---------- Кнопка отправки: состояние загрузки ---------- */
-#submit-btn[disabled] {
-  opacity: 0.6;
-  cursor: not-allowed;
-  pointer-events: none;
-}
-.spinner {
-  display: none;
-  width: 20px;
-  height: 20px;
-  border: 3px solid rgba(6, 7, 12, 0.3);
-  border-top-color: #06070C;
-  border-radius: 50%;
-  animation: spin 0.7s linear infinite;
-}
-#submit-btn.is-loading .spinner {
-  display: inline-block;
-}
-#submit-btn.is-loading .btn-label,
-#submit-btn.is-loading .btn-arrow {
-  display: none;
-}
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-/* ---------- Тост-уведомления ---------- */
-.toast-container {
-  position: fixed;
-  bottom: 1.5rem;
-  right: 1.5rem;
-  left: 1.5rem;
-  z-index: 100;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  pointer-events: none;
-}
-@media (min-width: 640px) {
-  .toast-container {
-    left: auto;
-    width: 380px;
-  }
-}
-.toast {
-  pointer-events: auto;
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-  padding: 1rem 1.25rem;
-  border-radius: var(--radius-sm);
-  background: var(--color-bg);
-  border: 1px solid var(--color-border);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
-  font-size: 0.875rem;
-  font-weight: 600;
-  opacity: 0;
-  transform: translateY(16px) scale(0.98);
-  transition: all 0.4s var(--ease-premium);
-}
-.toast.is-visible {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-}
-.toast--success { border-left: 4px solid #22c55e; }
-.toast--error { border-left: 4px solid #ef4444; }
-.toast--info { border-left: 4px solid var(--color-accent); }
-
-/* ---------- Мобильное меню ---------- */
-.mobile-menu {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.5s var(--ease-premium);
-}
-.mobile-menu.is-open {
-  max-height: 320px;
-}
-
-/* ---------- Логотип: лёгкое дыхание градиента ---------- */
-@keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 20px rgba(56, 189, 248, 0.35); }
-  50% { box-shadow: 0 0 32px rgba(167, 139, 250, 0.5); }
-}
-.logo-mark {
-  background: var(--gradient-accent);
-  animation: pulse-glow 4s ease-in-out infinite;
-}
-
-/* ==========================================================================
-   PRELOADER — «Cloud Page» в облаках, технологичный стиль
-   ========================================================================== */
-#preloader {
-  transition: opacity 0.7s var(--ease-premium), visibility 0.7s var(--ease-premium);
-}
-#preloader.is-hidden {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-}
-
-/* Технологичная сетка — тонкие линии, символ "чертежа" интерфейса */
-.preloader-grid {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(56, 189, 248, 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(56, 189, 248, 0.07) 1px, transparent 1px);
-  background-size: 48px 48px;
-  -webkit-mask-image: radial-gradient(circle at 50% 45%, #000 0%, transparent 75%);
-  mask-image: radial-gradient(circle at 50% 45%, #000 0%, transparent 75%);
-}
-
-/* Скан-линия — техно-акцент, будто идёт "сборка" интерфейса */
-.preloader-scanline {
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 120px;
-  background: linear-gradient(to bottom, transparent, rgba(56, 189, 248, 0.12), transparent);
-  animation: scanline 3.2s ease-in-out infinite;
-}
-@keyframes scanline {
-  0% { top: -10%; }
-  100% { top: 110%; }
-}
-
-/* Облака — мягкие размытые эллипсы, плывущие в разных направлениях и скоростях */
-.preloader-clouds { position: absolute; inset: 0; overflow: hidden; }
-.cloud {
-  position: absolute;
-  border-radius: 999px;
-  filter: blur(40px);
-  opacity: 0.5;
-}
-.cloud--1 {
-  width: 340px; height: 140px; top: 18%; left: -20%;
-  background: radial-gradient(ellipse, rgba(56, 189, 248, 0.35), transparent 70%);
-  animation: drift-right 18s ease-in-out infinite;
-}
-.cloud--2 {
-  width: 260px; height: 110px; top: 60%; right: -15%;
-  background: radial-gradient(ellipse, rgba(167, 139, 250, 0.3), transparent 70%);
-  animation: drift-left 22s ease-in-out infinite;
-}
-.cloud--3 {
-  width: 200px; height: 90px; top: 75%; left: 10%;
-  background: radial-gradient(ellipse, rgba(94, 234, 212, 0.25), transparent 70%);
-  animation: drift-right 26s ease-in-out infinite reverse;
-}
-.cloud--4 {
-  width: 300px; height: 120px; top: 8%; right: 5%;
-  background: radial-gradient(ellipse, rgba(56, 189, 248, 0.2), transparent 70%);
-  animation: drift-left 20s ease-in-out infinite;
-}
-@keyframes drift-right {
-  0%, 100% { transform: translateX(0) translateY(0); }
-  50% { transform: translateX(60px) translateY(-16px); }
-}
-@keyframes drift-left {
-  0%, 100% { transform: translateX(0) translateY(0); }
-  50% { transform: translateX(-60px) translateY(14px); }
-}
-
-.preloader-logo { animation: pulse-glow 1.6s ease-in-out infinite; }
-
-/* Буквы заголовка проявляются по очереди */
-.preloader-word {
-  opacity: 0;
-  filter: blur(8px);
-  transform: translateY(14px);
-  animation: word-in 0.8s var(--ease-premium) forwards;
-  animation-delay: calc(var(--i) * 150ms + 200ms);
-}
-@keyframes word-in {
-  to { opacity: 1; filter: blur(0); transform: translateY(0); }
-}
-
-/* ==========================================================================
-   ПЕРЕХОД МЕЖДУ СЕКЦИЯМИ — градиентный wipe-оверлей при клике по навигации
-   ========================================================================== */
-#page-transition.is-active {
-  background: var(--gradient-accent);
-  animation: page-wipe 0.7s var(--ease-premium) forwards;
-}
-@keyframes page-wipe {
-  0% { clip-path: circle(0% at var(--tx, 50%) var(--ty, 50%)); opacity: 1; }
-  60% { clip-path: circle(75% at var(--tx, 50%) var(--ty, 50%)); opacity: 0.9; }
-  100% { clip-path: circle(140% at var(--tx, 50%) var(--ty, 50%)); opacity: 0; }
-}
-
-/* ==========================================================================
-   ТОЧЕЧНАЯ НАВИГАЦИЯ — индикатор текущей секции сбоку экрана
-   ========================================================================== */
-.dot-nav-item {
-  width: 10px;
-  height: 10px;
-  border-radius: 999px;
-  background: var(--color-border);
-  border: none;
+  letter-spacing: .02em;
+  border-radius: var(--r-sm);
   cursor: pointer;
-  position: relative;
-  transition: all 0.4s var(--ease-premium);
-}
-.dot-nav-item::after {
-  content: attr(data-label);
-  position: absolute;
-  right: 22px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
   white-space: nowrap;
-  background: var(--color-bg);
-  border: 1px solid var(--color-border);
-  padding: 4px 10px;
-  border-radius: 8px;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s var(--ease-premium);
-}
-.dot-nav-item:hover::after {
-  opacity: 1;
-}
-.dot-nav-item.is-active {
-  background: var(--gradient-accent);
-  width: 10px;
-  height: 28px;
-  border-radius: 999px;
-  box-shadow: 0 0 12px rgba(56, 189, 248, 0.5);
+  transition: transform var(--dur-fast) var(--ease),
+              background-color var(--dur-fast) ease,
+              color var(--dur-fast) ease,
+              border-color var(--dur-fast) ease;
 }
 
-/* ==========================================================================
-   ДЕМО-ВКЛАДКИ (переключатель мини-приложений)
-   ========================================================================== */
-.demo-tab {
-  border: 1px solid var(--color-border);
-  background: var(--color-surface);
-  color: var(--color-text-muted);
-  transition: all 0.4s var(--ease-premium);
-}
-.demo-tab.is-active {
-  background: var(--gradient-accent);
-  color: #06070C;
-  border-color: transparent;
-  box-shadow: 0 12px 30px -10px rgba(56, 189, 248, 0.45);
-}
+.btn:active { transform: translateY(1px); }
 
-/* ==========================================================================
-   МОКАП СМАРТФОНА — рамка в духе iPhone, экран с переключаемыми панелями
-   ========================================================================== */
-.phone-frame {
+/* Основная — сплошная чёрная плашка (в тёмной теме белая) */
+.btn--solid {
+  background: var(--c-inverse-bg);
+  color: var(--c-inverse);
+  border: 1px solid var(--c-inverse-bg);
+}
+.btn--solid:hover { opacity: .86; }
+
+/* Второстепенная — тонкая монохромная обводка */
+.btn--ghost {
+  background: transparent;
+  color: var(--c-text);
+  border: 1px solid var(--c-line-strong);
+}
+.btn--ghost:hover { border-color: var(--c-text); }
+
+/* Акцентная — единственное место, где градиент образует обводку.
+   Реализация: градиентный фон + внутренняя подложка цвета фона. */
+.btn--grad {
   position: relative;
-  width: 280px;
-  height: 580px;
-  background: linear-gradient(160deg, #1a1d29, #06070C);
-  border-radius: 48px;
-  padding: 14px;
-  box-shadow:
-    0 40px 80px -30px rgba(56, 189, 248, 0.35),
-    0 0 0 2px rgba(255, 255, 255, 0.06) inset,
-    0 0 0 8px #0B0E1A;
+  background: var(--grad);
+  color: var(--c-text);
+  border: 0;
+  padding: calc(1rem + 1px) calc(2rem + 1px);
+  isolation: isolate;
 }
-.phone-notch {
+.btn--grad::before {
+  content: '';
   position: absolute;
-  top: 14px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 120px;
-  height: 26px;
-  background: #06070C;
-  border-radius: 0 0 18px 18px;
-  z-index: 10;
+  inset: 1.5px;
+  border-radius: calc(var(--r-sm) - 1px);
+  background: var(--c-bg);
+  z-index: -1;
+  transition: opacity var(--dur-fast) ease;
 }
-.phone-screen {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(160deg, #0d1120, #06070C);
-  border-radius: 36px;
-  overflow: hidden;
-  color: #F5F7FB;
+.btn--grad:hover { color: #fff; }
+.btn--grad:hover::before { opacity: 0; }
+
+.btn--lg { padding: 1.15rem 2.4rem; font-size: 1rem; }
+.btn--block { width: 100%; }
+
+/* Состояние отправки формы */
+.btn.is-loading { pointer-events: none; opacity: .7; }
+.btn .spinner { display: none; }
+.btn.is-loading .spinner {
+  display: block;
+  width: 16px; height: 16px;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
 }
-.phone-status-bar {
+.btn.is-loading .btn-label { opacity: .7; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ==========================================================================
+   2. ШАПКА / НАВИГАЦИЯ
+   ========================================================================== */
+
+.header {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 100;
+  height: var(--header-h);
+  display: flex;
+  align-items: center;
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition: background-color var(--dur-fast) ease,
+              border-color var(--dur-fast) ease,
+              backdrop-filter var(--dur-fast) ease,
+              box-shadow var(--dur-fast) ease;
+}
+
+/* Плотный фон появляется только после старта скролла.
+   Первая строка — фолбэк для браузеров без color-mix(). */
+.header.is-stuck {
+  background: var(--c-bg);
+  background: color-mix(in srgb, var(--c-bg) 88%, transparent);
+  backdrop-filter: saturate(180%) blur(16px);
+  -webkit-backdrop-filter: saturate(180%) blur(16px);
+  border-bottom-color: var(--c-line);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, .02);
+}
+
+.header__inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 22px 4px;
-  font-size: 0.7rem;
-  font-weight: 600;
+  gap: 1.5rem;
+  width: 100%;
 }
-.phone-screen-panel {
-  position: absolute;
-  inset: 0;
-  padding-top: 40px;
-  opacity: 0;
-  transform: translateX(24px) scale(0.98);
-  transition: opacity 0.5s var(--ease-premium), transform 0.5s var(--ease-premium);
-  pointer-events: none;
-}
-.phone-screen-panel.is-active {
-  opacity: 1;
-  transform: translateX(0) scale(1);
-  pointer-events: auto;
-}
-.phone-mini-card {
-  aspect-ratio: 1;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-.phone-badge {
-  position: absolute;
-  top: -6px;
-  right: -8px;
-  width: 16px;
-  height: 16px;
-  border-radius: 999px;
-  background: var(--gradient-accent);
-  color: #06070C;
-  font-size: 0.6rem;
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: .65rem;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
   font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+/* Единственный градиентный элемент шапки — квадрат логотипа */
+.logo__mark {
+  width: 32px; height: 32px;
+  border-radius: var(--r-sm);
+  background: var(--grad);
+  display: grid;
+  place-items: center;
+  color: #fff;
+  flex: none;
+}
+.logo__mark svg { width: 19px; height: 19px; }
+
+.nav {
+  display: none;
+  align-items: center;
+  gap: 2rem;
+}
+
+.nav__link {
+  position: relative;
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  color: var(--c-text-2);
+  padding-block: .35rem;
+  transition: color var(--dur-fast) ease;
+}
+.nav__link:hover { color: var(--c-text); }
+
+/* Градиентное подчёркивание активного пункта */
+.nav__link::after {
+  content: '';
+  position: absolute;
+  left: 0; bottom: 0;
+  height: 2px; width: 100%;
+  background: var(--grad);
+  border-radius: 2px;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--dur-fast) var(--ease);
+}
+.nav__link:hover::after,
+.nav__link.is-active::after { transform: scaleX(1); }
+.nav__link.is-active { color: var(--c-text); }
+
+.header__actions {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: .6rem;
 }
-.phone-product-card {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 14px;
+
+.icon-btn {
+  width: 40px; height: 40px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-sm);
+  color: var(--c-text);
+  transition: border-color var(--dur-fast) ease, background-color var(--dur-fast) ease;
+}
+.icon-btn:hover { border-color: var(--c-text); }
+.icon-btn svg { width: 18px; height: 18px; }
+
+/* CTA в шапке прячем на мобильных (там он есть в бургер-меню) */
+.header__actions .btn { display: none; }
+
+/* ---------- Мобильное меню ---------- */
+.mobile-menu {
+  position: fixed;
+  inset: var(--header-h) 0 auto 0;
+  z-index: 99;
+  background: var(--c-bg);
+  border-bottom: 1px solid var(--c-line);
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height var(--dur) var(--ease);
+}
+.mobile-menu.is-open { max-height: 420px; }
+
+.mobile-menu__inner {
+  display: flex;
+  flex-direction: column;
+  gap: .25rem;
+  padding: 1rem var(--gutter) 1.75rem;
+}
+.mobile-menu a {
+  padding: .8rem 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  border-bottom: 1px solid var(--c-line);
+}
+.mobile-menu .btn {
+  margin-top: 1rem;
+  padding: 1rem 2rem;
+  border-bottom: 0;
+}
+
+@media (min-width: 900px) {
+  .nav { display: flex; }
+  .header__actions .btn { display: inline-flex; }
+  #menu-toggle { display: none; }
+  .mobile-menu { display: none; }
+}
+
+/* ==========================================================================
+   3. HERO
+   ========================================================================== */
+
+.hero {
+  padding-top: calc(var(--header-h) + clamp(3.5rem, 8vw, 7rem));
+  padding-bottom: var(--section-y);
+}
+
+.hero__status {
+  display: inline-flex;
+  align-items: center;
+  gap: .6rem;
+  padding: .4rem .9rem .4rem .7rem;
+  border: 1px solid var(--c-line);
+  border-radius: 999px;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--c-text-2);
+  margin-bottom: 2rem;
+}
+.hero__status i {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--grad);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse { 50% { opacity: .35; } }
+
+.hero h1 { margin-bottom: 1.75rem; }
+.hero .lead { margin-bottom: 2.75rem; }
+
+.hero__cta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .85rem;
+  margin-bottom: clamp(3.5rem, 7vw, 6rem);
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem 1.5rem;
+  padding-top: 2.5rem;
+  border-top: 1px solid var(--c-line);
+}
+.stats__num {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 1.4rem + 2vw, 3rem);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin-bottom: .5rem;
+}
+.stats__label {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--c-text-3);
+}
+
+@media (min-width: 760px) {
+  .stats { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* ==========================================================================
+   4. УСЛУГИ — текстовый список без иконок, цена справа,
+      детальное описание раскрывается по наведению
+   ========================================================================== */
+
+.services { display: flex; flex-direction: column; }
+
+.service {
+  position: relative;
+  display: block;
+  border-top: 1px solid var(--c-line);
+  padding: clamp(1.5rem, 3vw, 2.25rem) 0;
+  cursor: pointer;
+  transition: padding-inline var(--dur) var(--ease);
+}
+.services .service:last-child { border-bottom: 1px solid var(--c-line); }
+
+/* Тонкая градиентная полоса слева — «загорается» при наведении */
+.service::before {
+  content: '';
+  position: absolute;
+  left: 0; top: -1px;
+  width: 100%; height: 2px;
+  background: var(--grad);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--dur) var(--ease);
+}
+.service:hover::before,
+.service.is-open::before { transform: scaleX(1); }
+
+.service__top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+  flex-wrap: wrap;
+}
+
+.service__title {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  flex: 1 1 260px;
+  min-width: 0;
+}
+
+/* Порядковый номер вместо иконки — текстовый акцент */
+.service__num {
+  font-family: var(--font-display);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: .1em;
+  color: var(--c-text-3);
+  flex: none;
+  padding-top: .2rem;
+  transition: color var(--dur-fast) ease;
+}
+.service:hover .service__num,
+.service.is-open .service__num {
+  background: var(--grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.service__name {
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 1rem + 1.6vw, 2.15rem);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  transition: transform var(--dur) var(--ease);
+}
+.service:hover .service__name { transform: translateX(6px); }
+
+/* Цена жёстко зафиксирована справа */
+.service__price {
+  flex: none;
+  margin-left: auto;
+  text-align: right;
+  font-family: var(--font-display);
+  font-size: clamp(1rem, .9rem + .5vw, 1.3rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+.service__price small {
+  display: block;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--c-text-3);
+  margin-bottom: .15rem;
+}
+
+/* Короткое описание — ровно одна строка */
+.service__short {
+  margin-top: .5rem;
+  padding-left: calc(1rem + 2ch);
+  font-size: var(--fs-sm);
+  color: var(--c-text-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Развёрнутое описание: плавно выезжает по grid-строке (без «прыжков») */
+.service__detail {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition: grid-template-rows var(--dur) var(--ease),
+              opacity var(--dur-fast) ease,
+              margin-top var(--dur) var(--ease);
+  margin-top: 0;
+}
+.service:hover .service__detail,
+.service.is-open .service__detail,
+.service:focus-within .service__detail {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  margin-top: 1.25rem;
+  transition-delay: 90ms;   /* небольшая задержка — эстетичнее */
+}
+
+.service__detail > div { overflow: hidden; min-height: 0; }
+
+.service__detail-inner {
+  padding-left: calc(1rem + 2ch);
+  max-width: 68ch;
+}
+.service__detail-inner p {
+  font-size: var(--fs-body);
+  color: var(--c-text-2);
+  margin-bottom: 1rem;
+}
+
+.tags { display: flex; flex-wrap: wrap; gap: .5rem; }
+.tag {
+  padding: .32rem .7rem;
+  border: 1px solid var(--c-line);
+  border-radius: 999px;
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--c-text-3);
+}
+
+@media (max-width: 620px) {
+  .service__short { padding-left: 0; white-space: normal; }
+  .service__detail-inner { padding-left: 0; }
+  .service__price { margin-left: 0; text-align: left; }
+  .service__top { flex-direction: column; align-items: flex-start; }
+}
+
+/* ==========================================================================
+   5. ДЕМО-ТЕЛЕФОН
+   ========================================================================== */
+
+.demo__grid {
+  display: grid;
+  gap: clamp(3rem, 6vw, 5rem);
+  align-items: center;
+}
+
+@media (min-width: 960px) {
+  .demo__grid { grid-template-columns: 1fr 1fr; }
+}
+
+.demo__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  margin-top: 2rem;
+}
+
+.demo-tab {
+  padding: .7rem 1.15rem;
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-sm);
+  font-family: var(--font-display);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: .06em;
+  color: var(--c-text-3);
+  transition: all var(--dur-fast) ease;
+}
+.demo-tab:hover { border-color: var(--c-text); color: var(--c-text); }
+.demo-tab.is-active {
+  background: var(--c-inverse-bg);
+  border-color: var(--c-inverse-bg);
+  color: var(--c-inverse);
+}
+
+.demo__metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-top: 2.75rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--c-line);
+}
+.demo__metrics .stats__num { font-size: clamp(1.4rem, 1.1rem + 1vw, 1.9rem); }
+
+/* ---------- Корпус смартфона ---------- */
+.phone-wrap { display: flex; justify-content: center; }
+
+.phone {
+  position: relative;
+  width: min(310px, 78vw);
+  aspect-ratio: 310 / 630;
+  background: #0A0A0A;
+  border: 2px solid #1F1F1F;
+  border-radius: 44px;
   padding: 10px;
+  box-shadow: var(--c-shadow), inset 0 0 0 1px rgba(255, 255, 255, .06);
+  flex: none;
 }
-.phone-product-thumb {
-  width: 100%;
-  aspect-ratio: 1.3;
+html.dark .phone { border-color: #2E2E2E; }
+
+/* Боковые кнопки корпуса */
+.phone::before,
+.phone::after {
+  content: '';
+  position: absolute;
+  right: -3px;
+  width: 3px;
+  background: #262626;
+  border-radius: 0 3px 3px 0;
+}
+.phone::before { top: 128px; height: 62px; }
+.phone::after  { top: 202px; height: 40px; }
+
+.phone__notch {
+  position: absolute;
+  top: 12px; left: 50%;
+  transform: translateX(-50%);
+  width: 104px; height: 24px;
+  background: #0A0A0A;
+  border-radius: 0 0 14px 14px;
+  z-index: 3;
+}
+
+.phone__screen {
+  position: relative;
+  width: 100%; height: 100%;
+  background: #000;
+  border-radius: 34px;
+  overflow: hidden;
+  color: #fff;
+  font-size: 12px;
+}
+
+.phone__statusbar {
+  position: absolute;
+  inset: 0 0 auto 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 22px 0;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .02em;
+}
+.phone__statusbar svg { width: 13px; height: 13px; opacity: .85; }
+.phone__statusbar div { display: flex; gap: 4px; align-items: center; }
+
+/* ---------- Экраны демо ---------- */
+.phone__panel {
+  position: absolute;
+  inset: 0;
+  padding: 46px 18px 18px;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+  transform: translateY(14px);
+  pointer-events: none;
+  transition: opacity var(--dur-fast) ease, transform var(--dur) var(--ease);
+}
+.phone__panel.is-active {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+.ph-row { display: flex; align-items: center; justify-content: space-between; }
+.ph-bar { height: 7px; border-radius: 999px; background: rgba(255, 255, 255, .12); }
+.ph-label {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, .45);
+}
+
+/* Иконка приложения — точечный градиентный акцент внутри телефона */
+.ph-app {
+  width: 26px; height: 26px;
+  border-radius: 8px;
+  background: var(--grad);
+  flex: none;
+}
+.ph-square {
+  width: 24px; height: 24px;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, .1);
+}
+
+.ph-title {
+  font-family: var(--font-display);
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+
+.ph-btn {
+  padding: 11px;
   border-radius: 10px;
+  background: var(--grad);
+  color: #fff;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
 }
-.phone-bar {
+
+.ph-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; }
+.ph-card {
+  aspect-ratio: 1;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, .06);
+  border: 1px solid rgba(255, 255, 255, .07);
+}
+
+/* Магазин */
+.ph-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+.ph-product {
+  padding: 8px;
+  border-radius: 11px;
+  background: rgba(255, 255, 255, .05);
+  border: 1px solid rgba(255, 255, 255, .07);
+}
+.ph-thumb {
+  aspect-ratio: 4 / 3;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, .1);
+  margin-bottom: 8px;
+}
+.ph-price { font-size: 10px; font-weight: 700; margin-top: 6px; }
+.ph-badge {
+  position: absolute;
+  top: -5px; right: -6px;
+  min-width: 14px; height: 14px;
+  padding-inline: 3px;
+  border-radius: 999px;
+  background: var(--grad);
+  color: #fff;
+  font-size: 8px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+}
+
+/* Панель заявок */
+.ph-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 5px;
+  height: 62px;
+  margin-bottom: 18px;
+}
+.ph-col {
   flex: 1;
-  border-radius: 6px 6px 2px 2px;
-  background: var(--gradient-accent);
-  opacity: 0.85;
+  border-radius: 3px 3px 0 0;
+  background: var(--grad);
+  opacity: .8;
 }
-.phone-row {
+.ph-list { display: flex; flex-direction: column; gap: 9px; }
+.ph-item {
   display: flex;
   align-items: center;
   gap: 8px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 10px;
-  padding: 8px 10px;
+  padding: 9px 10px;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, .05);
 }
-.phone-dot {
-  width: 6px;
-  height: 6px;
+.ph-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--grad); flex: none; }
+.ph-pill {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: 3px 7px;
   border-radius: 999px;
-  flex-shrink: 0;
-}
-.phone-pill {
-  font-family: var(--font-mono);
-  font-size: 0.6rem;
-  opacity: 0.6;
-  white-space: nowrap;
+  border: 1px solid rgba(255, 255, 255, .16);
+  color: rgba(255, 255, 255, .6);
+  flex: none;
 }
 
-@media (max-width: 380px) {
-  .phone-frame { width: 240px; height: 500px; }
+/* ==========================================================================
+   6. ЭТАПЫ РЕАЛИЗАЦИИ — вертикальная дорожка со скролл-триггером
+   ========================================================================== */
+
+.timeline {
+  position: relative;
+  padding-left: 4.5rem;
+  max-width: 860px;
 }
+
+/* Серая направляющая */
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 21px; top: 8px; bottom: 8px;
+  width: 2px;
+  background: var(--c-line);
+}
+
+/* Градиентная заливка направляющей — тянется по мере прокрутки */
+.timeline__progress {
+  position: absolute;
+  left: 21px; top: 8px;
+  width: 2px;
+  height: 0;
+  background: var(--grad);
+  transition: height .9s var(--ease);
+  border-radius: 2px;
+}
+
+.step {
+  position: relative;
+  padding-bottom: clamp(2.5rem, 5vw, 4rem);
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity .6s var(--ease), transform .6s var(--ease);
+  transition-delay: var(--delay, 0ms);
+}
+.step:last-child { padding-bottom: 0; }
+
+/* Активное состояние ставится/снимается через IntersectionObserver:
+   при скролле вниз пункт появляется, при обратном — снова исчезает. */
+.step.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+.step__num {
+  position: absolute;
+  left: -4.5rem; top: 0;
+  width: 44px; height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--c-bg);
+  border: 2px solid var(--c-line);
+  font-family: var(--font-display);
+  font-size: var(--fs-sm);
+  font-weight: 800;
+  color: var(--c-text-3);
+  transition: all .5s var(--ease);
+  transition-delay: calc(var(--delay, 0ms) + 120ms);
+}
+
+/* Цифра этапа «загорается» градиентом */
+.step.is-in .step__num {
+  background: var(--grad);
+  border-color: transparent;
+  color: #fff;
+  transform: scale(1.06);
+  box-shadow: 0 8px 24px -10px rgba(56, 189, 248, .7);
+}
+
+.step__title { margin-bottom: .65rem; }
+.step__meta {
+  display: inline-block;
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--c-text-3);
+  margin-bottom: .6rem;
+}
+.step p { max-width: 56ch; }
+
+@media (max-width: 620px) {
+  .timeline { padding-left: 3.5rem; }
+  .timeline::before,
+  .timeline__progress { left: 17px; }
+  .step__num { left: -3.5rem; width: 36px; height: 36px; font-size: .75rem; }
+}
+
+/* ==========================================================================
+   7. КЕЙСЫ
+   ========================================================================== */
+
+.cases {
+  display: grid;
+  gap: clamp(1.25rem, 2.5vw, 2rem);
+}
+
+@media (min-width: 760px) {
+  .cases { grid-template-columns: repeat(2, 1fr); }
+}
+
+.case {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  background: var(--c-surface);
+  transition: transform var(--dur) var(--ease),
+              border-color var(--dur-fast) ease,
+              box-shadow var(--dur) var(--ease);
+}
+.case:hover {
+  transform: translateY(-6px);
+  border-color: var(--c-line-strong);
+  box-shadow: var(--c-shadow);
+}
+
+/* Превью проекта: абстрактный монохромный макет вместо картинки */
+.case__preview {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  background: var(--c-bg-alt);
+  border-bottom: 1px solid var(--c-line);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: .6rem;
+  overflow: hidden;
+}
+html.dark .case__preview { background: #060606; }
+
+.case__preview::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--grad);
+  opacity: 0;
+  mix-blend-mode: overlay;
+  transition: opacity var(--dur) ease;
+}
+.case:hover .case__preview::after { opacity: .22; }
+
+.case__browser {
+  display: flex;
+  gap: 5px;
+  margin-bottom: .35rem;
+}
+.case__browser i {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--c-line-strong);
+}
+
+.case__skeleton { display: flex; flex-direction: column; gap: .5rem; flex: 1; }
+.case__skeleton span {
+  display: block;
+  height: 9px;
+  border-radius: 4px;
+  background: var(--c-line);
+}
+.case__skeleton span:nth-child(1) { width: 62%; height: 20px; background: var(--c-line-strong); }
+.case__skeleton span:nth-child(2) { width: 88%; }
+.case__skeleton span:nth-child(3) { width: 74%; }
+.case__blocks {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: .5rem;
+  margin-top: auto;
+}
+.case__blocks i {
+  height: 34px;
+  border-radius: 6px;
+  background: var(--c-line);
+  transition: transform var(--dur) var(--ease);
+}
+.case:hover .case__blocks i:nth-child(2) { transform: translateY(-4px); }
+.case:hover .case__blocks i:nth-child(3) { transform: translateY(-8px); }
+
+.case__body { padding: clamp(1.25rem, 2.5vw, 1.85rem); }
+
+.case__meta {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--c-text-3);
+  margin-bottom: .75rem;
+}
+.case__meta span:not(:last-child)::after { content: ' /'; }
+
+.case__body h3 { margin-bottom: .5rem; }
+.case__body p { font-size: var(--fs-sm); margin-bottom: 1.25rem; }
+
+.case__result {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--c-line);
+}
+.case__result div strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+.case__result div span {
+  font-size: .68rem;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--c-text-3);
+}
+
+/* ==========================================================================
+   8. ФОРМА ОБРАТНОЙ СВЯЗИ
+   ========================================================================== */
+
+.form-card {
+  border: 1px solid var(--c-line);
+  border-radius: var(--r-lg);
+  background: var(--c-surface);
+  padding: clamp(1.5rem, 4vw, 3.5rem);
+  max-width: 780px;
+  margin-inline: auto;
+  box-shadow: var(--c-shadow-sm);
+}
+
+.form-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+@media (min-width: 700px) {
+  .form-grid { grid-template-columns: 1fr 1fr; }
+  .form-field--full { grid-column: 1 / -1; }
+}
+
+.form-field { position: relative; }
+
+.form-field label {
+  display: block;
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--c-text-3);
+  margin-bottom: .5rem;
+}
+.form-field label em {
+  font-style: normal;
+  text-transform: none;
+  letter-spacing: 0;
+  opacity: .7;
+}
+
+.form-field input,
+.form-field textarea {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--c-line-strong);
+  padding: .75rem 0;
+  font-size: 1.05rem;
+  font-weight: 500;
+  outline: none;
+  border-radius: 0;
+  transition: border-color var(--dur-fast) ease;
+}
+.form-field textarea { resize: vertical; min-height: 96px; }
+
+.form-field input::placeholder,
+.form-field textarea::placeholder { color: var(--c-text-3); font-weight: 400; }
+
+.form-field input:focus,
+.form-field textarea:focus { border-bottom-color: var(--c-text); }
+
+/* Градиентная линия под активным полем */
+.form-field::after {
+  content: '';
+  position: absolute;
+  left: 0; bottom: 0;
+  height: 2px; width: 100%;
+  background: var(--grad);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--dur-fast) var(--ease);
+}
+.form-field:focus-within::after { transform: scaleX(1); }
+
+.form-field.has-error input,
+.form-field.has-error textarea { border-bottom-color: #E11D48; }
+
+.form-field__error {
+  font-size: var(--fs-xs);
+  color: #E11D48;
+  margin-top: .4rem;
+  font-weight: 600;
+}
+
+.form-note {
+  font-size: var(--fs-xs);
+  color: var(--c-text-3);
+  margin-top: 1rem;
+  text-align: center;
+}
+
+#form-status {
+  text-align: center;
+  font-weight: 700;
+  font-size: var(--fs-sm);
+  margin-top: 1rem;
+}
+
+.honeypot {
+  position: absolute;
+  left: -9999px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   9. ПОДВАЛ
+   ========================================================================== */
+
+.footer {
+  border-top: 1px solid var(--c-line);
+  padding-block: clamp(2.5rem, 5vw, 4rem);
+}
+
+.footer__top {
+  display: grid;
+  gap: 2.5rem;
+  padding-bottom: 2.5rem;
+  border-bottom: 1px solid var(--c-line);
+}
+
+@media (min-width: 760px) {
+  .footer__top { grid-template-columns: 1.4fr 1fr 1fr; }
+}
+
+.footer__col h4 {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--c-text-3);
+  margin-bottom: 1rem;
+}
+.footer__col ul { list-style: none; display: flex; flex-direction: column; gap: .6rem; }
+.footer__col a {
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  color: var(--c-text-2);
+  transition: color var(--dur-fast) ease;
+}
+.footer__col a:hover { color: var(--c-text); }
+
+.footer__about p {
+  font-size: var(--fs-sm);
+  max-width: 34ch;
+  margin-top: 1rem;
+}
+
+.footer__bottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 1.75rem;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--c-text-3);
+}
+
+/* ==========================================================================
+   10. ТОСТ-УВЕДОМЛЕНИЯ
+   ========================================================================== */
+
+.toast-container {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 5.25rem;   /* выше кнопки «наверх», чтобы не перекрывались */
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  gap: .6rem;
+  max-width: min(360px, calc(100vw - 2.5rem));
+}
+
+.toast {
+  padding: .9rem 1.15rem;
+  border-radius: var(--r-md);
+  background: var(--c-inverse-bg);
+  color: var(--c-inverse);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  line-height: 1.45;
+  box-shadow: var(--c-shadow);
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity var(--dur-fast) ease, transform var(--dur-fast) var(--ease);
+}
+.toast.is-visible { opacity: 1; transform: none; }
+
+.toast--success { border-left: 3px solid #22C55E; }
+.toast--error   { border-left: 3px solid #E11D48; }
+.toast--info    { border-left: 3px solid var(--c-accent); }
+
+/* ==========================================================================
+   11. КНОПКА «НАВЕРХ»
+   ========================================================================== */
+
+.to-top {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 90;
+  width: 44px; height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--c-inverse-bg);
+  color: var(--c-inverse);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(10px);
+  transition: opacity var(--dur-fast) ease, transform var(--dur-fast) var(--ease);
+}
+.to-top.is-visible { opacity: 1; pointer-events: auto; transform: none; }
+.to-top svg { width: 18px; height: 18px; }

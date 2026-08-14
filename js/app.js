@@ -1,11 +1,14 @@
 /**
  * app.js
- * Точка входа клиентской логики: переключение темы, scroll-анимации,
- * мобильное меню и система тост-уведомлений. Подключается последним
- * (после api-client.js и form-handler.js).
+ * Точка входа клиентской логики: тема, шапка при скролле, мобильное меню,
+ * scroll-анимации (в том числе двусторонние — для блока «Этапы»),
+ * переключение демо-экранов телефона и тост-уведомления.
+ * Подключается последним — после api-client.js и form-handler.js.
  */
 
-/* ---------- Тост-уведомления ---------- */
+/* ==========================================================================
+   Тост-уведомления
+   ========================================================================== */
 const Notifications = (() => {
   let container;
 
@@ -27,7 +30,7 @@ const Notifications = (() => {
 
     ensureContainer().appendChild(el);
 
-    // Небольшая задержка нужна, чтобы CSS-переход сработал (иначе элемент появится мгновенно)
+    // Задержка в один кадр нужна, иначе CSS-переход не сработает
     requestAnimationFrame(() => el.classList.add('is-visible'));
 
     setTimeout(() => {
@@ -39,265 +42,241 @@ const Notifications = (() => {
   return { show };
 })();
 
-/* ---------- Тема сайта (светлая/тёмная) ---------- */
+/* ==========================================================================
+   Тема: светлая / тёмная
+   ========================================================================== */
 function initTheme() {
-  const toggleBtn = document.getElementById('theme-toggle');
-  const darkIcon = document.getElementById('theme-toggle-dark-icon');
-  const lightIcon = document.getElementById('theme-toggle-light-icon');
-  if (!toggleBtn) return;
+  const btn = document.getElementById('theme-toggle');
+  const sun = document.getElementById('icon-sun');
+  const moon = document.getElementById('icon-moon');
+  if (!btn) return;
 
   const STORAGE_KEY = 'cloudpage:theme';
-  const saved = localStorage.getItem(STORAGE_KEY);
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
-  // Применяем сохранённую тему, либо системную по умолчанию
-  const isDark = saved ? saved === 'dark' : prefersDark;
-  document.documentElement.classList.toggle('dark', isDark);
-
-  function updateIcons() {
-    const dark = document.documentElement.classList.contains('dark');
-    lightIcon.classList.toggle('hidden', !dark);
-    darkIcon.classList.toggle('hidden', dark);
+  // Класс .dark уже проставлен инлайн-скриптом в <head> — здесь только иконки
+  function syncIcons() {
+    const isDark = document.documentElement.classList.contains('dark');
+    sun.classList.toggle('hidden', !isDark);   // в тёмной теме предлагаем светлую
+    moon.classList.toggle('hidden', isDark);
   }
-  updateIcons();
 
-  toggleBtn.addEventListener('click', () => {
-    document.documentElement.classList.toggle('dark');
-    localStorage.setItem(STORAGE_KEY, document.documentElement.classList.contains('dark') ? 'dark' : 'light');
-    updateIcons();
+  btn.addEventListener('click', () => {
+    const isDark = document.documentElement.classList.toggle('dark');
+    localStorage.setItem(STORAGE_KEY, isDark ? 'dark' : 'light');
+    syncIcons();
   });
+
+  syncIcons();
 }
 
-/* ---------- Появление элементов при скролле ---------- */
-function initRevealAnimations() {
-  const elements = document.querySelectorAll('.reveal');
-  if (!elements.length) return;
+/* ==========================================================================
+   Шапка: прозрачная сверху, плотная после скролла + подсветка активного пункта
+   ========================================================================== */
+function initHeader() {
+  const header = document.getElementById('header');
+  const toTop = document.getElementById('to-top');
+  const links = Array.from(document.querySelectorAll('.nav__link'));
+  const sections = links
+    .map((link) => document.querySelector(link.getAttribute('href')))
+    .filter(Boolean);
+
+  let ticking = false;
+
+  function onScroll() {
+    const y = window.scrollY;
+
+    if (header) header.classList.toggle('is-stuck', y > 20);
+    if (toTop) toTop.classList.toggle('is-visible', y > 700);
+
+    // Активным считаем последнюю секцию, чей верх прошёл середину экрана
+    const line = y + window.innerHeight * 0.35;
+    let activeIndex = -1;
+    sections.forEach((section, i) => {
+      if (section.offsetTop <= line) activeIndex = i;
+    });
+    links.forEach((link, i) => link.classList.toggle('is-active', i === activeIndex));
+
+    ticking = false;
+  }
+
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      ticking = true;
+      requestAnimationFrame(onScroll);
+    }
+  }, { passive: true });
+
+  onScroll();
+
+  if (toTop) {
+    toTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+  }
+}
+
+/* ==========================================================================
+   Мобильное меню
+   ========================================================================== */
+function initMobileMenu() {
+  const toggle = document.getElementById('menu-toggle');
+  const menu = document.getElementById('mobile-menu');
+  if (!toggle || !menu) return;
+
+  function close() {
+    menu.classList.remove('is-open');
+    toggle.setAttribute('aria-expanded', 'false');
+  }
+
+  toggle.addEventListener('click', () => {
+    const isOpen = menu.classList.toggle('is-open');
+    toggle.setAttribute('aria-expanded', String(isOpen));
+  });
+
+  menu.querySelectorAll('a').forEach((link) => link.addEventListener('click', close));
+  window.addEventListener('resize', () => { if (window.innerWidth >= 900) close(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+}
+
+/* ==========================================================================
+   Появление блоков при скролле (одноразовое, для общего контента)
+   ========================================================================== */
+function initReveal() {
+  const items = document.querySelectorAll('.reveal');
+  if (!items.length) return;
+
+  // Без поддержки IntersectionObserver просто показываем всё сразу
+  if (!('IntersectionObserver' in window)) {
+    items.forEach((el) => el.classList.add('is-in'));
+    return;
+  }
 
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
-        entry.target.classList.add('active');
-        observer.unobserve(entry.target); // анимация должна проиграться один раз
+        entry.target.classList.add('is-in');
+        observer.unobserve(entry.target);   // анимируем один раз
       }
     });
-  }, { threshold: 0.1 });
+  }, { threshold: 0.12, rootMargin: '0px 0px -60px 0px' });
 
-  elements.forEach((el) => observer.observe(el));
+  items.forEach((el) => observer.observe(el));
 }
 
-/* ---------- Индикатор прогресса скролла ---------- */
-function initScrollProgress() {
-  let bar = document.querySelector('.scroll-progress');
-  if (!bar) {
-    bar = document.createElement('div');
-    bar.className = 'scroll-progress';
-    document.body.prepend(bar);
+/* ==========================================================================
+   Этапы: ДВУСТОРОННЯЯ scroll-анимация
+   При скролле вниз пункт активируется, при обратном скролле — гаснет.
+   Наблюдатель не отключается, класс снимается при выходе из зоны видимости.
+   ========================================================================== */
+function initTimeline() {
+  const steps = Array.from(document.querySelectorAll('[data-step]'));
+  const progress = document.getElementById('timeline-progress');
+  const timeline = document.getElementById('timeline');
+  if (!steps.length) return;
+
+  if (!('IntersectionObserver' in window)) {
+    steps.forEach((el) => el.classList.add('is-in'));
+    return;
   }
 
-  function update() {
-    const scrollTop = window.scrollY;
-    const height = document.documentElement.scrollHeight - window.innerHeight;
-    const progress = height > 0 ? (scrollTop / height) * 100 : 0;
-    document.documentElement.style.setProperty('--scroll-progress', `${progress}%`);
-  }
-
-  window.addEventListener('scroll', update, { passive: true });
-  update();
-}
-
-/* ---------- Курсор-«атмосфера» в hero: мягкое свечение следует за мышью ---------- */
-function initHeroGlow() {
-  const hero = document.querySelector('.hero-glow');
-  if (!hero || window.matchMedia('(pointer: coarse)').matches) return; // на тач-устройствах не нужно
-
-  hero.parentElement.addEventListener('mousemove', (e) => {
-    const rect = hero.parentElement.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
-    hero.style.setProperty('--mx', `${x}%`);
-    hero.style.setProperty('--my', `${y}%`);
-  });
-}
-
-/* ---------- Лёгкий 3D-наклон карточек вслед за курсором ---------- */
-function initCardTilt() {
-  if (window.matchMedia('(pointer: coarse)').matches) return; // на тач-устройствах не нужно
-
-  document.querySelectorAll('.glass-card').forEach((card) => {
-    card.addEventListener('mousemove', (e) => {
-      const rect = card.getBoundingClientRect();
-      const px = (e.clientX - rect.left) / rect.width - 0.5;
-      const py = (e.clientY - rect.top) / rect.height - 0.5;
-      card.style.setProperty('--tilt-x', `${(-py * 6).toFixed(2)}deg`);
-      card.style.setProperty('--tilt-y', `${(px * 6).toFixed(2)}deg`);
-    });
-    card.addEventListener('mouseleave', () => {
-      card.style.setProperty('--tilt-x', '0deg');
-      card.style.setProperty('--tilt-y', '0deg');
-    });
-  });
-}
-
-/* ---------- Прелоадер: технологичная загрузка с "Cloud Page" в облаках ---------- */
-function initPreloader() {
-  const preloader = document.getElementById('preloader');
-  if (!preloader) return;
-
-  document.documentElement.classList.add('is-loading');
-  const percentEl = document.getElementById('preloader-percent');
-  const barEl = document.getElementById('preloader-bar');
-
-  let progress = 0;
-  const duration = 1800; // мс — ощущается быстро, но достаточно, чтобы показать анимацию
-  const start = performance.now();
-
-  function tick(now) {
-    const elapsed = now - start;
-    // Нелинейная кривая — быстрый старт, замедление к 100%, как настоящая загрузка
-    progress = Math.min(100, Math.round((1 - Math.pow(1 - Math.min(elapsed / duration, 1), 3)) * 100));
-    if (percentEl) percentEl.textContent = `${String(progress).padStart(2, '0')}%`;
-    if (barEl) barEl.style.width = `${progress}%`;
-
-    if (progress < 100) {
-      requestAnimationFrame(tick);
-    } else {
-      finish();
+  function updateProgress() {
+    if (!progress || !timeline) return;
+    const active = steps.filter((s) => s.classList.contains('is-in'));
+    if (!active.length) {
+      progress.style.height = '0px';
+      return;
     }
-  }
-
-  function finish() {
-    setTimeout(() => {
-      preloader.classList.add('is-hidden');
-      document.documentElement.classList.remove('is-loading');
-      setTimeout(() => preloader.remove(), 800);
-    }, 250);
-  }
-
-  requestAnimationFrame(tick);
-}
-
-/* ---------- Точечная навигация по секциям + wipe-переход при клике ---------- */
-function initDotNav() {
-  const nav = document.getElementById('dot-nav');
-  const transitionEl = document.getElementById('page-transition');
-  if (!nav) return;
-
-  const sections = Array.from(document.querySelectorAll('section[id][data-nav-label]'));
-  if (!sections.length) return;
-
-  sections.forEach((section) => {
-    const dot = document.createElement('button');
-    dot.className = 'dot-nav-item';
-    dot.type = 'button';
-    dot.setAttribute('aria-label', `Перейти к разделу «${section.dataset.navLabel}»`);
-    dot.dataset.label = section.dataset.navLabel;
-    dot.dataset.target = section.id;
-    nav.appendChild(dot);
-  });
-
-  const dots = Array.from(nav.querySelectorAll('.dot-nav-item'));
-
-  function setActive(id) {
-    dots.forEach((d) => d.classList.toggle('is-active', d.dataset.target === id));
+    const last = active[active.length - 1];
+    const height = last.offsetTop + 44;   // до центра кружка последнего активного шага
+    progress.style.height = `${Math.min(height, timeline.offsetHeight - 16)}px`;
   }
 
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
-      if (entry.isIntersecting) setActive(entry.target.id);
+      // Ключевой момент: и добавление, и снятие класса — поэтому анимация обратима
+      entry.target.classList.toggle('is-in', entry.isIntersecting);
     });
-  }, { threshold: 0.5 });
-  sections.forEach((s) => observer.observe(s));
-
-  dots.forEach((dot) => {
-    dot.addEventListener('click', (e) => {
-      triggerPageWipe(e.clientX, e.clientY);
-      document.getElementById(dot.dataset.target)?.scrollIntoView({ behavior: 'smooth' });
-    });
+    updateProgress();
+  }, {
+    threshold: 0.35,
+    rootMargin: '-10% 0px -15% 0px',   // срабатывает ближе к центру экрана
   });
 
-  /* Красивый wipe-переход поверх страницы — запускается из точки клика */
-  function triggerPageWipe(x, y) {
-    if (!transitionEl) return;
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-    transitionEl.style.setProperty('--tx', `${(x / vw) * 100}%`);
-    transitionEl.style.setProperty('--ty', `${(y / vh) * 100}%`);
-    transitionEl.classList.remove('is-active');
-    void transitionEl.offsetWidth; // форсируем reflow, чтобы анимация перезапустилась
-    transitionEl.classList.add('is-active');
-  }
-
-  // Тот же красивый переход — на клики по обычным навигационным ссылкам (шапка, меню)
-  document.querySelectorAll('nav a[href^="#"]').forEach((link) => {
-    link.addEventListener('click', (e) => {
-      const rect = link.getBoundingClientRect();
-      triggerPageWipe(rect.left + rect.width / 2, rect.top + rect.height / 2);
-    });
-  });
+  steps.forEach((el) => observer.observe(el));
+  window.addEventListener('resize', updateProgress);
 }
 
-/* ---------- Демо мини-приложений на смартфоне: переключение вкладок ---------- */
+/* ==========================================================================
+   Демо-телефон: переключение экранов
+   ========================================================================== */
 function initPhoneDemo() {
-  const tabs = document.querySelectorAll('.demo-tab');
-  const panels = document.querySelectorAll('.phone-screen-panel');
+  const tabs = Array.from(document.querySelectorAll('.demo-tab'));
+  const panels = Array.from(document.querySelectorAll('.phone__panel'));
   if (!tabs.length || !panels.length) return;
 
-  let autoRotateTimer;
-
   function activate(name) {
-    tabs.forEach((t) => t.classList.toggle('is-active', t.dataset.demo === name));
-    panels.forEach((p) => p.classList.toggle('is-active', p.dataset.demoPanel === name));
+    tabs.forEach((tab) => {
+      const isActive = tab.dataset.demo === name;
+      tab.classList.toggle('is-active', isActive);
+      tab.setAttribute('aria-selected', String(isActive));
+    });
+    panels.forEach((panel) => {
+      panel.classList.toggle('is-active', panel.dataset.panel === name);
+    });
   }
 
-  tabs.forEach((tab) => {
-    tab.addEventListener('click', () => {
-      activate(tab.dataset.demo);
-      resetAutoRotate();
+  tabs.forEach((tab) => tab.addEventListener('click', () => activate(tab.dataset.demo)));
+}
+
+/* ==========================================================================
+   Услуги: раскрытие по наведению делает CSS, здесь — поддержка тача.
+   На тач-устройствах hover не работает, поэтому тап переключает .is-open.
+   ========================================================================== */
+function initServices() {
+  const services = Array.from(document.querySelectorAll('.service'));
+  if (!services.length) return;
+
+  const isTouch = window.matchMedia('(hover: none)').matches;
+  if (!isTouch) return;
+
+  services.forEach((service) => {
+    service.addEventListener('click', () => {
+      const willOpen = !service.classList.contains('is-open');
+      services.forEach((s) => s.classList.remove('is-open'));   // открыт только один
+      service.classList.toggle('is-open', willOpen);
     });
   });
-
-  // Лёгкая авто-смена вкладок раз в 5 секунд — демонстрирует переходы без участия пользователя
-  function resetAutoRotate() {
-    clearInterval(autoRotateTimer);
-    autoRotateTimer = setInterval(() => {
-      const names = Array.from(tabs).map((t) => t.dataset.demo);
-      const current = Array.from(tabs).findIndex((t) => t.classList.contains('is-active'));
-      activate(names[(current + 1) % names.length]);
-    }, 5000);
-  }
-  resetAutoRotate();
-
-  // Останавливаем авто-ротацию, если пользователь взаимодействует с демо-блоком
-  document.getElementById('demo-tabs')?.addEventListener('mouseenter', () => clearInterval(autoRotateTimer));
 }
 
-/* ---------- Мобильное меню ---------- */
-function initMobileMenu() {
-  const btn = document.getElementById('mobile-menu-toggle');
-  const menu = document.getElementById('mobile-menu');
-  if (!btn || !menu) return;
+/* ==========================================================================
+   Плавный переход по якорям с учётом высоты фиксированной шапки
+   ========================================================================== */
+function initSmoothAnchors() {
+  document.querySelectorAll('a[href^="#"]').forEach((link) => {
+    link.addEventListener('click', (e) => {
+      const id = link.getAttribute('href');
+      if (!id || id === '#') return;
+      const target = document.querySelector(id);
+      if (!target) return;
 
-  btn.addEventListener('click', () => {
-    const isOpen = menu.classList.toggle('is-open');
-    btn.setAttribute('aria-expanded', String(isOpen));
-  });
-
-  // Закрываем меню при переходе по ссылке
-  menu.querySelectorAll('a').forEach((link) => {
-    link.addEventListener('click', () => menu.classList.remove('is-open'));
+      e.preventDefault();
+      const offset = document.getElementById('header')?.offsetHeight || 0;
+      const top = target.getBoundingClientRect().top + window.scrollY - offset - 12;
+      window.scrollTo({ top, behavior: 'smooth' });
+    });
   });
 }
 
-/* ---------- Инициализация всего приложения ---------- */
+/* ==========================================================================
+   Инициализация
+   ========================================================================== */
 document.addEventListener('DOMContentLoaded', () => {
-  initPreloader();
   initTheme();
-  initRevealAnimations();
-  initScrollProgress();
-  initHeroGlow();
-  initCardTilt();
-  initDotNav();
-  initPhoneDemo();
+  initHeader();
   initMobileMenu();
+  initReveal();
+  initTimeline();
+  initPhoneDemo();
+  initServices();
+  initSmoothAnchors();
+
   if (typeof FormHandler !== 'undefined') FormHandler.init();
 });
