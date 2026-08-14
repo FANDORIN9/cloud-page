@@ -1,389 +1,535 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru" class="dark">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cloud Page</title>
-  <meta name="description" content="Cloud Page Studio — строгие сайты, интерфейсы и digital-продукты." />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Page — Продуманные решения</title>
+    <meta name="description" content="Cloud Page Studio — создаём лендинги, корпоративные сайты, интернет-магазины и веб-приложения, за которые не стыдно.">
+    <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="assets/images/logo.png" type="image/png">
 
-  <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon" />
-  <link rel="icon" href="assets/images/logo.png" type="image/png" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Space Grotesk', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] },
+                    colors: {
+                        brand: {
+                            purple: '#38BDF8',
+                            violet: '#A78BFA',
+                            dark:   '#06070C',
+                            light:  '#F5F7FB'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
 
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-
-  <link rel="stylesheet" href="css/style.css" />
-  <link rel="stylesheet" href="css/components.css" />
-  <link rel="stylesheet" href="css/blackwhite-patch.css" />
+    <!-- Собственные стили: базовая система + компоненты -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
 </head>
 
-<body class="gradient-bg">
-  <div class="scroll-progress"></div>
+    <!--
+      ЭТО АВТОНОМНАЯ ВЕРСИЯ ТОЛЬКО ДЛЯ ПРОСМОТРА ДИЗАЙНА.
+      Форма обратной связи не подключена к серверу — при отправке она
+      корректно обработает "отсутствие сети" и покажет уведомление
+      "заявка сохранена локально", но реального бэкенда здесь нет.
+      Полная рабочая версия с сервером — в папке project/ (см. README.md).
+    -->
+    <body class="bg-brand-light text-slate-900 dark:bg-brand-dark dark:text-white font-sans selection:bg-[#38BDF8] selection:text-[#06070C] transition-colors duration-500">
 
-  <div id="preloader" class="fixed inset-0 z-[9999] flex items-center justify-center bg-black">
-    <div class="relative z-10 text-center px-6">
-      <div class="logo-mark w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-8">
-        <svg class="w-9 h-9 text-black fill-none stroke-current" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 15a4 4 0 0 0 4 4h9a5 5 0 1 0-.1-10 5 5 0 0 0-9.78 2.1A4 4 0 0 0 3 15z"/>
-        </svg>
-      </div>
-      <h1 class="font-display text-4xl sm:text-5xl font-black tracking-tight text-white">
-        <span class="preloader-word" style="--i:0">Cloud</span>
-        <span class="preloader-word text-gradient" style="--i:1">Page</span>
-      </h1>
-      <div class="w-56 sm:w-72 h-px rounded-full bg-white/15 mx-auto mt-6 mb-3 overflow-hidden">
-        <div id="preloader-bar" class="h-full rounded-full" style="width:0%; background: var(--gradient-accent)"></div>
-      </div>
-      <div class="flex items-center justify-center gap-3 text-xs font-mono tracking-[0.22em] text-white/45 uppercase">
-        <span id="preloader-percent">0%</span>
-        <span>•</span>
-        <span>Loading</span>
-      </div>
-    </div>
-  </div>
-
-  <div id="page-transition" class="fixed inset-0 z-[9998] pointer-events-none"></div>
-
-  <nav class="fixed w-full z-50 top-0 border-b border-white/10 bg-black/70 backdrop-blur-xl">
-    <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-      <div class="flex items-center gap-3 font-display font-black text-2xl tracking-tight">
-        <div class="logo-mark w-10 h-10 rounded-xl flex items-center justify-center">
-          <svg class="w-6 h-6 text-black fill-none stroke-current" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 15a4 4 0 0 0 4 4h9a5 5 0 1 0-.1-10 5 5 0 0 0-9.78 2.1A4 4 0 0 0 3 15z"/>
-          </svg>
+    <!-- ===================== PRELOADER ===================== -->
+    <div id="preloader" class="fixed inset-0 z-[9999] flex items-center justify-center bg-[#06070C] overflow-hidden">
+        <!-- Технологичная сетка на фоне -->
+        <div class="preloader-grid"></div>
+        <!-- Плывущие облака -->
+        <div class="preloader-clouds">
+            <span class="cloud cloud--1"></span>
+            <span class="cloud cloud--2"></span>
+            <span class="cloud cloud--3"></span>
+            <span class="cloud cloud--4"></span>
         </div>
-        <span>Cloud Page</span>
-      </div>
+        <!-- Скан-линия -->
+        <div class="preloader-scanline"></div>
 
-      <div class="hidden md:flex items-center gap-8 text-sm font-semibold text-white/65">
-        <a href="#services" class="hover:text-white transition">Услуги</a>
-        <a href="#demo" class="hover:text-white transition">Демо</a>
-        <a href="#process" class="hover:text-white transition">Этапы</a>
-        <a href="#portfolio" class="hover:text-white transition">Кейсы</a>
-        <a href="#contact" class="hover:text-white transition">Заявка</a>
-      </div>
-
-      <div class="flex items-center gap-3">
-        <a href="#contact" class="btn-magnetic hidden sm:inline-flex px-6 py-3 rounded-xl text-sm font-black">
-          Обсудить проект
-        </a>
-
-        <button id="mobile-menu-toggle" aria-label="Открыть меню" aria-expanded="false" class="md:hidden p-2.5 rounded-xl border border-white/10">
-          <svg class="w-5 h-5 fill-none stroke-current text-white" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-          </svg>
-        </button>
-      </div>
+        <div class="relative flex flex-col items-center px-6">
+            <div class="logo-mark w-16 h-16 rounded-2xl flex items-center justify-center mb-8 preloader-logo">
+                <svg class="w-9 h-9 text-[#06070C]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path></svg>
+            </div>
+            <h1 class="font-display text-4xl sm:text-5xl font-bold tracking-tighter text-white flex gap-2 mb-6 preloader-title">
+                <span class="preloader-word" style="--i:0">Cloud</span>
+                <span class="preloader-word text-gradient" style="--i:1">Page</span>
+            </h1>
+            <div class="w-56 sm:w-72 h-[3px] rounded-full bg-white/10 overflow-hidden mb-3">
+                <div id="preloader-bar" class="h-full rounded-full" style="width:0%; background: var(--gradient-accent);"></div>
+            </div>
+            <div class="flex items-center gap-3 font-mono text-xs tracking-widest text-white/40">
+                <span id="preloader-percent">00%</span>
+                <span class="opacity-30">/</span>
+                <span class="preloader-status">ЗАГРУЗКА АТМОСФЕРЫ</span>
+            </div>
+        </div>
     </div>
 
-    <div id="mobile-menu" class="mobile-menu md:hidden border-t border-white/10 bg-black/95 backdrop-blur-xl">
-      <div class="flex flex-col px-6 py-4 gap-4 text-sm font-semibold">
-        <a href="#services" class="hover:text-white transition">Услуги</a>
-        <a href="#demo" class="hover:text-white transition">Демо</a>
-        <a href="#process" class="hover:text-white transition">Этапы</a>
-        <a href="#portfolio" class="hover:text-white transition">Кейсы</a>
-        <a href="#contact" class="hover:text-white transition">Заявка</a>
-      </div>
-    </div>
-  </nav>
+    <!-- ===================== ПЕРЕХОД МЕЖДУ СЕКЦИЯМИ (wipe-оверлей) ===================== -->
+    <div id="page-transition" class="fixed inset-0 z-[9998] pointer-events-none"></div>
 
-  <main class="pt-24">
-    <section id="hero" class="relative pt-20 pb-20 px-6">
-      <div class="hero-glow"></div>
-      <div class="max-w-7xl mx-auto relative">
-        <div class="reveal mb-8">
-          <span class="eyebrow">Digital studio</span>
-        </div>
+    <!-- ===================== ТОЧЕЧНАЯ НАВИГАЦИЯ ПО СЕКЦИЯМ ===================== -->
+    <nav id="dot-nav" class="hidden lg:flex fixed right-6 top-1/2 -translate-y-1/2 z-40 flex-col gap-4">
+    </nav>
 
-        <h1 class="reveal font-display text-4xl sm:text-5xl md:text-8xl font-black leading-[0.95] mb-8 tracking-tight">
-          Строгие сайты, которые
-          <span class="text-gradient">выглядят дороже</span>
-          и работают быстрее.
-        </h1>
+    <div class="gradient-bg">
 
-        <p class="reveal text-lg sm:text-xl md:text-2xl text-white/60 max-w-3xl mb-12 leading-relaxed">
-          Создаем современные digital-интерфейсы, лендинги, корпоративные сайты и продукты с сильной подачей, чистой структурой и высокой конверсией.
-        </p>
-
-        <div class="reveal flex flex-wrap gap-4">
-          <a href="#contact" class="btn-magnetic px-8 sm:px-10 py-4 sm:py-5 rounded-2xl font-black text-base sm:text-lg">Оставить заявку</a>
-          <a href="#portfolio" class="btn-outline px-8 sm:px-10 py-4 sm:py-5 rounded-2xl font-black text-base sm:text-lg">Посмотреть кейсы</a>
-        </div>
-      </div>
-    </section>
-
-    <section id="services" class="py-24 px-6 scroll-mt-24">
-      <div class="max-w-7xl mx-auto">
-        <div class="text-center mb-12 reveal">
-          <span class="eyebrow">Услуги</span>
-          <h2 class="font-display text-4xl md:text-5xl font-black mt-4">Что мы делаем</h2>
-        </div>
-
-        <div class="service-list">
-          <article class="service-item reveal">
-            <div>
-              <h3 class="service-item__title">Лендинг под запуск</h3>
-              <p class="service-item__short">Один экран, одна цель, сильная конверсия.</p>
-              <div class="service-item__details">
-                <p>Подходит для продукта, услуги или теста гипотез. Делаем структуру, продающий текст, адаптив и базовую аналитику.</p>
-              </div>
-            </div>
-            <div class="service-item__price">от 80 000 ₽</div>
-          </article>
-
-          <article class="service-item reveal">
-            <div>
-              <h3 class="service-item__title">Корпоративный сайт</h3>
-              <p class="service-item__short">Строгий сайт компании с понятной подачей.</p>
-              <div class="service-item__details">
-                <p>Для компаний, которым важны доверие, структура и аккуратная подача услуг, кейсов и контактов.</p>
-              </div>
-            </div>
-            <div class="service-item__price">от 120 000 ₽</div>
-          </article>
-
-          <article class="service-item reveal">
-            <div>
-              <h3 class="service-item__title">Интернет-магазин</h3>
-              <p class="service-item__short">Каталог, корзина, оформление и интеграции.</p>
-              <div class="service-item__details">
-                <p>Проектируем путь покупки без лишнего шума: карточки, фильтры, оплата, CRM и аналитика.</p>
-              </div>
-            </div>
-            <div class="service-item__price">от 200 000 ₽</div>
-          </article>
-
-          <article class="service-item reveal">
-            <div>
-              <h3 class="service-item__title">SPA / PWA</h3>
-              <p class="service-item__short">Когда нужен интерфейс, а не просто сайт.</p>
-              <div class="service-item__details">
-                <p>Личные кабинеты, сервисы, рабочие панели, быстрые интерфейсы и сложная логика на фронтенде.</p>
-              </div>
-            </div>
-            <div class="service-item__price">по ТЗ</div>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section id="demo" class="py-24 px-6">
-      <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-14 items-center">
-        <div class="reveal">
-          <span class="eyebrow">Телефонный виджет</span>
-          <h2 class="font-display text-4xl md:text-5xl font-black mt-4">Демо версии интерфейса</h2>
-          <p class="mt-6 text-white/65 max-w-xl">
-            Переключайте вкладки, чтобы увидеть, как сайт выглядит на экране клиента.
-          </p>
-
-          <div class="flex flex-wrap gap-3 mt-8">
-            <button class="demo-tab is-active px-5 py-3 rounded-2xl" data-phone-tab="landing">Лендинг</button>
-            <button class="demo-tab px-5 py-3 rounded-2xl" data-phone-tab="shop">Магазин</button>
-            <button class="demo-tab px-5 py-3 rounded-2xl" data-phone-tab="admin">Панель</button>
-          </div>
-        </div>
-
-        <div class="reveal flex justify-center">
-          <div class="phone-frame w-[280px] h-[580px]">
-            <div class="phone-screen h-full rounded-[32px] overflow-hidden p-4">
-              <div class="phone-screen-panel is-active" data-phone-panel="landing">
-                <div class="p-4 h-full flex flex-col">
-                  <div class="flex items-center justify-between mb-8">
-                    <div class="logo-mark w-7 h-7 rounded-lg"></div>
-                    <div class="w-6 h-6 rounded-md bg-white/10"></div>
-                  </div>
-                  <div class="text-xs font-mono uppercase tracking-[0.22em] text-white/45 mb-2">Cloud Page</div>
-                  <div class="font-display text-2xl font-black leading-tight mb-3">Строгий и чистый <span class="text-gradient">лендинг</span></div>
-                  <div class="h-2 w-40 rounded-full bg-white/10 mb-2"></div>
-                  <div class="h-2 w-28 rounded-full bg-white/10 mb-6"></div>
-                  <div class="btn-magnetic rounded-xl py-3 text-center text-xs font-black mb-8">Оставить заявку</div>
-                  <div class="grid grid-cols-3 gap-2 mt-auto">
-                    <div class="phone-mini-card"></div>
-                    <div class="phone-mini-card"></div>
-                    <div class="phone-mini-card"></div>
-                  </div>
+        <!-- ===================== HEADER ===================== -->
+        <nav class="fixed w-full z-50 top-0 border-b border-black/5 dark:border-white/5 bg-white/70 dark:bg-brand-dark/70 backdrop-blur-xl">
+            <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+                <div class="flex items-center gap-2 font-display font-bold text-2xl tracking-tighter">
+                    <div class="logo-mark w-10 h-10 rounded-xl flex items-center justify-center">
+                        <svg class="w-6 h-6 text-[#06070C]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path></svg>
+                    </div>
+                    Cloud Page
                 </div>
-              </div>
 
-              <div class="phone-screen-panel" data-phone-panel="shop">
-                <div class="p-4 h-full flex flex-col">
-                  <div class="flex items-center justify-between mb-6">
-                    <div class="font-display font-black text-sm">Store</div>
-                    <div class="relative">
-                      <span class="phone-badge">3</span>
-                    </div>
-                  </div>
-                  <div class="grid grid-cols-2 gap-3">
-                    <div class="phone-product-card">
-                      <div class="phone-product-thumb" style="background: linear-gradient(135deg, rgba(56,189,248,.35), rgba(167,139,250,.25));"></div>
-                      <div class="h-1.5 w-20 rounded-full bg-white/15 mt-3 mb-1.5"></div>
-                      <div class="text-xs font-mono text-white/50">4 990 ₽</div>
-                    </div>
-                    <div class="phone-product-card">
-                      <div class="phone-product-thumb" style="background: linear-gradient(135deg, rgba(255,255,255,.22), rgba(56,189,248,.12));"></div>
-                      <div class="h-1.5 w-16 rounded-full bg-white/15 mt-3 mb-1.5"></div>
-                      <div class="text-xs font-mono text-white/50">2 490 ₽</div>
-                    </div>
-                    <div class="phone-product-card">
-                      <div class="phone-product-thumb" style="background: linear-gradient(135deg, rgba(167,139,250,.22), rgba(255,255,255,.12));"></div>
-                      <div class="h-1.5 w-24 rounded-full bg-white/15 mt-3 mb-1.5"></div>
-                      <div class="text-xs font-mono text-white/50">7 200 ₽</div>
-                    </div>
-                    <div class="phone-product-card">
-                      <div class="phone-product-thumb" style="background: linear-gradient(135deg, rgba(56,189,248,.24), rgba(255,255,255,.12));"></div>
-                      <div class="h-1.5 w-18 rounded-full bg-white/15 mt-3 mb-1.5"></div>
-                      <div class="text-xs font-mono text-white/50">3 150 ₽</div>
-                    </div>
-                  </div>
+                <div class="hidden md:flex items-center gap-8 text-sm font-medium opacity-70">
+                    <a href="#services" class="hover:text-brand-purple transition">Услуги</a>
+                    <a href="#demo" class="hover:text-brand-purple transition">Демо</a>
+                    <a href="#portfolio" class="hover:text-brand-purple transition">Портфолио</a>
+                    <a href="#process" class="hover:text-brand-purple transition">Процесс</a>
+                    <a href="#pricing" class="hover:text-brand-purple transition">Тарифы</a>
                 </div>
-              </div>
 
-              <div class="phone-screen-panel" data-phone-panel="admin">
-                <div class="p-4 h-full flex flex-col">
-                  <div class="font-display font-black text-sm mb-4">Admin panel</div>
-                  <div class="flex items-end gap-2 h-16 mb-6">
-                    <div class="phone-bar" style="height:40%"></div>
-                    <div class="phone-bar" style="height:65%"></div>
-                    <div class="phone-bar" style="height:45%"></div>
-                    <div class="phone-bar" style="height:90%"></div>
-                    <div class="phone-bar" style="height:60%"></div>
-                    <div class="phone-bar" style="height:100%"></div>
-                    <div class="phone-bar" style="height:70%"></div>
-                  </div>
-                  <div class="space-y-2.5">
-                    <div class="phone-row"><span class="phone-dot" style="background:#5EEAD4"></span><div class="h-1.5 flex-1 rounded-full bg-white/12"></div><span class="phone-pill">Ready</span></div>
-                    <div class="phone-row"><span class="phone-dot" style="background:#38BDF8"></span><div class="h-1.5 flex-1 rounded-full bg-white/12"></div><span class="phone-pill">Active</span></div>
-                    <div class="phone-row"><span class="phone-dot" style="background:#A78BFA"></span><div class="h-1.5 flex-1 rounded-full bg-white/12"></div><span class="phone-pill">Sync</span></div>
-                  </div>
+                <div class="flex items-center gap-3 md:gap-4">
+                    <button id="theme-toggle" aria-label="Переключить тему" class="p-2.5 rounded-xl border border-black/10 dark:border-white/10 hover:bg-brand-purple/10 transition">
+                        <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"></path></svg>
+                        <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
+                    </button>
+                    <a href="#contact" class="btn-magnetic hidden sm:inline-flex px-6 py-3 rounded-xl text-sm font-bold">
+                        Обсудить проект
+                    </a>
+                    <!-- Кнопка мобильного меню -->
+                    <button id="mobile-menu-toggle" aria-label="Открыть меню" aria-expanded="false" class="md:hidden p-2.5 rounded-xl border border-black/10 dark:border-white/10">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                    </button>
                 </div>
-              </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="process" class="py-24 px-6">
-      <div class="max-w-4xl mx-auto">
-        <div class="text-center mb-14 reveal">
-          <span class="eyebrow">Этапы реализации</span>
-          <h2 class="font-display text-4xl md:text-5xl font-black mt-4">Как идет работа</h2>
-        </div>
-
-        <div class="process-timeline">
-          <div class="process-line"></div>
-
-          <div class="process-step reveal">
-            <div class="process-step__num">01</div>
-            <h3 class="font-display text-2xl font-black">Анализ и структура</h3>
-            <p class="mt-3 text-white/65">Понимаем задачу, аудиторию и цель сайта.</p>
-          </div>
-
-          <div class="process-step reveal">
-            <div class="process-step__num">02</div>
-            <h3 class="font-display text-2xl font-black">Дизайн и прототип</h3>
-            <p class="mt-3 text-white/65">Собираем визуал, согласуем логику и подачу.</p>
-          </div>
-
-          <div class="process-step reveal">
-            <div class="process-step__num">03</div>
-            <h3 class="font-display text-2xl font-black">Разработка и запуск</h3>
-            <p class="mt-3 text-white/65">Сверстаем, подключим формы и подготовим к запуску.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="portfolio" class="py-24 px-6">
-      <div class="max-w-7xl mx-auto">
-        <div class="text-center mb-14 reveal">
-          <span class="eyebrow">Кейсы</span>
-          <h2 class="font-display text-4xl md:text-5xl font-black mt-4">Успешные сайты</h2>
-        </div>
-
-        <div class="grid md:grid-cols-2 gap-8">
-          <article class="case-card reveal">
-            <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(56,189,248,.18),transparent_40%),linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,0))]"></div>
-            <div class="case-card__overlay">
-              <h3 class="case-card__title">Проект 01</h3>
-              <p class="case-card__text">Строгий сайт с фокусом на конверсию и доверие.</p>
-              <a href="#" class="font-bold text-white">Смотреть кейс →</a>
+            <!-- Мобильное меню -->
+            <div id="mobile-menu" class="mobile-menu md:hidden border-t border-black/5 dark:border-white/5 bg-white/95 dark:bg-brand-dark/95 backdrop-blur-xl">
+                <div class="flex flex-col px-6 py-4 gap-4 text-sm font-medium">
+                    <a href="#services" class="hover:text-brand-purple transition">Услуги</a>
+                    <a href="#demo" class="hover:text-brand-purple transition">Демо</a>
+                    <a href="#portfolio" class="hover:text-brand-purple transition">Портфолио</a>
+                    <a href="#process" class="hover:text-brand-purple transition">Процесс</a>
+                    <a href="#pricing" class="hover:text-brand-purple transition">Тарифы</a>
+                    <a href="#contact" class="btn-magnetic text-center px-6 py-3 rounded-xl font-bold">Обсудить проект</a>
+                </div>
             </div>
-          </article>
+        </nav>
 
-          <article class="case-card reveal">
-            <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(167,139,250,.16),transparent_40%),linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,0))]"></div>
-            <div class="case-card__overlay">
-              <h3 class="case-card__title">Проект 02</h3>
-              <p class="case-card__text">Магазин, где упрощён путь до покупки.</p>
-              <a href="#" class="font-bold text-white">Смотреть кейс →</a>
+        <!-- ===================== HERO ===================== -->
+        <section id="hero" data-nav-label="Главная" class="relative pt-40 md:pt-48 pb-20 px-6">
+            <div class="hero-glow"></div>
+            <div class="max-w-7xl mx-auto relative">
+                <div class="reveal mb-8" style="transition-delay: 100ms">
+                    <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-green-500/10 text-green-500 text-xs font-mono font-medium uppercase tracking-widest">
+                        <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                        Принимаем заявки на новые проекты.
+                    </span>
+                </div>
+                <h1 class="reveal font-display text-4xl sm:text-5xl md:text-8xl font-bold leading-tight mb-8 tracking-tighter" style="transition-delay: 200ms">
+                    Делаем сайты, <br>
+                    <span class="text-gradient">за которые</span> не стыдно
+                </h1>
+                <p class="reveal text-lg sm:text-xl md:text-2xl opacity-60 max-w-2xl mb-12 leading-relaxed" style="transition-delay: 300ms">
+                    Хватит терпеть сайт из 2014 года. Мы создаем продукты, которые заставляют конкурентов нервничать.
+                </p>
+
+                <div class="reveal flex flex-wrap gap-4 mb-20" style="transition-delay: 400ms">
+                    <a href="#contact" class="btn-magnetic px-8 sm:px-10 py-4 sm:py-5 rounded-2xl font-extrabold text-base sm:text-lg">Хочу нормальный сайт →</a>
+                    <a href="#portfolio" class="btn-outline glass-card px-8 sm:px-10 py-4 sm:py-5 rounded-2xl font-extrabold text-base sm:text-lg">Пруфы качества</a>
+                </div>
+
+                <div class="reveal grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 border-t border-black/5 dark:border-white/5 pt-12" style="transition-delay: 500ms">
+                    <div>
+                        <div class="text-3xl md:text-4xl font-black text-brand-purple mb-1">150+</div>
+                        <div class="text-xs md:text-sm opacity-50 font-bold uppercase tracking-widest">Проектов</div>
+                    </div>
+                    <div>
+                        <div class="text-3xl md:text-4xl font-black text-brand-purple mb-1">98%</div>
+                        <div class="text-xs md:text-sm opacity-50 font-bold uppercase tracking-widest">Клиентов довольны</div>
+                    </div>
+                    <div>
+                        <div class="text-3xl md:text-4xl font-black text-brand-purple mb-1">7</div>
+                        <div class="text-xs md:text-sm opacity-50 font-bold uppercase tracking-widest">Лет опыта</div>
+                    </div>
+                </div>
             </div>
-          </article>
-        </div>
-      </div>
-    </section>
+        </section>
 
-    <section id="contact" class="py-24 px-6">
-      <div class="max-w-4xl mx-auto">
-        <div class="text-center mb-14 reveal">
-          <span class="eyebrow">Заявка</span>
-          <h2 class="font-display text-4xl sm:text-5xl md:text-6xl font-black mt-4">Оставьте заявку</h2>
-          <p class="mt-5 text-white/60">Заполните форму — перезвоним за 2 часа.</p>
-        </div>
+        <!-- ===================== DEMO: MINI-APPS НА СМАРТФОНЕ ===================== -->
+        <section id="demo" data-nav-label="Демо" class="py-24 md:py-32 px-6 overflow-hidden">
+            <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+                <div>
+                    <div class="reveal">
+                        <span class="eyebrow mb-4 block">Демо</span>
+                        <h2 class="font-display text-3xl sm:text-4xl md:text-5xl font-bold mb-6 tracking-tight">Не просто картинки. <br>Живой продукт.</h2>
+                        <p class="text-base sm:text-lg opacity-50 mb-10 max-w-md leading-relaxed">Каждый сайт — это ещё и мобильный опыт. Переключайте вкладки — интерфейс справа реагирует так же, как будет реагировать у ваших клиентов.</p>
+                    </div>
 
-        <div class="reveal glass-card rounded-[32px] overflow-hidden">
-          <form id="tg-form" class="p-6 sm:p-8 md:p-16 grid md:grid-cols-2 gap-6 md:gap-8" novalidate>
-            <div class="form-field space-y-2">
-              <label for="field-name" class="block text-xs font-black uppercase tracking-[0.22em] text-white/40 ml-1">Имя</label>
-              <input id="field-name" type="text" name="name" required minlength="2" placeholder="Ваше имя" class="w-full px-4 py-4 outline-none text-lg">
+                    <!-- Переключатель демо-экранов -->
+                    <div id="demo-tabs" class="reveal flex flex-wrap gap-3" style="transition-delay: 100ms">
+                        <button type="button" data-demo="landing" class="demo-tab is-active px-5 py-3 rounded-2xl text-sm font-bold font-mono">01 · Лендинг</button>
+                        <button type="button" data-demo="shop" class="demo-tab px-5 py-3 rounded-2xl text-sm font-bold font-mono">02 · Магазин</button>
+                        <button type="button" data-demo="admin" class="demo-tab px-5 py-3 rounded-2xl text-sm font-bold font-mono">03 · Панель заявок</button>
+                    </div>
+
+                    <div class="reveal grid grid-cols-3 gap-6 mt-12 pt-8 border-t border-black/5 dark:border-white/5" style="transition-delay: 200ms">
+                        <div>
+                            <div class="font-display text-2xl font-bold text-brand-purple mb-1">60fps</div>
+                            <div class="text-[10px] opacity-50 font-bold uppercase tracking-widest">Анимации</div>
+                        </div>
+                        <div>
+                            <div class="font-display text-2xl font-bold text-brand-purple mb-1">&lt;1s</div>
+                            <div class="text-[10px] opacity-50 font-bold uppercase tracking-widest">Загрузка</div>
+                        </div>
+                        <div>
+                            <div class="font-display text-2xl font-bold text-brand-purple mb-1">100%</div>
+                            <div class="text-[10px] opacity-50 font-bold uppercase tracking-widest">Адаптив</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Мокап смартфона -->
+                <div class="reveal flex justify-center" style="transition-delay: 150ms">
+                    <div class="phone-frame">
+                        <div class="phone-notch"></div>
+                        <div class="phone-screen">
+                            <!-- Статус-бар -->
+                            <div class="phone-status-bar">
+                                <span class="font-mono">9:41</span>
+                                <div class="flex items-center gap-1.5">
+                                    <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path d="M2 15h2v-4H2v4zm4 0h2V9H6v6zm4 0h2V5h-2v10zm4 0h2V2h-2v13z"/></svg>
+                                    <svg class="w-4 h-4" viewBox="0 0 20 20" fill="currentColor"><path d="M17 5H3a1 1 0 00-1 1v8a1 1 0 001 1h14a1 1 0 001-1V6a1 1 0 00-1-1zm-1 8H4V7h12v6z"/><rect x="18" y="8" width="1.5" height="4" rx="0.5"/></svg>
+                                </div>
+                            </div>
+
+                            <!-- Экран 1: Лендинг -->
+                            <div class="phone-screen-panel is-active" data-demo-panel="landing">
+                                <div class="p-5 h-full flex flex-col">
+                                    <div class="flex items-center justify-between mb-8">
+                                        <div class="logo-mark w-7 h-7 rounded-lg"></div>
+                                        <div class="w-6 h-6 rounded-md bg-white/10"></div>
+                                    </div>
+                                    <div class="text-[10px] font-mono uppercase tracking-widest text-brand-purple mb-2">Cloud Page</div>
+                                    <div class="font-display text-2xl font-bold leading-tight mb-3">Сайт, который <span class="text-gradient">продаёт</span></div>
+                                    <div class="h-2 w-4/5 rounded-full bg-white/10 mb-2"></div>
+                                    <div class="h-2 w-3/5 rounded-full bg-white/10 mb-6"></div>
+                                    <div class="btn-magnetic rounded-xl py-3 text-center text-xs font-bold mb-8">Оставить заявку</div>
+                                    <div class="grid grid-cols-3 gap-2 mt-auto">
+                                        <div class="phone-mini-card"></div>
+                                        <div class="phone-mini-card"></div>
+                                        <div class="phone-mini-card"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Экран 2: Магазин -->
+                            <div class="phone-screen-panel" data-demo-panel="shop">
+                                <div class="p-5 h-full flex flex-col">
+                                    <div class="flex items-center justify-between mb-6">
+                                        <div class="font-display font-bold text-sm">Каталог</div>
+                                        <div class="relative">
+                                            <svg class="w-5 h-5 opacity-70" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m-10 0a2 2 0 100 4 2 2 0 000-4zm10 0a2 2 0 100 4 2 2 0 000-4z"></path></svg>
+                                            <span class="phone-badge">3</span>
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div class="phone-product-card"><div class="phone-product-thumb" style="background: linear-gradient(135deg, rgba(56,189,248,.35), rgba(167,139,250,.25));"></div><div class="h-1.5 w-3/4 rounded-full bg-white/15 mt-3 mb-1.5"></div><div class="text-[10px] font-mono text-brand-purple">4 990 ₽</div></div>
+                                        <div class="phone-product-card"><div class="phone-product-thumb" style="background: linear-gradient(135deg, rgba(94,234,212,.3), rgba(56,189,248,.25));"></div><div class="h-1.5 w-2/3 rounded-full bg-white/15 mt-3 mb-1.5"></div><div class="text-[10px] font-mono text-brand-purple">2 490 ₽</div></div>
+                                        <div class="phone-product-card"><div class="phone-product-thumb" style="background: linear-gradient(135deg, rgba(167,139,250,.3), rgba(94,234,212,.2));"></div><div class="h-1.5 w-3/4 rounded-full bg-white/15 mt-3 mb-1.5"></div><div class="text-[10px] font-mono text-brand-purple">7 200 ₽</div></div>
+                                        <div class="phone-product-card"><div class="phone-product-thumb" style="background: linear-gradient(135deg, rgba(56,189,248,.3), rgba(167,139,250,.2));"></div><div class="h-1.5 w-2/3 rounded-full bg-white/15 mt-3 mb-1.5"></div><div class="text-[10px] font-mono text-brand-purple">3 150 ₽</div></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Экран 3: Панель заявок (реальный функционал из админки) -->
+                            <div class="phone-screen-panel" data-demo-panel="admin">
+                                <div class="p-5 h-full flex flex-col">
+                                    <div class="font-display font-bold text-sm mb-4">Заявки сегодня</div>
+                                    <div class="flex items-end gap-2 h-16 mb-6">
+                                        <div class="phone-bar" style="height:40%"></div>
+                                        <div class="phone-bar" style="height:65%"></div>
+                                        <div class="phone-bar" style="height:45%"></div>
+                                        <div class="phone-bar" style="height:90%"></div>
+                                        <div class="phone-bar" style="height:60%"></div>
+                                        <div class="phone-bar" style="height:100%"></div>
+                                        <div class="phone-bar" style="height:70%"></div>
+                                    </div>
+                                    <div class="space-y-2.5">
+                                        <div class="phone-row"><span class="phone-dot" style="background:#5EEAD4"></span><div class="h-1.5 flex-1 rounded-full bg-white/12"></div><span class="phone-pill">Новая</span></div>
+                                        <div class="phone-row"><span class="phone-dot" style="background:#38BDF8"></span><div class="h-1.5 flex-1 rounded-full bg-white/12"></div><span class="phone-pill">В работе</span></div>
+                                        <div class="phone-row"><span class="phone-dot" style="background:#A78BFA"></span><div class="h-1.5 flex-1 rounded-full bg-white/12"></div><span class="phone-pill">Готово</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+        </section>
 
-            <div class="form-field space-y-2">
-              <label for="field-contact" class="block text-xs font-black uppercase tracking-[0.22em] text-white/40 ml-1">Telegram / телефон</label>
-              <input id="field-contact" type="text" name="contact" required placeholder="@username или номер" class="w-full px-4 py-4 outline-none text-lg">
+        <!-- ===================== SERVICES ===================== -->
+        <section id="services" data-nav-label="Услуги" class="py-16 px-6 scroll-mt-5">
+            <div class="max-w-7xl mx-auto">
+                <div class="reveal text-center mb-6">
+                    <span class="eyebrow mb-4 block">Что умеем</span>
+                    <h2 class="font-display text-3xl md:text-4xl font-black">Всё, что нужно вашему бизнесу</h2>
+                </div>
+                <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+                    <div class="reveal glass-card p-8 md:p-10 rounded-[40px]" style="transition-delay: 100ms">
+                        <div class="w-14 h-14 bg-brand-purple/20 rounded-2xl flex items-center justify-center mb-8 text-brand-purple">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.59 14.37a6 6 0 0 1-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 0 0 6.16-12.12A14.98 14.98 0 0 0 9.631 8.41m5.96 5.96a14.926 14.926 0 0 1-5.841 2.58m-.119-8.54a6 6 0 0 0-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 0 0-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 0 1-2.448-2.448 14.9 14.9 0 0 1 .06-.312m-2.24 2.39a4.493 4.493 0 0 0-1.757 4.306 4.493 4.493 0 0 0 4.306-1.758M16.5 9a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z"></path></svg>
+                        </div>
+                        <h3 class="font-display text-2xl font-bold mb-4">Лендинги</h3>
+                        <p class="opacity-50 mb-6">Одна страница, которая работает лучше вашего отдела продаж. Запуск продукта и тест гипотез.</p>
+                        <div class="flex gap-2 flex-wrap">
+                            <span class="px-3 py-1 bg-black/5 dark:bg-white/5 rounded-lg text-[10px] font-bold uppercase tracking-widest">Адаптивность</span>
+                            <span class="px-3 py-1 bg-black/5 dark:bg-white/5 rounded-lg text-[10px] font-bold uppercase tracking-widest">SEO</span>
+                        </div>
+                    </div>
+                    <div class="reveal glass-card p-8 md:p-10 rounded-[40px]" style="transition-delay: 200ms">
+                        <div class="w-14 h-14 bg-brand-purple/20 rounded-2xl flex items-center justify-center mb-8 text-brand-purple">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                        </div>
+                        <h3 class="font-display text-2xl font-bold mb-4">Корпоративные сайты</h3>
+                        <p class="opacity-50 mb-6">Ваша визитка в интернете. Многостраничник, после которого клиент звонит, а не закрывает вкладку.</p>
+                        <div class="flex gap-2 flex-wrap">
+                            <span class="px-3 py-1 bg-black/5 dark:bg-white/5 rounded-lg text-[10px] font-bold uppercase tracking-widest">Интеграции</span>
+                            <span class="px-3 py-1 bg-black/5 dark:bg-white/5 rounded-lg text-[10px] font-bold uppercase tracking-widest">Мультиязычность</span>
+                        </div>
+                    </div>
+                    <div class="reveal glass-card p-8 md:p-10 rounded-[40px]" style="transition-delay: 200ms">
+                        <div class="w-14 h-14 bg-brand-purple/20 rounded-2xl flex items-center justify-center mb-8 text-brand-purple">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"></path></svg>
+                        </div>
+                        <h3 class="font-display text-2xl font-bold mb-4">Интернет-Магазины</h3>
+                        <p class="opacity-50 mb-6">Каталог, корзина, оплата, CRM. Всё работает быстро, а не виснет. Люди покупают, а не уходят.</p>
+                        <div class="flex gap-2 flex-wrap">
+                            <span class="px-3 py-1 bg-black/5 dark:bg-white/5 rounded-lg text-[10px] font-bold uppercase tracking-widest">Каталог</span>
+                            <span class="px-3 py-1 bg-black/5 dark:bg-white/5 rounded-lg text-[10px] font-bold uppercase tracking-widest">Оплата</span>
+                            <span class="px-3 py-1 bg-black/5 dark:bg-white/5 rounded-lg text-[10px] font-bold uppercase tracking-widest">CRM</span>
+                        </div>
+                    </div>
+                    <div class="reveal glass-card p-8 md:p-10 rounded-[40px]" style="transition-delay: 300ms">
+                        <div class="w-14 h-14 bg-brand-purple/20 rounded-2xl flex items-center justify-center mb-8 text-brand-purple">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                        </div>
+                        <h3 class="font-display text-2xl font-bold mb-4">Веб-приложения</h3>
+                        <p class="opacity-50 mb-6">Когда просто сайта мало. SPA, PWA, личные кабинеты — штуки, которые реально работают.</p>
+                        <div class="flex gap-2 flex-wrap">
+                            <span class="px-3 py-1 bg-black/5 dark:bg-white/5 rounded-lg text-[10px] font-bold uppercase tracking-widest">React / Vue</span>
+                            <span class="px-3 py-1 bg-black/5 dark:bg-white/5 rounded-lg text-[10px] font-bold uppercase tracking-widest">API</span>
+                            <span class="px-3 py-1 bg-black/5 dark:bg-white/5 rounded-lg text-[10px] font-bold uppercase tracking-widest">Real-time</span>
+                        </div>
+                    </div>
+                    <div class="reveal glass-card p-8 md:p-10 rounded-[40px]" style="transition-delay: 300ms">
+                        <div class="w-14 h-14 bg-brand-purple/20 rounded-2xl flex items-center justify-center mb-8 text-brand-purple">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125"></path></svg>
+                        </div>
+                        <h3 class="font-display text-2xl font-bold mb-4">UI/UX Дизайн</h3>
+                        <p class="opacity-50 mb-6">Интерфейс, в котором разберётся даже ваша бабушка. Прототипы, макеты, дизайн-системы — без вкусовщины, только данные.</p>
+                        <div class="flex gap-2 flex-wrap">
+                            <span class="px-3 py-1 bg-black/5 dark:bg-white/5 rounded-lg text-[10px] font-bold uppercase tracking-widest">Figma</span>
+                            <span class="px-3 py-1 bg-black/5 dark:bg-white/5 rounded-lg text-[10px] font-bold uppercase tracking-widest">Прототипы</span>
+                            <span class="px-3 py-1 bg-black/5 dark:bg-white/5 rounded-lg text-[10px] font-bold uppercase tracking-widest">Тестирование</span>
+                        </div>
+                    </div>
+                    <div class="reveal glass-card p-8 md:p-10 rounded-[40px]" style="transition-delay: 300ms">
+                        <div class="w-14 h-14 bg-brand-purple/20 rounded-2xl flex items-center justify-center mb-8 text-brand-purple">
+                            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z"></path></svg>
+                        </div>
+                        <h3 class="font-display text-2xl font-bold mb-4">Поддержка и развитие</h3>
+                        <p class="opacity-50 mb-6">Сделали и не бросили. Мониторинг, обновления, доработки — ваш сайт не превратится в тыкву через полгода.</p>
+                        <div class="flex gap-2 flex-wrap">
+                            <span class="px-3 py-1 bg-black/5 dark:bg-white/5 rounded-lg text-[10px] font-bold uppercase tracking-widest">Мониторинг</span>
+                            <span class="px-3 py-1 bg-black/5 dark:bg-white/5 rounded-lg text-[10px] font-bold uppercase tracking-widest">Бекапы</span>
+                            <span class="px-3 py-1 bg-black/5 dark:bg-white/5 rounded-lg text-[10px] font-bold uppercase tracking-widest">Обновления</span>
+                        </div>
+                    </div>
+                </div>
             </div>
+        </section>
 
-            <div class="form-field md:col-span-2 space-y-2">
-              <label for="field-message" class="block text-xs font-black uppercase tracking-[0.22em] text-white/40 ml-1">Сообщение</label>
-              <textarea id="field-message" name="message" required minlength="5" placeholder="Коротко опишите задачу" class="w-full px-4 py-4 outline-none text-lg h-32 resize-none"></textarea>
+        <!-- ===================== PROCESS ===================== -->
+        <section id="process" data-nav-label="Процесс" class="py-24 md:py-32 px-6 bg-black/5 dark:bg-black/20">
+            <div class="max-w-4xl mx-auto">
+                <div class="reveal text-center mb-16 md:mb-24">
+                    <span class="eyebrow mb-4 block">Процесс</span>
+                    <h2 class="font-display text-4xl md:text-5xl font-black">Без хаоса, по уму</h2>
+                </div>
+
+                <div class="relative pl-12">
+                    <div class="process-line"></div>
+
+                    <div class="reveal mb-16 md:mb-20 relative" style="transition-delay: 100ms">
+                        <div class="process-num font-mono absolute -left-[54px] w-10 h-10 text-[#06070C] rounded-full flex items-center justify-center font-bold text-sm">01</div>
+                        <h3 class="font-display text-2xl md:text-3xl font-bold mb-4 tracking-tight">Разбираемся</h3>
+                        <p class="text-base md:text-lg opacity-50">Влезаем в ваш бизнес с головой. Конкуренты, аудитория, цифры — сначала думаем, потом делаем.</p>
+                    </div>
+
+                    <div class="reveal mb-16 md:mb-20 relative" style="transition-delay: 200ms">
+                        <div class="process-num font-mono absolute -left-[54px] w-10 h-10 text-[#06070C] rounded-full flex items-center justify-center font-bold text-sm">02</div>
+                        <h3 class="font-display text-2xl md:text-3xl font-bold mb-4 tracking-tight">Рисуем</h3>
+                        <p class="text-base md:text-lg opacity-50">Прототипы и макеты в Figma. Показываем, правим, пока вы не скажете «вот это да».</p>
+                    </div>
+
+                    <div class="reveal relative" style="transition-delay: 300ms">
+                        <div class="process-num font-mono absolute -left-[54px] w-10 h-10 text-[#06070C] rounded-full flex items-center justify-center font-bold text-sm">03</div>
+                        <h3 class="font-display text-2xl md:text-3xl font-bold mb-4 tracking-tight">Кодим</h3>
+                        <p class="text-base md:text-lg opacity-50">Чистый код, быстрая загрузка. Работает на всём — от iPhone до холодильника с экраном.</p>
+                    </div>
+                </div>
             </div>
+        </section>
 
-            <div style="position:absolute; left:-9999px; opacity:0;" aria-hidden="true">
-              <label for="field-website">Website</label>
-              <input id="field-website" type="text" name="website" tabindex="-1" autocomplete="off">
+        <!-- ===================== PORTFOLIO ===================== -->
+        <section id="portfolio" data-nav-label="Портфолио" class="py-24 md:py-32 px-6">
+            <div class="max-w-7xl mx-auto">
+                <div class="reveal text-center mb-16 md:mb-20">
+                    <span class="eyebrow mb-4 block">Портфолио</span>
+                    <h2 class="font-display text-4xl md:text-5xl font-black italic">Не болтовня, а результат</h2>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="reveal group relative overflow-hidden rounded-[40px] aspect-video glass-card" style="transition-delay: 100ms">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-8 md:p-10 translate-y-4 group-hover:translate-y-0 transition-transform">
+                            <h4 class="font-display text-2xl font-bold text-white mb-2">Пример 1</h4>
+                            <p class="text-white/60 mb-6">Описание примера 1</p>
+                            <span class="text-brand-purple font-bold underline cursor-pointer">Смотреть кейс →</span>
+                        </div>
+                        <div class="absolute inset-0 bg-brand-purple/10 -z-10"></div>
+                    </div>
+                    <div class="reveal group relative overflow-hidden rounded-[40px] aspect-video glass-card" style="transition-delay: 200ms">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex flex-col justify-end p-8 md:p-10 translate-y-4 group-hover:translate-y-0 transition-transform">
+                            <h4 class="font-display text-2xl font-bold text-white mb-2">Пример 2</h4>
+                            <p class="text-white/60 mb-6">Описание примера 1</p>
+                            <span class="text-brand-purple font-bold underline cursor-pointer">Смотреть кейс →</span>
+                        </div>
+                        <div class="absolute inset-0 bg-brand-purple/5 -z-10"></div>
+                    </div>
+                </div>
             </div>
+        </section>
 
-            <div class="md:col-span-2 pt-4 md:pt-6">
-              <button type="submit" id="submit-btn" class="btn-magnetic w-full py-5 md:py-6 rounded-3xl font-black text-lg md:text-xl flex items-center justify-center gap-3">
-                <span class="spinner" aria-hidden="true"></span>
-                <span class="btn-label">Отправить заявку</span>
-                <svg class="btn-arrow w-6 h-6 fill-none stroke-current" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                </svg>
-              </button>
-              <p class="mt-4 text-center text-sm font-semibold text-white/55">Консультация бесплатная, давление нулевое.</p>
+        <!-- ===================== PRICING ===================== -->
+        <section id="pricing" data-nav-label="Тарифы" class="py-24 md:py-32 px-6 bg-black/5 dark:bg-black/20">
+            <div class="max-w-7xl mx-auto">
+                <div class="reveal text-center mb-16 md:mb-20">
+                    <span class="eyebrow mb-4 block">Тарифы</span>
+                    <h2 class="font-display text-4xl md:text-5xl font-black">Честные цены</h2>
+                </div>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="reveal glass-card p-8 md:p-10 rounded-[40px] flex flex-col" style="transition-delay: 100ms">
+                        <h3 class="font-display text-xl font-bold mb-2">Лендинг</h3>
+                        <div class="text-3xl md:text-4xl font-black mb-8">от 80 000 ₽</div>
+                        <ul class="space-y-4 mb-10 flex-grow text-sm opacity-70 font-medium">
+                            <li class="flex items-center gap-2">✓ Уникальный дизайн</li>
+                            <li class="flex items-center gap-2">✓ Адаптив под все устройства</li>
+                            <li class="flex items-center gap-2">✓ Настройка формы заявки</li>
+                            <li class="flex items-center gap-2">✓ Срок: от 2 недель</li>
+                        </ul>
+                        <a href="#contact" class="btn-outline text-center w-full py-4 rounded-2xl font-bold">Заказать</a>
+                    </div>
+                    <div class="reveal glass-card p-8 md:p-10 rounded-[40px] border-2 border-brand-purple relative md:scale-105 shadow-2xl shadow-blue-500/10 flex flex-col" style="transition-delay: 200ms">
+                        <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-brand-purple text-white text-[10px] font-black px-4 py-1 rounded-full uppercase tracking-widest">Популярный</div>
+                        <h3 class="font-display text-xl font-bold mb-2">Корпоративный сайт</h3>
+                        <div class="text-3xl md:text-4xl font-black mb-8">от 200 000 ₽</div>
+                        <ul class="space-y-4 mb-10 flex-grow text-sm opacity-70 font-medium">
+                            <li class="flex items-center gap-2">✓ До 15 уникальных страниц</li>
+                            <li class="flex items-center gap-2">✓ CMS для управления контентом</li>
+                            <li class="flex items-center gap-2">✓ Интеграция с CRM</li>
+                            <li class="flex items-center gap-2">✓ Срок: от 4 недель</li>
+                        </ul>
+                        <a href="#contact" class="btn-magnetic text-center w-full py-4 rounded-2xl font-bold">Заказать</a>
+                    </div>
+                    <div class="reveal glass-card p-8 md:p-10 rounded-[40px] flex flex-col" style="transition-delay: 300ms">
+                        <h3 class="font-display text-xl font-bold mb-2">Магазин</h3>
+                        <div class="text-3xl md:text-4xl font-black mb-8">от 350 000 ₽</div>
+                        <ul class="space-y-4 mb-10 flex-grow text-sm opacity-70 font-medium">
+                            <li class="flex items-center gap-2">✓ Каталог и фильтры</li>
+                            <li class="flex items-center gap-2">✓ Личный кабинет покупателя</li>
+                            <li class="flex items-center gap-2">✓ Интеграция с 1С / МойСклад</li>
+                            <li class="flex items-center gap-2">✓ Срок: от 6 недель</li>
+                        </ul>
+                        <a href="#contact" class="btn-outline text-center w-full py-4 rounded-2xl font-bold">Заказать</a>
+                    </div>
+                </div>
             </div>
-          </form>
-        </div>
-      </div>
-    </section>
-  </main>
+        </section>
 
-  <footer class="py-12 px-6 border-t border-white/10">
-    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6 text-xs font-bold uppercase tracking-[0.22em]">
-      <div>2026 Cloud Page Studio</div>
-      <div class="flex gap-8">
-        <a href="#">Telegram</a>
-        <a href="#">Behance</a>
-        <a href="#">Dribbble</a>
-      </div>
+        <!-- ===================== CONTACT FORM ===================== -->
+        <section id="contact" data-nav-label="Контакты" class="py-24 md:py-32 px-6">
+            <div class="max-w-4xl mx-auto">
+                <div class="reveal text-center mb-16">
+                    <h2 class="font-display text-4xl sm:text-5xl md:text-6xl font-black mb-6 tracking-tight">Хватит думать. <br>Пора делать.</h2>
+                    <p class="text-base sm:text-lg opacity-50 italic">Заполните форму — перезвоним за 2 часа. <br>Консультация бесплатная, давление нулевое.</p>
+                </div>
+
+                <div class="reveal glass-card rounded-[40px] md:rounded-[50px] overflow-hidden" style="transition-delay: 200ms">
+                    <form id="tg-form" class="p-6 sm:p-8 md:p-16 grid md:grid-cols-2 gap-6 md:gap-8" novalidate>
+                        <div class="form-field space-y-2">
+                            <label for="field-name" class="block text-[10px] font-black uppercase tracking-widest opacity-40 ml-1">Ваше имя</label>
+                            <input id="field-name" type="text" name="name" required minlength="2" placeholder="Иван" class="w-full bg-black/5 dark:bg-white/5 border-b border-black/10 dark:border-white/10 py-4 px-1 outline-none focus:border-brand-purple transition text-lg">
+                        </div>
+                        <div class="form-field space-y-2">
+                            <label for="field-contact" class="block text-[10px] font-black uppercase tracking-widest opacity-40 ml-1">Телефон / TG</label>
+                            <input id="field-contact" type="text" name="contact" required placeholder="@username" class="w-full bg-black/5 dark:bg-white/5 border-b border-black/10 dark:border-white/10 py-4 px-1 outline-none focus:border-brand-purple transition text-lg">
+                        </div>
+                        <div class="form-field md:col-span-2 space-y-2">
+                            <label for="field-message" class="block text-[10px] font-black uppercase tracking-widest opacity-40 ml-1">О проекте в двух словах</label>
+                            <textarea id="field-message" name="message" required minlength="5" placeholder="Нужен магазин для продажи..." class="w-full bg-black/5 dark:bg-white/5 border-b border-black/10 dark:border-white/10 py-4 px-1 outline-none focus:border-brand-purple transition text-lg h-32 resize-none"></textarea>
+                        </div>
+
+                        <!-- Honeypot-поле: невидимо для людей, но заполняется ботами — используется для базовой защиты от спама -->
+                        <div style="position:absolute; left:-9999px; opacity:0;" aria-hidden="true">
+                            <label for="field-website">Оставьте это поле пустым</label>
+                            <input id="field-website" type="text" name="website" tabindex="-1" autocomplete="off">
+                        </div>
+
+                        <div class="md:col-span-2 pt-4 md:pt-6">
+                            <button type="submit" id="submit-btn" class="btn-magnetic w-full py-5 md:py-6 rounded-3xl font-black text-lg md:text-xl flex items-center justify-center gap-3">
+                                <span class="spinner" aria-hidden="true"></span>
+                                <span class="btn-label">Обсудить задачу</span>
+                                <svg class="btn-arrow w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                            </button>
+                            <p id="form-status" class="text-center mt-4 font-bold text-sm hidden"></p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================== FOOTER ===================== -->
+        <footer class="py-12 px-6 border-t border-black/5 dark:border-white/5">
+            <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6 opacity-40 text-xs font-bold uppercase tracking-widest">
+                <div>© 2026 Cloud Page Studio</div>
+                <div class="flex gap-8">
+                    <a href="#">Telegram</a>
+                    <a href="#">Behance</a>
+                    <a href="#">Dribbble</a>
+                </div>
+            </div>
+        </footer>
     </div>
-  </footer>
 
-  <script src="js/api-client.js"></script>
-  <script src="js/form-handler.js"></script>
-  <script src="js/app.js"></script>
-  <script src="js/blackwhite-patch.js"></script>
+    <!-- Клиентские скрипты: подключаются в порядке зависимостей -->
+    <script src="js/api-client.js"></script>
+    <script src="js/form-handler.js"></script>
+    <script src="js/app.js"></script>
 </body>
 </html>
