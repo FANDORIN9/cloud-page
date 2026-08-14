@@ -474,12 +474,7 @@ html.dark .logo__mark { filter: invert(1); }
   color: var(--c-text-3);
 }
 
-@media (max-width: 620px) {
-  .service__short { padding-left: 0; white-space: normal; }
-  .service__detail-inner { padding-left: 0; }
-  .service__price { margin-left: 0; text-align: left; }
-  .service__top { flex-direction: column; align-items: flex-start; }
-}
+/* Мобильные правила для услуг вынесены в блок 12.2 в конце файла */
 
 /* ==========================================================================
    5. ДЕМО-ТЕЛЕФОН
@@ -1529,3 +1524,258 @@ html.dark .case__preview { background: #060606; }
 }
 .to-top.is-visible { opacity: 1; pointer-events: auto; transform: none; }
 .to-top svg { width: 18px; height: 18px; }
+
+/* ==========================================================================
+   12. МОБИЛЬНАЯ АДАПТАЦИЯ
+   Блок идёт последним, поэтому переопределяет правила выше без !important.
+   Точки перелома: 900px — планшет, 640px — телефон, 380px — узкий телефон.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   12.1. Планшеты и всё, что уже десктопа
+   -------------------------------------------------------------------------- */
+@media (max-width: 900px) {
+
+  /* Компактная шапка: логотип + бургер, кнопка уезжает в меню */
+  .header__inner { gap: .75rem; }
+  .logo { font-size: 1.05rem; }
+  .logo__mark { height: 26px; }
+
+  /* Мобильное меню занимает не больше экрана и прокручивается */
+  .mobile-menu.is-open {
+    max-height: calc(100svh - var(--header-h));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .mobile-menu a { padding: .95rem 0; }   /* тап-таргет ≥ 44px */
+
+  /* Демо: телефон под текстом, метрики в строку */
+  .demo__grid { gap: 2.5rem; }
+  .phone-wrap { order: 2; }
+}
+
+/* --------------------------------------------------------------------------
+   12.2. Телефоны
+   -------------------------------------------------------------------------- */
+@media (max-width: 640px) {
+
+  /* ---------- Общее ---------- */
+  .section-head { margin-bottom: 2rem; }
+  .section-head p { font-size: var(--fs-sm); }
+
+  /* ---------- Hero ---------- */
+  .hero { padding-top: calc(var(--header-h) + 2.25rem); }
+  .hero__status {
+    font-size: .62rem;
+    letter-spacing: .05em;
+    padding: .35rem .75rem .35rem .6rem;
+    margin-bottom: 1.5rem;
+  }
+  .hero__grid { gap: 1.75rem; margin-bottom: 2.75rem; }
+  .hero .lead { font-size: 1rem; max-width: none; }
+
+  /* Кнопки на всю ширину — попасть пальцем проще */
+  .hero__cta { flex-direction: column; align-items: stretch; gap: .6rem; }
+  .hero__cta .btn { width: 100%; }
+
+  .stats { gap: 1.5rem 1rem; padding-top: 1.75rem; }
+  .stats__num { font-size: 1.75rem; }
+  .stats__label { font-size: .62rem; letter-spacing: .08em; }
+
+  /* ---------- Услуги ----------
+     Цена остаётся справа от названия, описание раскрывается по тапу. */
+  .service {
+    padding: 1.15rem 2rem 1.15rem 0;   /* место справа под индикатор */
+  }
+  .service__top {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: .75rem;
+    flex-wrap: nowrap;
+  }
+  .service__title { flex: 1 1 auto; gap: .6rem; }
+  .service__num { font-size: .6rem; padding-top: .3rem; }
+  .service__name { font-size: 1.15rem; line-height: 1.25; }
+  .service:hover .service__name { transform: none; }
+
+  .service__price {
+    margin-left: 0;
+    text-align: right;
+    font-size: .85rem;
+    line-height: 1.2;
+    padding-top: .15rem;
+  }
+  .service__price small { font-size: .55rem; letter-spacing: .06em; }
+
+  .service__short {
+    padding-left: 0;
+    margin-top: .5rem;
+    font-size: .8rem;
+    white-space: normal;
+  }
+  .service__detail-inner { padding-left: 0; }
+  .service__detail-inner p { font-size: .9rem; }
+  .service:hover .service__detail,
+  .service:focus-within .service__detail { margin-top: .9rem; }
+  .service.is-open .service__detail { margin-top: .9rem; }
+  .tag { font-size: .6rem; padding: .28rem .6rem; }
+
+  /* ---------- Демо-телефон ---------- */
+  .demo__tabs { gap: .4rem; }
+  .demo-tab {
+    padding: .65rem .85rem;
+    font-size: .65rem;
+    min-height: 42px;          /* удобный тап-таргет */
+  }
+  .demo__metrics { gap: 1rem; margin-top: 2rem; padding-top: 1.5rem; }
+  .phone { width: min(280px, 82vw); border-radius: 38px; }
+  .phone__screen { border-radius: 30px; }
+
+  /* ---------- Этапы ---------- */
+  .timeline { padding-left: 3.25rem; }
+  .timeline::before,
+  .timeline__progress { left: 15px; }
+  .step { padding-bottom: 2.25rem; }
+  .step__num { left: -3.25rem; width: 32px; height: 32px; font-size: .68rem; }
+  .step__meta { font-size: .62rem; margin-bottom: .4rem; }
+  .step__title { font-size: 1.15rem; margin-bottom: .45rem; }
+  .step p { font-size: .9rem; }
+
+  /* ---------- Кейсы ----------
+     На тач-экранах hover не срабатывает, поэтому смягчаем зависимость от него. */
+  .case { border-radius: var(--r-lg); }
+  .case__preview { aspect-ratio: 16 / 9; padding: .9rem; }
+  .case__body { padding: 1.1rem; }
+  .case__meta { font-size: .6rem; letter-spacing: .08em; margin-bottom: .5rem; }
+  .case__body p { font-size: .85rem; margin-bottom: 1rem; }
+  .case__result { gap: 1rem; padding-top: .9rem; }
+  .case__result div strong { font-size: 1.1rem; }
+  .case__result div span { font-size: .6rem; }
+
+  /* ---------- Форма ---------- */
+  .contact__grid { gap: 1.5rem; }
+  .contact__head h2 { margin-bottom: .6rem; }
+  .form-card { padding: 1.1rem; border-radius: var(--r-lg); }
+
+  /* 16px — ниже этого значения iOS Safari зумит страницу при фокусе */
+  .form-card .form-field input,
+  .form-card .form-field textarea {
+    font-size: 16px;
+    padding: .55rem 0;
+  }
+  .form-card .form-field label { font-size: .65rem; }
+  .form-card .btn { padding: .95rem 1.5rem; }
+  .form-note { font-size: .65rem; }
+
+  /* ---------- Подвал ---------- */
+  .footer__top { gap: 1.75rem; padding-bottom: 1.75rem; }
+  .footer__about p { max-width: none; }
+  .footer__col ul { gap: .5rem; }
+  .footer__col a { display: inline-block; padding-block: .3rem; }
+  .contact__list a { display: inline-block; padding-block: .25rem; }
+  .footer__bottom {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .5rem;
+    font-size: .6rem;
+  }
+
+  /* ---------- Плавающие элементы ---------- */
+  .to-top { right: 1rem; bottom: 1rem; width: 42px; height: 42px; }
+  .toast-container {
+    right: 1rem; left: 1rem;
+    bottom: 4.5rem;
+    max-width: none;
+  }
+  .toast { font-size: .8rem; padding: .8rem 1rem; }
+}
+
+/* --------------------------------------------------------------------------
+   12.3. Узкие телефоны (320–380px)
+   -------------------------------------------------------------------------- */
+@media (max-width: 380px) {
+  .logo { font-size: .95rem; gap: .5rem; }
+  .logo__mark { height: 23px; }
+
+  .service__name { font-size: 1.05rem; }
+  .service__price { font-size: .78rem; }
+  .stats { grid-template-columns: 1fr 1fr; }
+  .demo-tab { padding: .6rem .7rem; font-size: .6rem; }
+  .phone { width: min(255px, 84vw); }
+  .case__result { gap: .75rem; }
+}
+
+/* --------------------------------------------------------------------------
+   12.4. Тач-устройства: заменяем hover-логику на явные состояния
+   -------------------------------------------------------------------------- */
+@media (hover: none) {
+
+  /* Индикатор «нажми, чтобы раскрыть» у услуг */
+  .service { padding-right: 2rem; }
+  .service::after {
+    content: '';
+    position: absolute;
+    right: .2rem;
+    top: 1.5rem;
+    width: 15px; height: 15px;
+    background:
+      linear-gradient(var(--c-text-3), var(--c-text-3)) center / 15px 1.5px no-repeat,
+      linear-gradient(var(--c-text-3), var(--c-text-3)) center / 1.5px 15px no-repeat;
+    transition: transform var(--dur) var(--ease), opacity var(--dur-fast) ease;
+  }
+  .service.is-open::after {
+    transform: rotate(135deg);
+    opacity: .5;
+  }
+
+  /* Раскрытие услуги — только по тапу (.is-open), иначе «залипший» hover
+     оставляет два открытых блока одновременно */
+  .service:hover .service__detail {
+    grid-template-rows: 0fr;
+    opacity: 0;
+    margin-top: 0;
+  }
+  .service:hover::before { transform: scaleX(0); }
+  .service:hover .service__num {
+    background: none;
+    -webkit-background-clip: border-box;
+    background-clip: border-box;
+    color: var(--c-text-3);
+  }
+  .service.is-open .service__detail {
+    grid-template-rows: 1fr;
+    opacity: 1;
+    margin-top: .9rem;
+  }
+  .service.is-open::before { transform: scaleX(1); }
+  .service.is-open .service__num {
+    background: var(--grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Ховер-эффекты, которые на тачах «залипают», выключаем */
+  .btn--solid:hover { opacity: 1; }
+  .btn--grad:hover { color: var(--c-text); }
+  .btn--grad:hover::before { opacity: 1; }
+  .case:hover { transform: none; box-shadow: none; }
+  .case:hover .case__blocks i { transform: none; }
+  .nav__link:hover::after { transform: scaleX(0); }
+  .nav__link.is-active::after { transform: scaleX(1); }
+
+  /* Превью кейса и без наведения выглядит живым */
+  .case__preview::after { opacity: .12; }
+}
+
+/* --------------------------------------------------------------------------
+   12.5. Телефон в альбомной ориентации — секции на весь экран не фиксируем
+   -------------------------------------------------------------------------- */
+@media (max-height: 520px) and (orientation: landscape) {
+  .section--screen {
+    min-height: 0;
+    padding-block: calc(var(--header-h) + 1.5rem) 2.5rem;
+  }
+  .hero { padding-top: calc(var(--header-h) + 1.5rem); }
+  .mobile-menu.is-open { max-height: calc(100svh - var(--header-h)); }
+}

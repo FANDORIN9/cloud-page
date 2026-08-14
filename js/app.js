@@ -121,19 +121,28 @@ function initMobileMenu() {
   const menu = document.getElementById('mobile-menu');
   if (!toggle || !menu) return;
 
-  function close() {
-    menu.classList.remove('is-open');
-    toggle.setAttribute('aria-expanded', 'false');
+  // Пока меню открыто, страница под ним не должна прокручиваться
+  function setState(isOpen) {
+    menu.classList.toggle('is-open', isOpen);
+    document.body.classList.toggle('is-locked', isOpen);
+    toggle.setAttribute('aria-expanded', String(isOpen));
+    toggle.setAttribute('aria-label', isOpen ? 'Закрыть меню' : 'Открыть меню');
   }
 
-  toggle.addEventListener('click', () => {
-    const isOpen = menu.classList.toggle('is-open');
-    toggle.setAttribute('aria-expanded', String(isOpen));
-  });
+  const close = () => setState(false);
+
+  toggle.addEventListener('click', () => setState(!menu.classList.contains('is-open')));
 
   menu.querySelectorAll('a').forEach((link) => link.addEventListener('click', close));
   window.addEventListener('resize', () => { if (window.innerWidth >= 900) close(); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+
+  // Тап мимо меню — тоже закрывает
+  document.addEventListener('click', (e) => {
+    if (!menu.classList.contains('is-open')) return;
+    if (menu.contains(e.target) || toggle.contains(e.target)) return;
+    close();
+  });
 }
 
 /* ==========================================================================

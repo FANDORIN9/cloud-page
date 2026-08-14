@@ -60,6 +60,28 @@
   --header-h:    76px;
 }
 
+/* ---------- Мобильные экраны: пересобираем шкалу под узкую ширину ----------
+   Меняем только токены — все компоненты подхватывают новые значения сами. */
+@media (max-width: 640px) {
+  :root {
+    --fs-h1:   clamp(2.1rem, 1.2rem + 4.6vw, 2.75rem);
+    --fs-h2:   clamp(1.6rem, 1.1rem + 2.6vw, 2.1rem);
+    --fs-h3:   1.1rem;
+    --fs-body: 1rem;
+    --gutter:  1.15rem;
+    --section-y: 3.5rem;
+    --header-h:  60px;
+    --r-lg:    16px;
+  }
+}
+
+@media (max-width: 380px) {
+  :root {
+    --gutter: 1rem;
+    --section-y: 3rem;
+  }
+}
+
 /* ---------- Тёмная тема: та же система, инвертированная ---------- */
 html.dark {
   --c-bg:          #000000;
@@ -102,7 +124,17 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  overflow-wrap: break-word;   /* длинные слова не растягивают вёрстку */
   transition: background-color var(--dur-fast) ease, color var(--dur-fast) ease;
+}
+
+/* Блокировка прокрутки, когда открыто мобильное меню */
+body.is-locked { overflow: hidden; }
+
+/* Тач-устройства: убираем серую вспышку по тапу и задержку 300 мс */
+a, button, input, textarea, select, .service, .demo-tab {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 ::selection {
