@@ -696,16 +696,22 @@
      ФОРМА ОБРАТНОЙ СВЯЗИ
      ========================================================================= -->
 <section class="section section--alt section--screen" id="contact">
-    <div class="wrap">
+    <div class="wrap contact__grid">
 
-        <div class="form-card reveal">
+        <!-- Левая колонка: заголовочная часть в стилистике остальных секций -->
+        <div class="section-head contact__head reveal">
+            <span class="eyebrow">Контакты</span>
+            <h2>Обсудим проект</h2>
+            <p>Оставьте контакты — свяжемся в течение двух часов в рабочее время. Консультация бесплатная, давление нулевое.</p>
+            <ul class="contact__list">
+                <li><a href="tel:+79000000000">+7 900 000-00-00</a></li>
+                <li><a href="mailto:hello@cloudpage.ru">hello@cloudpage.ru</a></li>
+            </ul>
+        </div>
 
-            <!-- Только текстовая шапка: заголовок вплотную к полям -->
-            <div class="form-card__head">
-                <span class="eyebrow">Контакты</span>
-                <h2>Обсудим проект</h2>
-                <p>Свяжемся в течение двух часов. Консультация бесплатная.</p>
-            </div>
+        <!-- Правая колонка: форма, центрированная по обеим осям -->
+        <div class="contact__form reveal" style="--delay: 80ms">
+            <div class="form-card">
 
             <form id="tg-form" class="form-grid" novalidate>
 
@@ -745,7 +751,10 @@
                 </div>
 
             </form>
+
+            </div>
         </div>
+
     </div>
 </section>
 

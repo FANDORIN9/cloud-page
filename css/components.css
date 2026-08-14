@@ -1202,8 +1202,8 @@ html.dark .case__preview { background: #060606; }
    8. ФОРМА ОБРАТНОЙ СВЯЗИ
    ========================================================================== */
 
-/* Секция формы занимает ровно один экран — скроллить не нужно.
-   Верхний паддинг равен высоте фиксированной шапки, чтобы она не накрывала карточку. */
+/* Секция занимает ровно один экран — скроллить не нужно.
+   Верхний паддинг равен высоте фиксированной шапки, чтобы она не накрывала контент. */
 .section--screen {
   min-height: 100vh;
   min-height: 100svh;
@@ -1212,28 +1212,64 @@ html.dark .case__preview { background: #060606; }
   padding-block: var(--header-h) 1rem;
 }
 
+/* Две колонки: слева заголовочная часть, справа форма */
+.contact__grid {
+  display: grid;
+  gap: clamp(1.75rem, 4vw, 3.5rem);
+  align-items: center;
+}
+
+/* Левая колонка — та же стилистика, что у section-head в «Услугах» и «Кейсах» */
+.contact__head {
+  margin-bottom: 0;
+  max-width: 34ch;
+}
+.contact__head .eyebrow { margin-bottom: 1rem; }
+.contact__head h2 { margin-bottom: .85rem; }
+.contact__head p {
+  font-size: var(--fs-sm);
+  line-height: 1.55;
+}
+
+.contact__list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: .4rem;
+  margin-top: 1.4rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--c-line);
+}
+.contact__list a {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  transition: color var(--dur-fast) ease;
+}
+.contact__list a:hover { color: var(--c-text-3); }
+
+/* Правая колонка — форма строго по центру по обеим осям */
+.contact__form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (min-width: 900px) {
+  .contact__grid { grid-template-columns: minmax(0, 35fr) minmax(0, 65fr); }
+}
+
 /* Компактная карточка */
 .form-card {
   width: 100%;
   border: 1px solid var(--c-line);
   border-radius: var(--r-lg);
   background: var(--c-surface);
-  padding: clamp(1.1rem, 2.4vw, 1.75rem);
-  max-width: 560px;
+  padding: clamp(1.1rem, 2.2vw, 1.6rem);
+  max-width: 520px;
   margin-inline: auto;
   box-shadow: var(--c-shadow-sm);
-}
-
-/* Текстовая шапка вплотную к полям: без логотипа и без лишнего воздуха */
-.form-card__head { margin-bottom: 1.15rem; }
-.form-card__head .eyebrow { margin-bottom: .5rem; }
-.form-card__head h2 {
-  font-size: clamp(1.5rem, 1.2rem + 1.1vw, 2rem);
-  margin-bottom: .35rem;
-}
-.form-card__head p {
-  font-size: var(--fs-sm);
-  line-height: 1.45;
 }
 
 .form-grid {
@@ -1241,17 +1277,17 @@ html.dark .case__preview { background: #060606; }
   gap: .85rem;
 }
 
-/* Ужатые поля — форма гарантированно влезает по высоте */
+/* Компактные, но удобные для заполнения поля */
 .form-card .form-field label {
   margin-bottom: .25rem;
   font-size: .68rem;
 }
 .form-card .form-field input,
 .form-card .form-field textarea {
-  padding: .45rem 0;
+  padding: .5rem 0;
   font-size: .95rem;
 }
-.form-card .form-field textarea { min-height: 56px; }
+.form-card .form-field textarea { min-height: 60px; }
 .form-card .btn { padding: .85rem 2rem; }
 .form-card .form-note {
   margin-top: .6rem;
@@ -1264,11 +1300,37 @@ html.dark .case__preview { background: #060606; }
   .form-field--full { grid-column: 1 / -1; }
 }
 
-/* Низкие экраны: убираем описание и сокращаем поле «О проекте» */
-@media (max-height: 700px) {
-  .form-card__head p { display: none; }
-  .form-card .form-field textarea { min-height: 44px; }
+/* Когда колонки складываются друг под друга — контакты в строку, отступы меньше */
+@media (max-width: 899px) {
+  .contact__grid { gap: 1.5rem; }
+  .contact__head { max-width: none; }
+  .contact__list {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: .4rem 1.25rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+  }
+  .contact__list a { font-size: .9rem; }
+}
+
+/* Низкие экраны: подрезаем описание слева и поле «О проекте» */
+@media (max-height: 720px) {
+  .contact__head p { display: none; }
+  .contact__list { margin-top: 1rem; padding-top: 1rem; }
+  .form-card .form-field textarea { min-height: 46px; }
   .form-grid { gap: .7rem; }
+}
+
+/* Совсем низкие экраны — сжимаем ещё, но не в ущерб удобству ввода */
+@media (max-height: 640px) {
+  .contact__grid { gap: 1.1rem; }
+  .contact__head h2 { font-size: 1.6rem; }
+  .form-card { padding: 1rem; }
+  .form-grid { gap: .55rem; }
+  .form-card .form-field textarea { min-height: 38px; }
+  .form-card .btn { padding: .7rem 2rem; }
+  .form-card .form-note { margin-top: .45rem; font-size: .65rem; }
 }
 
 .form-field { position: relative; }
