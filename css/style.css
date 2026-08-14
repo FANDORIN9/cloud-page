@@ -1,0 +1,169 @@
+/* ==========================================================================
+   style.css — дизайн-система «Ionosphere»
+   Тёмное «атмосферное» пространство с sky→violet градиентным акцентом,
+   геометричным дисплейным шрифтом и моно-акцентами в духе дев-студии.
+   Mobile-first: базовые правила — под маленький экран, расширения — через
+   media queries (min-width).
+   ========================================================================== */
+
+:root {
+  /* ---------- Цветовая система (light-тема) ---------- */
+  --color-accent: #38BDF8;           /* sky-400 — основной акцент, узнаваемый бренд-голубой */
+  --color-accent-2: #A78BFA;         /* violet-400 — вторая точка градиента, добавляет глубину */
+  --color-accent-3: #5EEAD4;         /* teal-300 — редкий блик, только для свечения/акцентов */
+  --color-accent-rgb: 56, 189, 248;
+  --color-bg: #F5F7FB;
+  --color-bg-rgb: 245, 247, 251;
+  --color-text: #0B0E1A;
+  --color-text-muted: rgba(11, 14, 26, 0.6);
+  --color-border: rgba(11, 14, 26, 0.08);
+  --color-surface: rgba(11, 14, 26, 0.02);
+  --gradient-accent: linear-gradient(135deg, var(--color-accent), var(--color-accent-2));
+  --gradient-accent-soft: linear-gradient(135deg, rgba(56,189,248,.16), rgba(167,139,250,.16));
+
+  /* ---------- Типографика ----------
+     Display — геометричный, техничный (Space Grotesk): для заголовков.
+     Body — Inter: для текста, максимально читаемый.
+     Mono — JetBrains Mono: для эйбрау-лейблов, цифр, «кодовых» акцентов —
+     прямая отсылка к тому, что мы студия веб-разработки. */
+  --font-display: 'Space Grotesk', 'Inter', sans-serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  /* ---------- Радиусы, отступы, тайминги ---------- */
+  --radius-sm: 12px;
+  --radius-md: 24px;
+  --radius-lg: 40px;
+  --space-section: clamp(3rem, 8vw, 8rem);
+  --ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+html.dark {
+  --color-bg: #06070C;
+  --color-bg-rgb: 6, 7, 12;
+  --color-text: #F5F7FB;
+  --color-text-muted: rgba(245, 247, 251, 0.62);
+  --color-border: rgba(245, 247, 251, 0.09);
+  --color-surface: rgba(245, 247, 251, 0.035);
+}
+
+/* Отступ при скролле к секции — чтобы контент не прятался под fixed-навигацией */
+section[id] {
+  scroll-margin-top: 96px;
+}
+
+
+html {
+  scroll-behavior: smooth;
+}
+
+html.is-loading,
+html.is-loading body {
+  overflow: hidden;
+  height: 100%;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.6s var(--ease-premium), color 0.6s var(--ease-premium);
+  position: relative;
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+/* Градиентный текст — используется точечно, только для «сигнатурного» слова в hero */
+.text-gradient {
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Уважаем настройку "уменьшить анимации" на уровне ОС */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Видимый фокус для доступности с клавиатуры */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--color-accent);
+  color: #06070C;
+}
+
+/* ---------- Появление при скролле: blur → fokus, плавнее и «дороже» ---------- */
+.reveal {
+  opacity: 0;
+  filter: blur(6px);
+  transform: translateY(32px) scale(0.985);
+  transition: opacity 1s var(--ease-premium), filter 1s var(--ease-premium), transform 1s var(--ease-premium);
+}
+.reveal.active {
+  opacity: 1;
+  filter: blur(0);
+  transform: translateY(0) scale(1);
+}
+
+/* ---------- Фоновая атмосфера ---------- */
+.gradient-bg {
+  background:
+    radial-gradient(circle at 15% 20%, rgba(56, 189, 248, 0.16), transparent 42%),
+    radial-gradient(circle at 85% 15%, rgba(167, 139, 250, 0.14), transparent 45%),
+    radial-gradient(circle at 50% 90%, rgba(94, 234, 212, 0.08), transparent 50%);
+}
+
+/* ---------- Индикатор прогресса скролла ---------- */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: var(--scroll-progress, 0%);
+  background: var(--gradient-accent);
+  z-index: 100;
+  transition: width 0.1s linear;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
+}
+
+/* ---------- Курсор-«атмосфера»: мягкое свечение, следующее за курсором в hero ---------- */
+.hero-glow {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+.hero-glow::before {
+  content: '';
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  left: var(--mx, 50%);
+  top: var(--my, 30%);
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.20), rgba(167, 139, 250, 0.10) 45%, transparent 70%);
+  border-radius: 50%;
+  transition: left 0.5s var(--ease-premium), top 0.5s var(--ease-premium);
+  filter: blur(10px);
+}

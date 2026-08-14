@@ -1,0 +1,491 @@
+/* ==========================================================================
+   components.css — компоненты дизайн-системы «Ionosphere»
+   ========================================================================== */
+
+/* ---------- Glass card с реакцией на курсор (лёгкий 3D-наклон + градиентная кайма) ---------- */
+.glass-card {
+  --tilt-x: 0deg;
+  --tilt-y: 0deg;
+  background: rgba(255, 255, 255, 0.035);
+  backdrop-filter: blur(16px);
+  border: 1px solid var(--color-border);
+  transform: perspective(900px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) translateZ(0);
+  transition: transform 0.4s var(--ease-premium), border-color 0.4s var(--ease-premium), box-shadow 0.4s var(--ease-premium);
+  position: relative;
+}
+html:not(.dark) .glass-card {
+  background: rgba(11, 14, 26, 0.025);
+  border: 1px solid rgba(11, 14, 26, 0.06);
+}
+.glass-card:hover {
+  border-color: rgba(56, 189, 248, 0.5);
+  box-shadow: 0 20px 60px -20px rgba(56, 189, 248, 0.25);
+}
+
+/* Тонкая градиентная кайма, проявляется по hover — сигнатурная деталь бренда */
+.glass-card::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: var(--gradient-accent);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s var(--ease-premium);
+  pointer-events: none;
+}
+.glass-card:hover::after {
+  opacity: 0.5;
+}
+
+/* ---------- Эйбрау-лейблы в духе кода: [ ТЕКСТ ] моно-шрифтом ---------- */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+}
+.eyebrow::before { content: '['; opacity: 0.5; }
+.eyebrow::after { content: ']'; opacity: 0.5; }
+
+/* ---------- Бегущая строка удалена в пользу интерактивного демо-блока (см. .phone-frame ниже) ---------- */
+
+/* ---------- Линия процесса + градиентные кольца-номера ---------- */
+.process-line {
+  position: absolute;
+  left: 20px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, var(--color-accent), var(--color-accent-2), transparent);
+}
+.process-num {
+  background: var(--gradient-accent);
+  box-shadow: 0 0 24px rgba(56, 189, 248, 0.45);
+}
+
+/* ---------- Магнитные кнопки: градиент + свечение + лёгкий подъём ---------- */
+.btn-magnetic {
+  position: relative;
+  background: var(--gradient-accent);
+  color: #06070C;
+  transition: transform 0.35s var(--ease-premium), box-shadow 0.35s var(--ease-premium);
+  will-change: transform;
+}
+.btn-magnetic:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 16px 40px -12px rgba(56, 189, 248, 0.5);
+}
+.btn-magnetic:active {
+  transform: translateY(-1px) scale(0.99);
+}
+
+.btn-outline {
+  border: 1.5px solid var(--color-border);
+  transition: all 0.35s var(--ease-premium);
+}
+.btn-outline:hover {
+  border-color: var(--color-accent);
+  background: var(--gradient-accent-soft);
+  transform: translateY(-3px);
+}
+
+/* ---------- Форма: состояния полей ---------- */
+.form-field {
+  position: relative;
+}
+.form-field input,
+.form-field textarea {
+  width: 100%;
+  transition: border-color 0.3s var(--ease-premium), background 0.3s var(--ease-premium);
+}
+.form-field.has-error input,
+.form-field.has-error textarea {
+  border-color: #ef4444 !important;
+}
+.form-field__error {
+  display: none;
+  color: #ef4444;
+  font-size: 0.75rem;
+  font-weight: 700;
+  margin-top: 0.35rem;
+}
+.form-field.has-error .form-field__error {
+  display: block;
+}
+
+/* ---------- Кнопка отправки: состояние загрузки ---------- */
+#submit-btn[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.spinner {
+  display: none;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(6, 7, 12, 0.3);
+  border-top-color: #06070C;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+#submit-btn.is-loading .spinner {
+  display: inline-block;
+}
+#submit-btn.is-loading .btn-label,
+#submit-btn.is-loading .btn-arrow {
+  display: none;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ---------- Тост-уведомления ---------- */
+.toast-container {
+  position: fixed;
+  bottom: 1.5rem;
+  right: 1.5rem;
+  left: 1.5rem;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  pointer-events: none;
+}
+@media (min-width: 640px) {
+  .toast-container {
+    left: auto;
+    width: 380px;
+  }
+}
+.toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius-sm);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+  font-size: 0.875rem;
+  font-weight: 600;
+  opacity: 0;
+  transform: translateY(16px) scale(0.98);
+  transition: all 0.4s var(--ease-premium);
+}
+.toast.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+.toast--success { border-left: 4px solid #22c55e; }
+.toast--error { border-left: 4px solid #ef4444; }
+.toast--info { border-left: 4px solid var(--color-accent); }
+
+/* ---------- Мобильное меню ---------- */
+.mobile-menu {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s var(--ease-premium);
+}
+.mobile-menu.is-open {
+  max-height: 320px;
+}
+
+/* ---------- Логотип: лёгкое дыхание градиента ---------- */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(56, 189, 248, 0.35); }
+  50% { box-shadow: 0 0 32px rgba(167, 139, 250, 0.5); }
+}
+.logo-mark {
+  background: var(--gradient-accent);
+  animation: pulse-glow 4s ease-in-out infinite;
+}
+
+/* ==========================================================================
+   PRELOADER — «Cloud Page» в облаках, технологичный стиль
+   ========================================================================== */
+#preloader {
+  transition: opacity 0.7s var(--ease-premium), visibility 0.7s var(--ease-premium);
+}
+#preloader.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Технологичная сетка — тонкие линии, символ "чертежа" интерфейса */
+.preloader-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(56, 189, 248, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56, 189, 248, 0.07) 1px, transparent 1px);
+  background-size: 48px 48px;
+  -webkit-mask-image: radial-gradient(circle at 50% 45%, #000 0%, transparent 75%);
+  mask-image: radial-gradient(circle at 50% 45%, #000 0%, transparent 75%);
+}
+
+/* Скан-линия — техно-акцент, будто идёт "сборка" интерфейса */
+.preloader-scanline {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: linear-gradient(to bottom, transparent, rgba(56, 189, 248, 0.12), transparent);
+  animation: scanline 3.2s ease-in-out infinite;
+}
+@keyframes scanline {
+  0% { top: -10%; }
+  100% { top: 110%; }
+}
+
+/* Облака — мягкие размытые эллипсы, плывущие в разных направлениях и скоростях */
+.preloader-clouds { position: absolute; inset: 0; overflow: hidden; }
+.cloud {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(40px);
+  opacity: 0.5;
+}
+.cloud--1 {
+  width: 340px; height: 140px; top: 18%; left: -20%;
+  background: radial-gradient(ellipse, rgba(56, 189, 248, 0.35), transparent 70%);
+  animation: drift-right 18s ease-in-out infinite;
+}
+.cloud--2 {
+  width: 260px; height: 110px; top: 60%; right: -15%;
+  background: radial-gradient(ellipse, rgba(167, 139, 250, 0.3), transparent 70%);
+  animation: drift-left 22s ease-in-out infinite;
+}
+.cloud--3 {
+  width: 200px; height: 90px; top: 75%; left: 10%;
+  background: radial-gradient(ellipse, rgba(94, 234, 212, 0.25), transparent 70%);
+  animation: drift-right 26s ease-in-out infinite reverse;
+}
+.cloud--4 {
+  width: 300px; height: 120px; top: 8%; right: 5%;
+  background: radial-gradient(ellipse, rgba(56, 189, 248, 0.2), transparent 70%);
+  animation: drift-left 20s ease-in-out infinite;
+}
+@keyframes drift-right {
+  0%, 100% { transform: translateX(0) translateY(0); }
+  50% { transform: translateX(60px) translateY(-16px); }
+}
+@keyframes drift-left {
+  0%, 100% { transform: translateX(0) translateY(0); }
+  50% { transform: translateX(-60px) translateY(14px); }
+}
+
+.preloader-logo { animation: pulse-glow 1.6s ease-in-out infinite; }
+
+/* Буквы заголовка проявляются по очереди */
+.preloader-word {
+  opacity: 0;
+  filter: blur(8px);
+  transform: translateY(14px);
+  animation: word-in 0.8s var(--ease-premium) forwards;
+  animation-delay: calc(var(--i) * 150ms + 200ms);
+}
+@keyframes word-in {
+  to { opacity: 1; filter: blur(0); transform: translateY(0); }
+}
+
+/* ==========================================================================
+   ПЕРЕХОД МЕЖДУ СЕКЦИЯМИ — градиентный wipe-оверлей при клике по навигации
+   ========================================================================== */
+#page-transition.is-active {
+  background: var(--gradient-accent);
+  animation: page-wipe 0.7s var(--ease-premium) forwards;
+}
+@keyframes page-wipe {
+  0% { clip-path: circle(0% at var(--tx, 50%) var(--ty, 50%)); opacity: 1; }
+  60% { clip-path: circle(75% at var(--tx, 50%) var(--ty, 50%)); opacity: 0.9; }
+  100% { clip-path: circle(140% at var(--tx, 50%) var(--ty, 50%)); opacity: 0; }
+}
+
+/* ==========================================================================
+   ТОЧЕЧНАЯ НАВИГАЦИЯ — индикатор текущей секции сбоку экрана
+   ========================================================================== */
+.dot-nav-item {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--color-border);
+  border: none;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.4s var(--ease-premium);
+}
+.dot-nav-item::after {
+  content: attr(data-label);
+  position: absolute;
+  right: 22px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  white-space: nowrap;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  padding: 4px 10px;
+  border-radius: 8px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s var(--ease-premium);
+}
+.dot-nav-item:hover::after {
+  opacity: 1;
+}
+.dot-nav-item.is-active {
+  background: var(--gradient-accent);
+  width: 10px;
+  height: 28px;
+  border-radius: 999px;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.5);
+}
+
+/* ==========================================================================
+   ДЕМО-ВКЛАДКИ (переключатель мини-приложений)
+   ========================================================================== */
+.demo-tab {
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text-muted);
+  transition: all 0.4s var(--ease-premium);
+}
+.demo-tab.is-active {
+  background: var(--gradient-accent);
+  color: #06070C;
+  border-color: transparent;
+  box-shadow: 0 12px 30px -10px rgba(56, 189, 248, 0.45);
+}
+
+/* ==========================================================================
+   МОКАП СМАРТФОНА — рамка в духе iPhone, экран с переключаемыми панелями
+   ========================================================================== */
+.phone-frame {
+  position: relative;
+  width: 280px;
+  height: 580px;
+  background: linear-gradient(160deg, #1a1d29, #06070C);
+  border-radius: 48px;
+  padding: 14px;
+  box-shadow:
+    0 40px 80px -30px rgba(56, 189, 248, 0.35),
+    0 0 0 2px rgba(255, 255, 255, 0.06) inset,
+    0 0 0 8px #0B0E1A;
+}
+.phone-notch {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 26px;
+  background: #06070C;
+  border-radius: 0 0 18px 18px;
+  z-index: 10;
+}
+.phone-screen {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(160deg, #0d1120, #06070C);
+  border-radius: 36px;
+  overflow: hidden;
+  color: #F5F7FB;
+}
+.phone-status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 22px 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+.phone-screen-panel {
+  position: absolute;
+  inset: 0;
+  padding-top: 40px;
+  opacity: 0;
+  transform: translateX(24px) scale(0.98);
+  transition: opacity 0.5s var(--ease-premium), transform 0.5s var(--ease-premium);
+  pointer-events: none;
+}
+.phone-screen-panel.is-active {
+  opacity: 1;
+  transform: translateX(0) scale(1);
+  pointer-events: auto;
+}
+.phone-mini-card {
+  aspect-ratio: 1;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.phone-badge {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: var(--gradient-accent);
+  color: #06070C;
+  font-size: 0.6rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.phone-product-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  padding: 10px;
+}
+.phone-product-thumb {
+  width: 100%;
+  aspect-ratio: 1.3;
+  border-radius: 10px;
+}
+.phone-bar {
+  flex: 1;
+  border-radius: 6px 6px 2px 2px;
+  background: var(--gradient-accent);
+  opacity: 0.85;
+}
+.phone-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  padding: 8px 10px;
+}
+.phone-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+.phone-pill {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  opacity: 0.6;
+  white-space: nowrap;
+}
+
+@media (max-width: 380px) {
+  .phone-frame { width: 240px; height: 500px; }
+}
